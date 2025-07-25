@@ -1,0 +1,75 @@
+.page-wrapper {
+  background-image: url('/assets/contact/1.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+.contact-container {
+  width: 100%;
+  max-width: 600px;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+p-card {
+  width: 100%;
+
+  .p-card {
+    border: none;
+    box-shadow: none;
+  }
+
+  .p-card-header {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #0a7ea4;
+    margin-bottom: 1rem;
+  }
+}
+
+.p-field {
+  margin-bottom: 1.5rem;
+
+  label {
+    font-weight: 600;
+    color: #0a7ea4;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+
+  input,
+  textarea {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid #d0d0d0;
+
+    &:focus {
+      outline: none;
+      border-color: #0a7ea4;
+      box-shadow: 0 0 0 0.15rem rgba(10, 126, 164, 0.2);
+    }
+  }
+}
+
+button {
+  background-color: #0a7ea4;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  color: white;
+
+  &:hover {
+    background-color: #086a8f;
+  }
+}

@@ -1,0 +1,22 @@
+.d-flex {
+    display: flex;
+}
+.flex-wrap {
+    flex-wrap: wrap;
+}
+.justify-content-between {
+    justify-content: space-between;
+}
+.gap-4 {
+    gap: 16px;
+}
+.box {
+    flex: 1 1 calc(50% - 16px); /* Two per row */
+    max-width: calc(50% - 16px);
+}
+@media (max-width: 768px) {
+    .box {
+        flex: 1 1 100%; /* One per row on small screens */
+        max-width: 100%;
+    }
+}

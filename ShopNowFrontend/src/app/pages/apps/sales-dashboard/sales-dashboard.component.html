@@ -1,0 +1,133 @@
+<div class="dashboard">
+  <h1>Dashboard</h1>
+
+  <div class="summary-grid">
+    <div class="summary-card">
+  <h3>Total Sales</h3>
+  <p class="value">{{ totalSales | currency:'PKR':'symbol':'1.0-0' }}</p>
+</div>
+   <div class="summary-card">
+  <h3>Total Orders</h3>
+  <p class="value">{{ totalOrders | number }}</p>
+</div>
+
+    <div class="summary-card">
+  <h3>Total Customers</h3>
+  <p class="value">{{ totalCustomers | number }}</p>
+</div>
+
+  </div>
+
+  <div class="cards-grid">
+    <!-- Sales Chart Card -->
+<div class="card">
+      <div class="card-header">
+        <h2>Sales {{ selectedYear }}</h2>
+        <p-dropdown
+          [options]="yearOptions"
+          [(ngModel)]="selectedYear"
+          (onChange)="onYearChange()"
+          optionLabel="label"
+          optionValue="value" >
+        </p-dropdown>
+      </div>
+      <div class="chart-container" >
+        <p-chart
+  type="line"
+  [data]="data"
+  [options]="options"
+  [plugins]="plugins"> 
+</p-chart>
+      </div>
+    </div>
+
+  
+<!-- Top Products Card -->
+<div class="card">
+  <h2>Top Products</h2>
+  <p-table [value]="products" [scrollable]="true" scrollHeight="250px">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Price</th>
+        <th>Total Sold</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-product>
+      <tr>
+        <td>{{ product.name }}</td>
+        <td>{{ product.category }}</td>
+        <td>{{ product.price | currency:'PKR':'symbol':'1.0-0' }}</td>
+        <td>{{ product.totalSold }}</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+    <!-- Recent Orders Card -->
+<div class="card">
+      <h2>Recent Orders</h2>
+      <p-table [value]="recentOrders" [scrollable]="true" scrollHeight="250px">
+
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Status</th>
+          </tr>
+        </ng-template>
+      <ng-template pTemplate="body" let-order>
+  <tr>
+    <td>{{ order.productName }}</td>
+    <td>{{ order.category }}</td>
+    <td>{{ order.price | currency:'PKR':'symbol':'1.0-0' }}</td>
+    <td>
+      <span class="status-badge" [ngClass]="'status-' + getStatusSeverity(getStatusLabel(order.status))">
+        {{ getStatusLabel(order.status) }}
+      </span>
+    </td>
+  </tr>
+</ng-template>
+
+      </p-table>
+    </div>
+
+      <!-- Pie Chart Card -->
+<div class="card">
+  <div class="card-header">
+    <h2>State Wise Order Analysis</h2>
+    
+  </div>
+  <div class="pie-chart-container">
+    <p-chart
+  class="pie-chart"
+  type="pie"
+  [data]="pieData"
+  [options]="pieOptions"
+  style="margin-bottom: 24px;">
+</p-chart>
+
+    
+  </div>
+  <div class="legend-grid">
+    <div class="legend-item">
+      <div class="legend-dot approved"></div>
+      <span class="legend-label">Approved</span>
+      <span class="legend-percent">{{ getStatusPercentage('approved') }}%</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot pending"></div>
+      <span class="legend-label">Pending</span>
+      <span class="legend-percent">{{ getStatusPercentage('pending') }}%</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot rejected"></div>
+      <span class="legend-label">Rejected</span>
+      <span class="legend-percent">{{ getStatusPercentage('rejected') }}%</span>
+    </div>
+  </div>
+</div>
+  </div>
+</div>

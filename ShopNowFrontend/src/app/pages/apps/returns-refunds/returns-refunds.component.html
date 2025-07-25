@@ -1,0 +1,120 @@
+<div class="returns-refunds-container">
+  <!-- Header -->
+  <div class="bg-light-primary rounded p-y-20 p-x-24 m-b-24 overflow-hidden">
+    <div class="d-flex">
+      <div class="m-t-6">
+        <h4 class="page-title m-0 f-s-20 f-w-600">
+          Returns/refunds
+        </h4>
+      </div>
+    </div>
+  </div>
+
+  <!-- Status Tabs -->
+  <div class="status-tabs">
+    <div class="tab all"
+         (click)="changeTab('All')"
+         [ngClass]="{'active': searchFilters.status === 'All'}">
+      <span class="tab-text">All</span>
+      <span class="count">({{returnsRefunds.length}})</span>
+    </div>
+
+    <div class="tab in-progress"
+         (click)="changeTab('In progress')"
+         [ngClass]="{'active': searchFilters.status === 'In progress'}">
+      <span class="tab-text">In progress</span>
+      <span class="count">({{inProgressCount}})</span>
+    </div>
+
+    <div class="tab awaiting-returns"
+         (click)="changeTab('Awaiting returns')"
+         [ngClass]="{'active': searchFilters.status === 'Awaiting returns'}">
+      <span class="tab-text">Awaiting returns</span>
+      <span class="count">({{awaitingReturnsCount}})</span>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div class="results-section">
+    <!-- Search Section -->
+    <div class="search-section">
+      <div class="search-form">
+        <mat-form-field appearance="outline" class="search-field">
+          <mat-label>Order Number</mat-label>
+          <input matInput
+                 [(ngModel)]="searchFilters.orderNumber"
+                 placeholder="Enter order number">
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" class="search-field">
+          <mat-label>Store Name</mat-label>
+          <input matInput
+                 [(ngModel)]="searchFilters.storeName"
+                 placeholder="Enter store name">
+          <mat-icon matSuffix>store</mat-icon>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" class="search-field">
+          <mat-label>Status</mat-label>
+          <mat-select [(ngModel)]="searchFilters.status">
+            <mat-option *ngFor="let status of statusOptions" [value]="status">
+              {{status}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        
+        <button mat-button
+                color="primary"
+                class="search-button"
+                (click)="onSearch()">
+          <mat-icon>search</mat-icon>
+          Search
+        </button>
+      </div>
+    </div>
+
+    <!-- PrimeNG Table -->
+    <p-table [value]="filteredReturnsRefunds" [paginator]="true" [rows]="10" 
+             [showCurrentPageReport]="true" responsiveLayout="scroll">
+      
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Order Information</th>
+          <th>Status</th>
+          <th>Current Status</th>
+        </tr>
+      </ng-template>
+      
+      <ng-template pTemplate="body" let-item>
+        <tr>
+          <td>
+            <div class="order-number">{{item.orderNumber}}</div>
+            <div class="store-name">{{item.storeName}}</div>
+            <div class="order-details">{{item.orderInfo}}</div>
+          </td>
+          <td>
+            <span [ngClass]="getStatusClass(item.status)" class="rounded f-w-600 p-6 p-y-4 f-s-12">
+              {{item.status}}
+            </span>
+          </td>
+          <td>
+            <div class="status-details">{{item.currentStatus}}</div>
+          </td>
+        </tr>
+      </ng-template>
+      
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="3" style="text-align: center;">
+            <div class="no-results">
+              <i class="pi pi-info-circle" style="font-size: 2rem; color: #ccc;"></i>
+              <p>No results for this term. Please try another.</p>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+      
+    </p-table>
+  </div>
+</div>

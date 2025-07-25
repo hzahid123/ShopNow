@@ -1,0 +1,16 @@
+<div class="cardWithShadow theme-card">
+    <mat-card-header>
+        <mat-card-title class="m-b-0 f-w-800">Last Newsletter Statistics - Employees
+        </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <apx-chart
+        [series]="chartOptions.series"
+        [chart]="chartOptions.chart"
+        [xaxis]="chartOptions.xaxis"
+        [dataLabels]="chartOptions.dataLabels"
+        [grid]="chartOptions.grid"
+        [stroke]="chartOptions.stroke"
+      ></apx-chart>
+    </mat-card-content>
+</div>

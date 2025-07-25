@@ -1,0 +1,45 @@
+<!-- <div class="upload-wrapper">
+  <h2 class="page-heading">Upload Your Profile Picture</h2>
+
+  <div class="button-group">
+    <!-- Label styled as button --
+    <label class="custom-file-label" for="fileInput">Select</label>
+    <input id="fileInput" type="file" (change)="onFileSelected($event)" hidden />
+
+    <button mat-raised-button color="accent" (click)="upload()" [disabled]="!selectedFile">
+      Upload
+    </button>
+
+    <button mat-stroked-button color="warn" (click)="cancel()">
+      Cancel
+    </button>
+  </div>
+
+  <div *ngIf="previewUrl" class="preview-box">
+    <p>Preview:</p>
+    <img [src]="previewUrl" alt="Preview" />
+  </div>
+</div> -->
+
+<div class="upload-wrapper">
+  <h2>Upload Your Profile Picture</h2>
+
+  <div class="upload-box">
+    <label>
+      <input type="file" hidden (change)="onFileSelected($event)" #fileInput />
+      <button mat-flat-button color="primary" (click)="fileInput.click()">Select</button>
+    </label>
+
+    <div *ngIf="previewUrl" class="preview-box">
+      <p>Preview:</p>
+      <img [src]="previewUrl" alt="Preview" />
+    </div>
+  </div>
+
+  <div class="actions">
+    <button mat-raised-button color="primary" (click)="upload()" [disabled]="!selectedFile">
+      Upload
+    </button>
+    <button mat-stroked-button color="warn" (click)="cancel()">Cancel</button>
+  </div>
+</div>

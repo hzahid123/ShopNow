@@ -1,0 +1,76 @@
+<div class="full-background-container">
+  <!-- Background Image -->
+  <div class="background-image"></div>
+
+  <!-- Logo (top-left) -->
+  <div class="logo-container">
+    <ng-container *ngIf="options.theme === 'light'">
+      <a [routerLink]="['/dashboards/dashboard1']">
+        <img src="./assets/images/logos/dark-logo.svg" alt="logo" />
+      </a>
+    </ng-container>
+    <ng-container *ngIf="options.theme === 'dark'">
+      <a [routerLink]="['/dashboards/dashboard1']">
+        <img src="./assets/images/logos/light-logo.svg" alt="logo" />
+      </a>
+    </ng-container>
+  </div>
+<div class="form-card-container">
+  <div class="form-card">
+    <h4 class="f-w-700 f-s-24 m-0 text-center">Update your email</h4>
+    <p class="f-s-14 m-t-8 text-center">Set a new email for your account below.</p>
+    
+   <form class="m-t-30" [formGroup]="form" (ngSubmit)="submit()">
+
+  <!-- 🔹 Current Email (disabled/plain text) -->
+  <mat-label class="f-s-14 f-w-600 m-b-6 d-block">Current Email</mat-label>
+  <mat-form-field appearance="outline" class="w-100" color="primary">
+    <input matInput [value]="currentEmail" disabled />
+  </mat-form-field>
+
+  <!-- 🔹 New Email -->
+  <mat-label class="f-s-14 f-w-600 m-b-6 d-block">New Email</mat-label>
+  <mat-form-field appearance="outline" class="w-100" color="primary">
+    <input matInput type="email" formControlName="email" />
+    <mat-error *ngIf="f['email'].touched && f['email'].errors?.['required']">
+      Email is required.
+    </mat-error>
+    <mat-error *ngIf="f['email'].touched && f['email'].errors?.['email']">
+      Enter a valid email.
+    </mat-error>
+  </mat-form-field>
+
+  <!-- 🔹 Confirm Email -->
+  <mat-label class="f-s-14 f-w-600 m-b-6 d-block">Confirm Email</mat-label>
+  <mat-form-field appearance="outline" class="w-100" color="primary">
+    <input matInput type="email" formControlName="confirmEmail" />
+    <mat-error *ngIf="f['confirmEmail'].touched && f['confirmEmail'].errors?.['required']">
+      Confirmation email is required.
+    </mat-error>
+    <mat-error *ngIf="f['confirmEmail'].touched && f['confirmEmail'].errors?.['email']">
+      Enter a valid email.
+    </mat-error>
+    <mat-error *ngIf="f['confirmEmail'].touched && f['confirmEmail'].errors?.['mismatch']">
+      Emails do not match.
+    </mat-error>
+  </mat-form-field>
+
+  <!-- Buttons -->
+<button 
+  type="submit" 
+  mat-flat-button 
+  color="primary" 
+  class="w-100 m-t-12" 
+  [disabled]="form.invalid">
+  Update Email
+</button>
+
+  <a [routerLink]="['/authentication/authentication/login']" mat-stroked-button color="primary" class="w-100 m-t-12">
+    Cancel
+  </a>
+
+</form>
+
+  </div>
+</div>
+</div>

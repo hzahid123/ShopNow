@@ -1,0 +1,89 @@
+:host ::ng-deep .p-tree {
+  padding: 1rem;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+}
+
+:host ::ng-deep .p-tree .p-tree-container .p-treenode .p-treenode-content {
+  padding: 0.25rem;
+}
+
+:host ::ng-deep .p-tree .p-tree-container .p-treenode .p-treenode-content .p-tree-toggler {
+  margin-right: 0.5rem;
+}
+
+/* Vertical line for child nodes container */
+::ng-deep .p-tree .p-treenode-children {
+  padding-left: 1.5rem;
+  margin-left: 0.5rem;
+  border-left: 1px dashed black; /* Vertical line */
+}
+
+/* Horizontal line to each node */
+::ng-deep .p-tree .p-treenode-content {
+  position: relative;
+}
+
+/* Horizontal connector (before each node) */
+::ng-deep .p-tree .p-treenode-content::before {
+  content: "";
+  position: absolute;
+  left: -1rem; /* Adjust based on your indentation */
+  top: 50%;
+  width: 1rem;
+  border-top: 1px dashed black; /* Horizontal line */
+}
+
+/* Remove horizontal line for root nodes */
+::ng-deep .p-tree > .p-treenode > .p-treenode-content::before {
+  display: none;
+}
+
+::ng-deep .pi.pi-folder {
+  color: saddlebrown;
+  font-weight: bold;
+  opacity: 0.9;
+}
+
+::ng-deep .pi.pi-file {
+  color: grey;
+  font-weight: bold;
+  opacity: 0.9;
+}
+.search-input {
+  width: 93%; 
+  margin: 10px;
+  margin-top: 12;
+  margin-bottom: 0 !important;
+}
+
+.search-btn {
+  white-space: nowrap;
+  margin-right: 10px;
+  height:55px ;
+  margin-bottom :14px;
+
+// padding:12;
+}
+.search-btn mat-icon {
+  margin-right: 5px;
+}
+
+.suffix-circle-icon {
+  background-color: #087CA0;
+  color: white;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  margin-right: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color:#087CA0;
+  }
+}

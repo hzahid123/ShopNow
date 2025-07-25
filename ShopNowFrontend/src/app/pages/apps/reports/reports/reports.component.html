@@ -1,0 +1,1034 @@
+<div class="bg-light-primary rounded p-y-20 p-x-24 m-b-24 overflow-hidden ">
+    <div class="d-flex">
+        <div class="m-t-6">
+            <h4 class="page-title m-0 f-s-20 f-w-600 ">
+                Reports
+            </h4>
+        </div>
+    </div>
+</div>
+<mat-card class="cardWithShadow">
+    <mat-card-content class="p-24">
+        <div class="d-flex">
+            <div>
+                <span>
+                    Last Updated: 2023-12-29T00:51:07:25
+                </span>
+            </div>
+
+            <div class="email-subject m-l-auto">
+                <span>
+                    Email Subject: client subject
+                </span>
+            </div>
+        </div>
+
+        <div class="d-flex m-t-12">
+            <div>
+                <mat-radio-group aria-label="Select an option" [(ngModel)]="selectedOption" class="d-flex">
+                    <div>
+                        <mat-radio-button value="1" color="primary">Clients</mat-radio-button>
+                    </div>
+                    <div>
+                        <mat-radio-button value="2" color="primary">Employees</mat-radio-button>
+                    </div>
+                </mat-radio-group>
+            </div>
+
+            <div class="concept-field m-l-auto">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Select Concept</mat-label>
+                    <mat-select placeholder="Concept" [(ngModel)]="ConceptValue">
+                        @for(client of Concept; track client.id ) {
+                        <mat-option [value]="client.name">
+                            {{ client.name }}
+                        </mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+
+
+        <div class="m-t-12">
+            <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+                <mat-tab label="Overview">
+                    <div class="bg-white mat-body-1 p-16 rounded m-t-12" *ngFor="let val of overview">
+                        <div class="d-flex">
+                            <div class="m-l-auto">
+                                <button mat-stroked-button class="m-r-12">
+                                    <div class="d-flex align-items-center"><span>Download</span>
+                                        <i-tabler class="icon-20 m-l-4" name="download"></i-tabler>
+                                    </div>
+                                </button>
+
+                                <button mat-stroked-button>
+                                    <div class="d-flex align-items-center"><span>Print All Articles</span>
+                                        <i-tabler class="icon-20 m-l-4" name="printer"></i-tabler>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row  m-t-24">
+                            <div class="col-lg-3 d-flex justify-content-center">
+                                <div class="text-center">
+                                    <button mat-fab color="primary" class="shadow-none p-16">
+                                        <span class="text-white f-s-20 f-w-600">
+                                            {{ val.Sent }}
+                                        </span>
+                                    </button>
+                                    <div class="d-flex justify-content-center m-t-8">
+                                        <span>
+                                            Sent
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 d-flex justify-content-center">
+                                <div class="text-center">
+                                    <button mat-fab color="primary" class="shadow-none p-16">
+                                        <span class="text-white f-s-20 f-w-600">
+                                            {{ val.Delivered }}
+                                        </span>
+                                    </button>
+                                    <div class="d-flex justify-content-center m-t-8">
+                                        <span>
+                                            Delivered
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 d-flex justify-content-center">
+                                <div class="text-center">
+                                    <button mat-fab color="primary" class="shadow-none p-16">
+                                        <span class="text-white f-s-20 f-w-600">
+                                            {{ val.Opened }}
+                                        </span>
+                                    </button>
+                                    <div class="d-flex justify-content-center m-t-8">
+                                        <span>
+                                            Opened
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 d-flex justify-content-center">
+                                <div class="text-center">
+                                    <button mat-fab color="primary" class="shadow-none p-16">
+                                        <span class="text-white f-s-20 f-w-600">
+                                            {{ val.UniqueClicks }}
+                                        </span>
+                                    </button>
+                                    <div class="d-flex justify-content-center m-t-8">
+                                        <span>
+                                            Unique Clicks
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 d-flex justify-content-center align-items-center m-t-16">
+                                <div class="text-center">
+                                    <button mat-fab color="primary" class="shadow-none p-24">
+                                        <span class="text-white f-s-20 f-w-600">
+                                            {{ val.UniqueUserClicks }}
+                                        </span>
+                                    </button>
+                                    <div class="m-t-8">
+                                        <span>
+                                            Unique User Clicks
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-lg-3 d-flex justify-content-center m-t-24">
+                                <div class="text-center">
+                                    <button mat-fab color="primary" class="shadow-none p-16">
+                                        <span class="text-white f-s-20 f-w-600">
+                                            {{ val.Bounced }}
+                                        </span>
+                                    </button>
+                                    <div class="d-flex justify-content-center m-t-8">
+                                        <span>
+                                            Bounced
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 d-flex justify-content-center m-t-24">
+                                <div class="text-center">
+                                    <button mat-fab color="primary" class="shadow-none p-16">
+                                        <span class="text-white f-s-20 f-w-600">
+                                            {{ val.Failed }}
+                                        </span>
+                                    </button>
+                                    <div class="d-flex justify-content-center m-t-8">
+                                        <span>
+                                            Failed
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 d-flex justify-content-center m-t-24">
+                                <div class="text-center">
+                                    <button mat-fab color="primary" class="shadow-none p-16">
+                                        <span class="text-white f-s-20 f-w-600">
+                                            {{ val.Unsubscribed }}
+                                        </span>
+                                    </button>
+                                    <div class="d-flex justify-content-center m-t-8">
+                                        <span>
+                                            Unsubscribed
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="m-t-12 row">
+                            <div class="col-lg-6">
+                                <div>
+                                    <span>
+                                        Open Rate
+                                    </span>
+                                </div>
+                                <mat-progress-bar mode="determinate" [value]="val.openRate"
+                                    class="m-t-12"></mat-progress-bar>
+                            </div>
+
+                            <div class="col-lg-6 mobile-click-rate">
+                                <div>
+                                    <span>
+                                        Click Rate
+                                    </span>
+                                </div>
+                                <mat-progress-bar mode="determinate" [value]="val.clickRate"
+                                    class="m-t-12"></mat-progress-bar>
+                            </div>
+                        </div>
+
+                        <div class="m-t-24 row">
+                            <div class="col-lg-6 b-t-1" *ngFor="let val2 of val.stats ">
+                                <div class="d-flex p-8">
+                                    <div>
+                                        <span>
+                                            {{ val2.name }}
+                                        </span>
+                                    </div>
+                                    <div class="m-l-auto">
+                                        <span>
+                                            {{ val2.value }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="m-t-4 d-flex">
+                            <div>
+                                <mat-checkbox class="example-margin" color="primary">Inculde self</mat-checkbox>
+                            </div>
+                            <div class="m-l-auto">
+                                <mat-form-field appearance="outline" class="w-100">
+                                    <mat-label>Number of Reports</mat-label>
+                                    <mat-select placeholder="Number of Reports" [(ngModel)]="NumberofReportsValue">
+                                        @for(client of NumberofReports; track client.id ) {
+                                        <mat-option [value]="client.name">
+                                            {{ client.name }}
+                                        </mat-option>
+                                        }
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+
+                        <div class="m-t-12">
+                            <div class="b-1">
+                                <div class="w-100 bg-gray-100 text-white d-flex p-16 m-b-16">
+                                    <div class="m-r-12 cursor-pointer" (click)="grapgh('1')">
+                                        Statistics
+                                    </div>
+                                    <div class=" cursor-pointer" (click)="grapgh('2')">
+                                        Click Rate
+                                    </div>
+                                </div>
+                                @if(grapghActive == '1'){
+                                <mat-card-content>
+                                    <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart"
+                                        [xaxis]="chartOptions.xaxis" [dataLabels]="chartOptions.dataLabels"
+                                        [grid]="chartOptions.grid" [stroke]="chartOptions.stroke"
+                                        [labels]="chartOptions.labels" [title]="chartOptions.title"></apx-chart>
+                                </mat-card-content>
+                                }
+                                @if(grapghActive == '2'){
+                                <mat-card-content>
+                                    <apx-chart [series]="lineChartOptions.series" [chart]="lineChartOptions.chart"
+                                        [xaxis]="lineChartOptions.xaxis" [yaxis]="lineChartOptions.yaxis"
+                                        [grid]="lineChartOptions.grid" [stroke]="lineChartOptions.stroke"
+                                        [tooltip]="lineChartOptions.tooltip" [dataLabels]="lineChartOptions.dataLabels"
+                                        [legend]="lineChartOptions.legend" [colors]="lineChartOptions.colors"
+                                        [markers]="lineChartOptions.markers" [title]="lineChartOptions.title">
+                                    </apx-chart>
+                                </mat-card-content>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </mat-tab>
+                <mat-tab label="Articles">
+                    <div class="bg-white mat-body-1 p-16 rounded m-t-12">
+                        <div class="d-flex w-100 articles-container">
+                            <div class="search-box">
+                                <mat-form-field appearance="outline" class="w-100">
+                                    <mat-label>Search</mat-label>
+                                    <input matInput placeholder="Search" [(ngModel)]="searchArticle">
+                                </mat-form-field>
+                            </div>
+                            <div class="articles-s-button m-l-auto">
+                                <button mat-stroked-button class="m-r-12">
+                                    Clear Search
+                                </button>
+
+                                <button mat-flat-button color="primary" class="m-r-12">
+                                    Print All Articles
+                                </button>
+
+                                <button mat-flat-button color="accent" class="m-r-12">
+                                    Download
+                                </button>
+                            </div>
+                        </div>
+
+
+                        <mat-card-content class="p-24">
+                            <div class="table-responsive">
+                                <p-table [value]="dataSourceArticles.data" [paginator]="true" [rows]="pageSize"
+                                    [rowsPerPageOptions]="pageSizes" [sortMode]="'multiple'">
+
+                                    <ng-template pTemplate="header">
+                                        <tr>
+                                            <th pSortableColumn="articleID">Article ID <p-sortIcon
+                                                    field="articleID"></p-sortIcon></th>
+                                            <th pSortableColumn="articleTitle">Article Title <p-sortIcon
+                                                    field="articleTitle"></p-sortIcon></th>
+                                            <th pSortableColumn="recieved">Recieved <p-sortIcon
+                                                    field="recieved"></p-sortIcon></th>
+                                            <th pSortableColumn="openRate">Open Rate <p-sortIcon
+                                                    field="openRate"></p-sortIcon></th>
+                                            <th pSortableColumn="callBacks">Call Backs <p-sortIcon
+                                                    field="callBacks"></p-sortIcon></th>
+                                            <th pSortableColumn="readMore">Read More <p-sortIcon
+                                                    field="readMore"></p-sortIcon></th>
+                                            <th pSortableColumn="interest">Interest <p-sortIcon
+                                                    field="interest"></p-sortIcon></th>
+                                        </tr>
+                                    </ng-template>
+
+                                    <ng-template pTemplate="body" let-element>
+                                        <tr>
+                                            <td>{{ element.articleID }}</td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="m-l-16">
+                                                        <p class="f-w-600 mat-subtitle-1 f-s-16 m-t-0">
+                                                            {{ element.articleTitle }}
+                                                        </p>
+                                                        <small class="mat-body-1 f-s-14">{{ element.description
+                                                            }}</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="m-l-16">{{ element.Recieved }}</td>
+                                            <td>{{ element.openRate }}</td>
+                                            <td>{{ element.callBacks }}</td>
+                                            <td>{{ element.readMore }}</td>
+                                            <td>{{ element.interest }}</td>
+                                        </tr>
+                                    </ng-template>
+                                </p-table>
+
+                            </div>
+
+
+
+
+
+
+
+
+                        </mat-card-content>
+                    </div>
+                </mat-tab>
+                <mat-tab label="Sent">
+                    <div class="bg-white mat-body-1 p-16 rounded m-t-12">
+
+                        <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+                            <mat-tab label="Sent To">
+                                <div class="bg-white mat-body-1 p-16 rounded m-t-12">
+                                    <div class="d-flex w-100 articles-container">
+                                        <div class="search-box">
+                                            <mat-form-field appearance="outline" class="w-100">
+                                                <mat-label>Search</mat-label>
+                                                <input matInput placeholder="Search" [(ngModel)]="searchArticle">
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="m-l-auto articles-button">
+                                            <button mat-stroked-button class="m-r-12">
+                                                Clear Search
+                                            </button>
+
+                                            <button mat-flat-button color="accent" class="m-r-12">
+                                                Download
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="table-responsive m-t-24">
+                                        <p-table [value]="dataSourceSentTo.data" [rows]="10"
+                                            [rowsPerPageOptions]="[5,10,20]" sortMode="multiple">
+                                            <ng-template pTemplate="header">
+                                                <tr>
+                                                    <th pSortableColumn="email" class="f-s-16 f-w-600">
+                                                        Email Address
+                                                        <p-sortIcon field="email"></p-sortIcon>
+                                                    </th>
+                                                </tr>
+                                            </ng-template>
+                                            <ng-template pTemplate="body" let-element>
+                                                <tr>
+                                                    <td class="f-s-14">
+                                                        <a [href]="'mailto:' + element.email">{{ element.email }}</a>
+                                                    </td>
+                                                </tr>
+                                            </ng-template>
+                                        </p-table>
+                                    </div>
+
+
+
+                                </div>
+                            </mat-tab>
+                            <mat-tab label="Delivered">
+                                <div class="bg-white mat-body-1 p-16 rounded m-t-12">
+                                    <div class="d-flex w-100 articles-container">
+                                        <div class="search-box">
+                                            <mat-form-field appearance="outline" class="w-100">
+                                                <mat-label>Search</mat-label>
+                                                <input matInput placeholder="Search" [(ngModel)]="searchArticle">
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="m-l-auto articles-button">
+                                            <button mat-stroked-button class="m-r-12">
+                                                Clear Search
+                                            </button>
+
+                                            <button mat-flat-button color="accent" class="m-r-12">
+                                                Download
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="table-responsive m-t-24">
+                                        <p-table [value]="dataSourceDelivered.data" [rows]="10"
+                                            [rowsPerPageOptions]="[5,10,20]" sortMode="multiple">
+                                            <ng-template pTemplate="header">
+                                                <tr>
+                                                    <th pSortableColumn="email" class="f-s-16 f-w-600">
+                                                        Email Address
+                                                        <p-sortIcon field="email"></p-sortIcon>
+                                                    </th>
+                                                </tr>
+                                            </ng-template>
+                                            <ng-template pTemplate="body" let-element>
+                                                <tr>
+                                                    <td class="f-s-14">
+                                                        <a [href]="'mailto:' + element.email">{{ element.email }}</a>
+                                                    </td>
+                                                </tr>
+                                            </ng-template>
+                                        </p-table>
+                                    </div>
+                                </div>
+                            </mat-tab>
+                            <mat-tab label="Opened">
+                                <div class="bg-white mat-body-1 p-16 rounded m-t-12">
+                                    <div class="d-flex w-100 articles-container">
+                                        <div class="search-box">
+                                            <mat-form-field appearance="outline" class="w-100">
+                                                <mat-label>Search</mat-label>
+                                                <input matInput placeholder="Search" [(ngModel)]="searchArticle">
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="m-l-auto articles-button ">
+                                            <button mat-stroked-button class="m-r-12">
+                                                Clear Search
+                                            </button>
+
+                                            <button mat-flat-button color="accent" class="m-r-12">
+                                                Download
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="table-responsive m-t-24">
+                                        <p-table [value]="dataSourceOpened.data" [rows]="10"
+                                            [rowsPerPageOptions]="[5,10,20]" sortMode="multiple">
+                                            <ng-template pTemplate="header">
+                                                <tr>
+                                                    <th pSortableColumn="email" class="f-s-16 f-w-600">
+                                                        Email Address
+                                                        <p-sortIcon field="email"></p-sortIcon>
+                                                    </th>
+                                                    <th pSortableColumn="lastOpened" class="f-s-16 f-w-600">
+                                                        Last Opened
+                                                        <p-sortIcon field="lastOpened"></p-sortIcon>
+                                                    </th>
+                                                    <th pSortableColumn="count" class="f-s-16 f-w-600">
+                                                        Count
+                                                        <p-sortIcon field="count"></p-sortIcon>
+                                                    </th>
+                                                </tr>
+                                            </ng-template>
+                                            <ng-template pTemplate="body" let-element>
+                                                <tr>
+                                                    <td class="f-s-14">
+                                                        <a [href]="'mailto:' + element.email">{{ element.email }}</a>
+                                                    </td>
+                                                    <td class="f-s-14">
+                                                        {{ element.lastOpened }}
+                                                    </td>
+                                                    <td class="f-s-14">
+                                                        {{ element.count }}
+                                                    </td>
+                                                </tr>
+                                            </ng-template>
+                                        </p-table>
+                                    </div>
+
+
+
+
+
+                                </div>
+                            </mat-tab>
+                        </mat-tab-group>
+
+                    </div>
+                </mat-tab>
+                <mat-tab label="Clicks">
+                    <div class="bg-white mat-body-1 p-16 rounded m-t-12">
+
+                        <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+                            <mat-tab label="Unique Clicks">
+                                <div class="bg-white mat-body-1 p-16 rounded m-t-12">
+                                    <div class="d-flex w-100 articles-container">
+                                        <div class="search-box">
+                                            <mat-form-field appearance="outline" class="w-100">
+                                                <mat-label>Search</mat-label>
+                                                <input matInput placeholder="Search" [(ngModel)]="searchArticle">
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="m-l-auto articles-button ">
+                                            <button mat-stroked-button class="m-r-12">
+                                                Clear Search
+                                            </button>
+
+                                            <button mat-flat-button color="accent" class="m-r-12">
+                                                Download
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="table-responsive m-t-24">
+                                        <p-table [value]="dataSourceUniqueClicks.data" [rows]="10"
+                                            [rowsPerPageOptions]="[5,10,20]" sortMode="multiple">
+                                            <ng-template pTemplate="header">
+                                                <tr>
+                                                    <th pSortableColumn="articleTitle" class="f-s-16 f-w-600">
+                                                        Article Title
+                                                        <p-sortIcon field="articleTitle"></p-sortIcon>
+                                                    </th>
+                                                    <th pSortableColumn="email" class="f-s-16 f-w-600">
+                                                        Email Address
+                                                        <p-sortIcon field="email"></p-sortIcon>
+                                                    </th>
+                                                    <th pSortableColumn="lastOpened" class="f-s-16 f-w-600">
+                                                        Last Opened
+                                                        <p-sortIcon field="lastOpened"></p-sortIcon>
+                                                    </th>
+                                                    <th pSortableColumn="count" class="f-s-16 f-w-600">
+                                                        Count
+                                                        <p-sortIcon field="count"></p-sortIcon>
+                                                    </th>
+                                                </tr>
+                                            </ng-template>
+                                            <ng-template pTemplate="body" let-element>
+                                                <tr>
+                                                    <td class="f-s-14">{{ element.articleTitle }}</td>
+                                                    <td class="f-s-14">
+                                                        <a [href]="'mailto:' + element.email">{{ element.email }}</a>
+                                                    </td>
+                                                    <td class="f-s-14">{{ element.lastOpened }}</td>
+                                                    <td class="f-s-14">{{ element.count }}</td>
+                                                </tr>
+                                            </ng-template>
+                                        </p-table>
+                                    </div>
+
+
+
+
+
+
+                                </div>
+                            </mat-tab>
+                            <mat-tab label="Unique User Clicks">
+                                <div class="bg-white mat-body-1 p-16 rounded m-t-12">
+                                    <div class="d-flex w-100 articles-container">
+                                        <div class="search-box">
+                                            <mat-form-field appearance="outline" class="w-100">
+                                                <mat-label>Search</mat-label>
+                                                <input matInput placeholder="Search" [(ngModel)]="searchArticle">
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="m-l-auto articles-button">
+                                            <button mat-stroked-button class="m-r-12">
+                                                Clear Search
+                                            </button>
+
+                                            <button mat-flat-button color="accent" class="m-r-12">
+                                                Download
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="table-responsive m-t-24">
+                                        <p-table [value]="dataSourceOpened.data" [rows]="10"
+                                            [rowsPerPageOptions]="[5,10,20]" sortMode="multiple">
+                                            <ng-template pTemplate="header">
+                                                <tr>
+                                                    <th pSortableColumn="email" class="f-s-16 f-w-600">
+                                                        Email Address
+                                                        <p-sortIcon field="email"></p-sortIcon>
+                                                    </th>
+                                                    <th pSortableColumn="lastOpened" class="f-s-16 f-w-600">
+                                                        Last Opened
+                                                        <p-sortIcon field="lastOpened"></p-sortIcon>
+                                                    </th>
+                                                    <th pSortableColumn="count" class="f-s-16 f-w-600">
+                                                        Count
+                                                        <p-sortIcon field="count"></p-sortIcon>
+                                                    </th>
+                                                </tr>
+                                            </ng-template>
+                                            <ng-template pTemplate="body" let-element>
+                                                <tr>
+                                                    <td class="f-s-14">
+                                                        <a [href]="'mailto:' + element.email">{{ element.email }}</a>
+                                                    </td>
+                                                    <td class="f-s-14">
+                                                        {{ element.lastOpened }}
+                                                    </td>
+                                                    <td class="f-s-14">
+                                                        {{ element.count }}
+                                                    </td>
+                                                </tr>
+                                            </ng-template>
+                                        </p-table>
+                                    </div>
+
+
+
+                                </div>
+                            </mat-tab>
+                        </mat-tab-group>
+
+                    </div>
+                </mat-tab>
+                <mat-tab label="Status">
+                    <div class="bg-white mat-body-1 p-16 rounded m-t-12">
+
+                        <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+                            <mat-tab label="Bounced">
+                                <div class="bg-white mat-body-1 p-16 rounded m-t-12">
+                                    <div class="row" *ngFor="let val of dataSourceStatusBounced.data">
+                                        <div class="col-lg-3 d-flex justify-content-center align-items-center m-t-12">
+                                            <div class="text-center">
+                                                <div>
+                                                    <span
+                                                        class="bg-light-success text-success rounded f-w-600 p-6 p-y-4 f-s-16">
+                                                        {{val.totalBounces}}
+                                                    </span>
+                                                </div>
+                                                <div class=" m-t-12">
+                                                    <span class="text-success">
+                                                        Total Bounces
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-3 d-flex justify-content-center align-items-center m-t-12">
+                                            <div class="text-center">
+                                                <div>
+                                                    <span
+                                                        class="bg-light-warning text-warning rounded f-w-600 p-6 p-y-4 f-s-16">
+                                                        {{val.softBounces}}
+                                                    </span>
+                                                </div>
+                                                <div class=" m-t-12">
+                                                    <span class="text-warning">
+                                                        Soft Bounces
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-3 d-flex justify-content-center align-items-center m-t-12">
+                                            <div class="text-center">
+                                                <div>
+                                                    <span
+                                                        class="bg-light-error text-error rounded f-w-600 p-6 p-y-4 f-s-16">
+                                                        {{val.hardBounces}}
+                                                    </span>
+                                                </div>
+                                                <div class=" m-t-12">
+                                                    <span class="text-error">
+                                                        Hard Bounces
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-3 d-flex justify-content-center align-items-center m-t-12">
+                                            <div class="text-center">
+                                                <div>
+                                                    <span
+                                                        class="bg-light-accent text-accent rounded f-w-600 p-6 p-y-4 f-s-16">
+                                                        {{val.othersBounces}}
+                                                    </span>
+                                                </div>
+                                                <div class=" m-t-12">
+                                                    <span class="text-accent">
+                                                        Others
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex w-100 m-t-24 articles-container">
+                                        <div class="search-box">
+                                            <mat-form-field appearance="outline" class="w-100">
+                                                <mat-label>Search</mat-label>
+                                                <input matInput placeholder="Search" [(ngModel)]="searchArticle">
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="m-l-auto articles-button">
+                                            <button mat-stroked-button class="m-r-12">
+                                                Clear Search
+                                            </button>
+
+                                            <button mat-flat-button color="accent" class="m-r-12">
+                                                Download
+                                            </button>
+                                        </div>
+                                    </div>
+
+
+
+
+                                    <div class="table-responsive m-t-24">
+                                        <p-table [value]="dataSourceStatusBounced.data" [rows]="10"
+                                            [rowsPerPageOptions]="[5,10,20]" sortMode="multiple">
+                                            <ng-template pTemplate="header">
+                                                <tr>
+                                                    <th pSortableColumn="email" class="f-s-16 f-w-600">
+                                                        Email Address
+                                                        <p-sortIcon field="email"></p-sortIcon>
+                                                    </th>
+                                                    <th pSortableColumn="emailSubject" class="f-s-16 f-w-600">
+                                                        Email Subject
+                                                        <p-sortIcon field="emailSubject"></p-sortIcon>
+                                                    </th>
+                                                    <th pSortableColumn="type" class="f-s-16 f-w-600">
+                                                        Type
+                                                        <p-sortIcon field="type"></p-sortIcon>
+                                                    </th>
+                                                    <th pSortableColumn="description" class="f-s-16 f-w-600">
+                                                        Description
+                                                        <p-sortIcon field="description"></p-sortIcon>
+                                                    </th>
+                                                </tr>
+                                            </ng-template>
+                                            <ng-template pTemplate="body" let-element>
+                                                <tr>
+                                                    <td class="f-s-14">
+                                                        <a [href]="'mailto:' + element.email">{{ element.email }}</a>
+                                                    </td>
+                                                    <td class="f-s-14">{{ element.emailSubject }}</td>
+                                                    <td class="f-s-14">{{ element.type }}</td>
+                                                    <td class="f-s-14">{{ element.description }}</td>
+                                                </tr>
+                                            </ng-template>
+                                        </p-table>
+                                    </div>
+
+
+
+
+
+
+                                </div>
+                            </mat-tab>
+                            <mat-tab label="UnOpened">
+                                <div class="bg-white mat-body-1 p-16 rounded m-t-12">
+                                    <div class="d-flex w-100 articles-container ">
+                                        <div class="search-box">
+                                            <mat-form-field appearance="outline" class="w-100">
+                                                <mat-label>Search</mat-label>
+                                                <input matInput placeholder="Search" [(ngModel)]="searchArticle">
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="m-l-auto articles-button">
+                                            <button mat-stroked-button class="m-r-12">
+                                                Clear Search
+                                            </button>
+
+                                            <button mat-flat-button color="accent" class="m-r-12">
+                                                Download
+                                            </button>
+                                        </div>
+                                    </div>
+
+
+
+
+                                    <div class="table-responsive m-t-24">
+                                        <p-table [value]="dataSourceStatusUnOpened.data" [paginator]="true" [rows]="10"
+                                            [rowsPerPageOptions]="[5,10,20]" sortMode="multiple">
+                                            <ng-template pTemplate="header">
+                                                <tr>
+                                                    <th pSortableColumn="email" class="f-s-16 f-w-600">
+                                                        Email Address
+                                                        <p-sortIcon field="email"></p-sortIcon>
+                                                    </th>
+                                                </tr>
+                                            </ng-template>
+                                            <ng-template pTemplate="body" let-element>
+                                                <tr>
+                                                    <td class="f-s-14">
+                                                        <a [href]="'mailto:' + element.email">{{ element.email }}</a>
+                                                    </td>
+                                                </tr>
+                                            </ng-template>
+                                        </p-table>
+                                    </div>
+
+
+
+
+
+                                </div>
+                            </mat-tab>
+                        </mat-tab-group>
+
+                    </div>
+                </mat-tab>
+                <mat-tab label="Failed">
+                    <div class="bg-white mat-body-1 p-16 rounded m-t-12">
+                        <div class="d-flex w-100 articles-container ">
+                            <div class="search-box">
+                                <mat-form-field appearance="outline" class="w-100">
+                                    <mat-label>Search</mat-label>
+                                    <input matInput placeholder="Search" [(ngModel)]="searchArticle">
+                                </mat-form-field>
+                            </div>
+                            <div class="m-l-auto articles-button">
+                                <button mat-stroked-button class="m-r-12">
+                                    Clear Search
+                                </button>
+
+                                <button mat-flat-button color="accent" class="m-r-12">
+                                    Download
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive m-t-24">
+                            <p-table [value]="dataSourceFailed.data" sortMode="multiple"
+                                [tableStyle]="{ 'min-height': '5rem' }">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th pSortableColumn="email" class="f-s-16 f-w-600">
+                                            Email Address
+                                            <p-sortIcon field="email"></p-sortIcon>
+                                        </th>
+                                        <th pSortableColumn="message" class="f-s-16 f-w-600">
+                                            Message
+                                            <p-sortIcon field="message"></p-sortIcon>
+                                        </th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-element>
+                                    <tr>
+                                        <td class="f-s-14">
+                                            <a [href]="'mailto:' + element.email">{{ element.email }}</a>
+                                        </td>
+                                        <td class="f-s-14">
+                                            {{ element.message }}
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                            <p-paginator [rows]="pageSize" [totalRecords]="totalRecords" appendTo="body"
+                                [rowsPerPageOptions]="pageSizes">
+                            </p-paginator>
+                        </div>
+
+
+
+
+
+                    </div>
+                </mat-tab>
+                <mat-tab label="Unsubscribed">
+                    <div class="bg-white mat-body-1 p-16 rounded m-t-12">
+                        <div class="d-flex w-100 articles-container">
+                            <div class="search-box">
+                                <mat-form-field appearance="outline" class="w-100">
+                                    <mat-label>Search</mat-label>
+                                    <input matInput placeholder="Search" [(ngModel)]="searchArticle">
+                                </mat-form-field>
+                            </div>
+                            <div class="m-l-auto articles-button">
+                                <button mat-stroked-button class="m-r-12">
+                                    Clear Search
+                                </button>
+
+                                <button mat-flat-button color="accent" class="m-r-12">
+                                    Download
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive m-t-24">
+                            <p-table [value]="dataSourceUnsubscribed.data" sortMode="multiple">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th pSortableColumn="email" class="f-s-16 f-w-600">
+                                            Email Address
+                                            <p-sortIcon field="email"></p-sortIcon>
+                                        </th>
+                                        <th pSortableColumn="unsubscribedDate" class="f-s-16 f-w-600">
+                                            Unsubscribed Date
+                                            <p-sortIcon field="unsubscribedDate"></p-sortIcon>
+                                        </th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-element>
+                                    <tr>
+                                        <td class="f-s-14">
+                                            <a [href]="'mailto:' + element.email">{{ element.email }}</a>
+                                        </td>
+                                        <td class="f-s-14">
+                                            {{ element.unsubscribedDate }}
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                            <p-paginator [rows]="pageSize" [totalRecords]="totalRecords"
+                                [rowsPerPageOptions]="pageSizes">
+                            </p-paginator>
+                        </div>
+
+
+
+
+
+
+
+
+
+                    </div>
+                </mat-tab>
+                <mat-tab label="Call Back">
+                    <div class="bg-white mat-body-1 p-16 rounded m-t-12">
+                        <div class="d-flex w-100  articles-container">
+                            <div class="search-box">
+                                <mat-form-field appearance="outline" class="w-100">
+                                    <mat-label>Search</mat-label>
+                                    <input matInput placeholder="Search" [(ngModel)]="searchArticle">
+                                </mat-form-field>
+                            </div>
+                            <div class="m-l-auto articles-button">
+                                <button mat-stroked-button class="m-r-12">
+                                    Clear Search
+                                </button>
+
+                                <button mat-flat-button color="accent" class="m-r-12">
+                                    Download
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive m-t-24">
+                            <p-table [value]="dataSourceCallBack.data" sortMode="multiple">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th pSortableColumn="articleTitle" class="f-s-16 f-w-600">
+                                            Article Title
+                                            <p-sortIcon field="articleTitle"></p-sortIcon>
+                                        </th>
+                                        <th pSortableColumn="firstname" class="f-s-16 f-w-600">
+                                            Firstname
+                                            <p-sortIcon field="firstname"></p-sortIcon>
+                                        </th>
+                                        <th pSortableColumn="surname" class="f-s-16 f-w-600">
+                                            Surname
+                                            <p-sortIcon field="surname"></p-sortIcon>
+                                        </th>
+                                        <th pSortableColumn="email" class="f-s-16 f-w-600">
+                                            Email Address
+                                            <p-sortIcon field="email"></p-sortIcon>
+                                        </th>
+                                        <th pSortableColumn="date" class="f-s-16 f-w-600">
+                                            Date
+                                            <p-sortIcon field="date"></p-sortIcon>
+                                        </th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-element>
+                                    <tr>
+                                        <td class="f-s-14">{{ element.articleTitle }}</td>
+                                        <td class="f-s-14">{{ element.firstname }}</td>
+                                        <td class="f-s-14">{{ element.surname }}</td>
+                                        <td class="f-s-14">
+                                            <a [href]="'mailto:' + element.email">{{ element.email }}</a>
+                                        </td>
+                                        <td class="f-s-14">{{ element.date }}</td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                            <p-paginator [rows]="pageSize" [totalRecords]="totalRecords"
+                                [rowsPerPageOptions]="pageSizes">
+                            </p-paginator>
+                        </div>
+
+
+
+
+                    </div>
+                </mat-tab>
+            </mat-tab-group>
+        </div>
+    </mat-card-content>
+</mat-card>

@@ -1,0 +1,38 @@
+<mat-card class="cardWithShadow">
+    <mat-card-header>
+        <mat-card-title class="m-b-0 f-w-800">Infolearning</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content class="p-l-20 p-r-20 m-t-16">
+        <div class="table-responsive">
+            <p-table [value]="infolearningdata" class="w-100">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th class="f-s-16 f-w-600">Title</th>
+                    <th class="f-s-16 f-w-600">Status</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-element>
+                  <tr>
+                    <td>{{ element.title }}</td>
+                    <td class="f-s-14">
+                      <span
+                        *ngIf="element.status === 'BUSINESS'"
+                        class="bg-light-warning text-warning rounded f-w-600 p-6 p-y-4 f-s-12"
+                      >
+                        {{ element.status | uppercase }}
+                      </span>
+                      <span
+                        *ngIf="element.status !== 'BUSINESS'"
+                        class="bg-light-error text-error rounded f-w-600 p-6 p-y-4 f-s-12"
+                      >
+                        {{ element.status | uppercase }}
+                      </span>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+              
+        </div>
+    </mat-card-content>
+</mat-card>

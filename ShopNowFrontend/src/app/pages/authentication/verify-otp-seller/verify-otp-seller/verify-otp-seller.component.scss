@@ -1,0 +1,311 @@
+// /* verify-otp-seller.component.scss */
+
+// .otp-container {
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   min-height: 100vh;
+//   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+//   padding: 20px;
+// }
+
+// .otp-card {
+//   width: 100%;
+//   max-width: 400px;
+//   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+//   border-radius: 12px;
+//   overflow: hidden;
+// }
+
+// .logo {
+//   height: 40px;
+//   width: auto;
+// }
+
+// .card-content {
+//   padding: 2rem;
+// }
+
+// .verification-text {
+//   text-align: center;
+//   font-size: 14px;
+//   color: #666;
+//   margin-bottom: 1rem;
+//   line-height: 1.5;
+// }
+
+// .masked-number {
+//   text-align: center;
+//   font-weight: 600;
+//   font-size: 16px;
+//   margin-bottom: 2rem;
+//   color: #333;
+// }
+
+// .otp-section {
+//   margin-bottom: 2rem;
+// }
+
+// .otp-label {
+//   display: block;
+//   font-size: 14px;
+//   font-weight: 600;
+//   margin-bottom: 1rem;
+//   color: #333;
+// }
+
+// .otp-input-container {
+//   display: flex;
+//   justify-content: center;
+//   margin-bottom: 2rem;
+  
+//   ::ng-deep {
+//     .p-inputotp {
+//       gap: 0.5rem;
+      
+//       .p-inputtext {
+//         width: 3rem;
+//         height: 3rem;
+//         text-align: center;
+//         font-size: 1.2rem;
+//         font-weight: bold;
+//         border: 2px solid #e2e8f0;
+//         border-radius: 8px;
+//         transition: all 0.3s ease;
+        
+//         &:focus {
+//           border-color: #667eea;
+//           box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+//         }
+        
+//         &:hover {
+//           border-color: #a0aec0;
+//         }
+//       }
+//     }
+//   }
+// }
+
+// .verify-button {
+//   margin-top: 1rem;
+  
+//   ::ng-deep {
+//     .p-button {
+//       width: 100%;
+//       padding: 0.75rem 1rem;
+//       font-size: 16px;
+//       font-weight: 600;
+//       border-radius: 8px;
+//       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+//       border: none;
+//       transition: all 0.3s ease;
+      
+//       &:hover {
+//         transform: translateY(-2px);
+//         box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+//       }
+      
+//       &:active {
+//         transform: translateY(0);
+//       }
+//     }
+//   }
+// }
+
+// .resend-section {
+//   text-align: center;
+//   font-size: 14px;
+//   color: #666;
+// }
+
+// .resend-link {
+//   color: #667eea;
+//   text-decoration: none;
+//   font-weight: 600;
+//   transition: all 0.3s ease;
+  
+//   &:hover:not(.disabled) {
+//     color: #5a6fd8;
+//     text-decoration: underline;
+//   }
+  
+//   &.disabled {
+//     color: #a0aec0;
+//     cursor: not-allowed;
+//     pointer-events: none;
+//   }
+// }
+
+// // Responsive design
+// @media (max-width: 768px) {
+//   .otp-container {
+//     padding: 10px;
+//   }
+  
+//   .card-content {
+//     padding: 1.5rem;
+//   }
+  
+//   .otp-input-container ::ng-deep .p-inputotp .p-inputtext {
+//     width: 2.5rem;
+//     height: 2.5rem;
+//     font-size: 1rem;
+//   }
+// }
+
+$primary: #0B82A0;
+$danger: #dc3545;
+
+.otp-page-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: url('/assets/images/backgrounds/image.png') no-repeat center center;
+  background-size: cover;
+}
+
+.otp-card {
+  width: 100%;
+  max-width: 100px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  background-color: #fff;
+  overflow: hidden;
+}
+
+.logo {
+  height: 40px;
+  width: auto;
+}
+
+.card-content {
+  padding: 2rem;
+}
+
+.verification-text {
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.masked-number {
+  text-align: center;
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 2rem;
+  color: #333;
+}
+
+.otp-section {
+  margin-bottom: 2rem;
+}
+
+.otp-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.otp-input-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+
+  ::ng-deep {
+    .p-inputotp {
+      gap: 0.5rem;
+
+      .p-inputtext {
+        width: 3rem;
+        height: 3rem;
+        text-align: center;
+        font-size: 1.2rem;
+        font-weight: bold;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+
+        &:focus {
+          border-color: #667eea;
+          box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        &:hover {
+          border-color: #a0aec0;
+        }
+      }
+    }
+  }
+}
+
+.verify-button {
+  margin-top: 1rem;
+
+  ::ng-deep {
+    .p-button {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 8px;
+      border: none;
+      transition: all 0.3s ease;
+      cursor: not-allowed;
+      background-color: #ccc;
+
+      &.p-disabled {
+  background-color: #ccc;
+  color: #fff;
+  cursor: not-allowed;
+}
+
+&:not(.p-disabled) {
+  background-color: #dc3545 !important;
+  cursor: pointer;
+}
+
+
+      &:hover:not(.p-disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+    }
+  }
+}
+
+.resend-section {
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+  margin-top: 2rem;
+}
+
+.resend-link {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+
+  &:hover:not(.disabled) {
+    color: #5a6fd8;
+    text-decoration: underline;
+  }
+
+  &.disabled {
+    color: #a0aec0;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}

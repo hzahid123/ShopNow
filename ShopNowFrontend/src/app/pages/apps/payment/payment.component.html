@@ -1,0 +1,294 @@
+<div class="payment-container">
+  <div class="bg-light-primary rounded p-y-20 p-x-24 m-b-24 overflow-hidden">
+    <div class="d-flex">
+      <div class="m-t-6">
+        <h4 class="page-title m-0 f-s-20 f-w-600">
+          Payments
+        </h4>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-4 p-24">
+    <div class="card-header">
+      <h5 class="mb-0 d-flex align-items-center">
+        <mat-icon class="me-3">card_giftcard</mat-icon>
+        Bonus
+      </h5>
+    </div>
+
+    <div class="card bonus-card-container col-lg-6 mb-4 m-t-10">
+      <div class="card-body">
+        <h4 class="bonus-heading">Bonus balance</h4>
+        
+        <div class="bonus-card-content">
+          <div class="d-flex align-items-center mb-3">
+            <mat-icon class="bonus-icon me-2">card_giftcard</mat-icon>
+            <span class="bonus-label">Bonus</span>
+          </div>
+
+          <hr />
+
+          <div class="bonus-total text-center mb-3">
+            <p class="mb-1">Total</p>
+            <h3 class="bonus-amount">{{ bonusBalance }}</h3>
+          </div>
+
+          <div class="bonus-info-wrapper">
+            <div class="bonus-info">
+              <div class="info-inline">
+                <div class="tooltip-container">
+                  <mat-icon>help_outline</mat-icon>
+                  <div class="tooltip-text">
+                    Bonus consists of reward amounts provided to AliExpress buyers.
+                    You can use your Bonus balance to pay partially or in full for orders on AliExpress.
+                  </div>
+                </div>
+                <p>Bonus consists of reward amounts provided to our buyers.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-4 p-24">
+    <div class="card-header">
+      <h5 class="mb-0 d-flex align-items-center">
+        <mat-icon class="me-3">credit_card</mat-icon>
+        Cards
+      </h5>
+    </div>
+    
+    <div class="card bonus-card-container col-lg-6 mb-4 m-t-10">
+      <div class="card-body">
+        <h4 class="bonus-heading">Payment Cards</h4>
+        
+        <div class="bonus-card-content">
+          <div class="d-flex align-items-center mb-3">
+            <mat-icon class="bonus-icon me-2">credit_card</mat-icon>
+            <span class="bonus-label">Cards</span>
+          </div>
+          
+          <hr />
+          
+          <div class="add-card-section text-center mb-3">
+            <button 
+              type="button"
+              class="btn btn-outline-secondary btn-lg mb-3"
+              (click)="toggleAddCardForm()">
+              <mat-icon class="me-2">add_circle_outline</mat-icon>
+              Add new card
+            </button>
+            <p class="text-muted" *ngIf="savedCards.length === 0">No cards saved. Add one below to get started.</p>
+            <p class="text-muted" *ngIf="savedCards.length > 0">Add another payment method</p>
+          </div>
+
+          <div *ngIf="savedCards.length > 0" class="saved-cards-list mb-4">
+            <div *ngFor="let card of savedCards" class="saved-card-item">
+              <div class="card-info">
+                <div class="card-header-info">
+                  <mat-icon class="card-type-icon">{{ getCardTypeIcon(card.cardType) }}</mat-icon>
+                  <span class="card-number">{{ card.maskedNumber }}</span>
+                  <mat-chip-set>
+                    <mat-chip *ngIf="card.isPrimary" color="primary" selected>Primary</mat-chip>
+                    <mat-chip *ngIf="!card.isPrimary" color="accent">Secondary</mat-chip>
+                  </mat-chip-set>
+                </div>
+                <div class="card-details">
+                  <span class="card-holder">{{ card.nameOnCard }}</span>
+                  <span class="card-expiry">Expires {{ card.month }}/{{ card.year }}</span>
+                </div>
+              </div>
+              <div class="card-actions">
+                <button 
+                  mat-icon-button 
+                  [matMenuTriggerFor]="cardMenu"
+                  class="more-options">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #cardMenu="matMenu">
+                  <button mat-menu-item (click)="setPrimary(card)" *ngIf="!card.isPrimary">
+                    <mat-icon>star</mat-icon>
+                    <span>Set as Primary</span>
+                  </button>
+                  <button mat-menu-item (click)="editCard(card)">
+                    <mat-icon>edit</mat-icon>
+                    <span>Edit</span>
+                  </button>
+                  <button mat-menu-item (click)="deleteCard(card)" class="delete-option">
+                    <mat-icon>delete</mat-icon>
+                    <span>Delete</span>
+                  </button>
+                </mat-menu>
+              </div>
+            </div>
+          </div>
+          
+          <div class="bonus-info-wrapper">
+            <div class="bonus-info">
+              <div class="info-inline">
+                <div class="tooltip-container">
+                  <mat-icon>gpp_good</mat-icon>
+                  <div class="tooltip-text">
+                    Your payment information is securely stored and encrypted.
+                    You can manage your saved cards here.
+                  </div>
+                </div>
+                <p>Your payment information is securely stored and encrypted.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <div class="d-flex align-items-center mb-3">
+        <mat-icon class="text-success me-2">security</mat-icon>
+        <h6 class="mb-0">We protect your payment information</h6>
+      </div>
+      
+      <div class="security-features">
+        <div 
+          *ngFor="let feature of securityFeatures" 
+          class="d-flex align-items-start mb-2">
+          <mat-icon class="text-success me-2" style="font-size: 18px;">check</mat-icon>
+          <span class="text-muted">{{ feature }}</span>
+        </div>
+      </div>
+
+      <div class="security-logos mt-3">
+        <mat-icon class="security-logo me-2">credit_card</mat-icon>
+        <mat-icon class="security-logo me-2">verified_user</mat-icon>
+        <mat-icon class="security-logo me-2">security</mat-icon>
+        <mat-icon class="security-logo me-2">account_balance</mat-icon>
+        <mat-icon class="security-logo">payment</mat-icon>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="showAddCardForm" class="modal-overlay" (click)="closeModal()">
+  <div class="modal-dialog" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3 class="modal-title">
+        <mat-icon class="me-2">credit_card</mat-icon>
+        {{ isEditMode ? 'Edit Payment Card' : 'Add New Payment Card' }}
+      </h3>
+      <button type="button" class="close-btn" (click)="closeModal()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <form #cardFormRef="ngForm" (ngSubmit)="saveCard()">
+        <div class="payment-methods-section">
+          <span class="accepted-text">We accept:</span>
+          <div class="payment-icons">
+            <mat-icon *ngFor="let method of paymentMethods" class="payment-method-icon">
+              {{ method.logo }}
+            </mat-icon>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Card Number</mat-label>
+            <input 
+              matInput 
+              [(ngModel)]="cardForm.cardNumber" 
+              name="cardNumber"
+              placeholder="1234 5678 9012 3456"
+              maxlength="19"
+              (input)="formatCardNumber($event)"
+              required>
+            <mat-icon matSuffix>credit_card</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <div class="form-group">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Name on Card</mat-label>
+            <input 
+              matInput 
+              [(ngModel)]="cardForm.nameOnCard" 
+              name="nameOnCard"
+              placeholder="John Doe"
+              required>
+            <mat-icon matSuffix>person</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="expiry-field">
+            <mat-label>Month</mat-label>
+            <mat-select [(ngModel)]="cardForm.month" name="month" required>
+              <mat-option *ngFor="let month of months" [value]="month.value">
+                {{ month.label }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="expiry-field">
+            <mat-label>Year</mat-label>
+            <mat-select [(ngModel)]="cardForm.year" name="year" required>
+              <mat-option *ngFor="let year of years" [value]="year.value">
+                {{ year.label }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="cvv-field">
+            <mat-label>CVV</mat-label>
+            <input 
+              matInput 
+              [(ngModel)]="cardForm.cvv" 
+              name="cvv"
+              placeholder="123"
+              maxlength="4"
+              required>
+            <mat-icon matSuffix>security</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <div class="primary-card-option" *ngIf="savedCards.length > 0">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Card Type</mat-label>
+            <mat-select [(ngModel)]="cardForm.cardType" name="cardType" required>
+              <mat-option value="primary">Primary Card</mat-option>
+              <mat-option value="secondary">Secondary Card</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="security-notice">
+          <mat-icon class="security-icon">shield</mat-icon>
+          <span>Your card information is encrypted and secure. We never store your CVV.</span>
+        </div>
+      </form>
+    </div>
+
+    <div class="modal-footer">
+      <button 
+        type="button" 
+        mat-stroked-button 
+        (click)="closeModal()"
+        class="cancel-button">
+        Cancel
+      </button>
+      <button 
+        type="button"
+        mat-raised-button 
+        color="primary"
+        (click)="saveCard()"
+        [disabled]="!cardFormRef.form.valid"
+        class="save-button">
+        {{ isEditMode ? 'Update Card' : 'Save Card' }}
+      </button>
+    </div>
+  </div>
+</div>

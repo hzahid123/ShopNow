@@ -1,0 +1,602 @@
+.payment-container {
+  padding: 24px;
+  min-height: 100vh;
+
+  .payment-heading {
+    display: flex;
+    align-items: center;
+    font-size: 28px;
+    font-weight: 400;
+  }
+
+  .card {
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 24px;
+
+    .card-header {
+      padding-left: 12px;
+      border-bottom: 1px solid #e0e0e0;
+
+      h5 {
+        font-weight: 500;
+        font-size: 22px;
+        margin: 12px;
+      }
+
+      mat-icon {
+        font-size: 22px;
+        color: #007ea7;
+        margin-right: 8px;
+      }
+    }
+    .card-body {
+      padding: 24px;
+    }
+  }
+  .bonus-info-wrapper {
+    position: relative;
+  }
+
+  .bonus-card-container {
+    background-color: #F1F4F8;
+  }
+
+  .bonus-amount {
+    color: #6c757d;
+    font-size: 32px;
+  }
+
+  .info-inline {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    p {
+      margin: 0;
+    }
+  }
+
+  .tooltip-container {
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
+
+    mat-icon {
+      color: #007ea7;
+      font-size: 20px;
+      vertical-align: middle;
+    }
+
+    .tooltip-text {
+      visibility: hidden;
+      opacity: 0;
+      width: 300px;
+      background-color: #ffe6e6;
+      color: #333;
+      text-align: left;
+      border-radius: 8px;
+      padding: 12px;
+      position: absolute;
+      z-index: 1;
+      top: 50%;
+      left: 100%;
+      transform: translateY(-50%);
+      transition: opacity 0.3s;
+
+      &::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 0;
+        margin-top: -8px;
+        border-width: 8px;
+        border-style: solid;
+        border-color: transparent #ffe6e6 transparent transparent;
+      }
+    }
+
+    &:hover .tooltip-text {
+      visibility: visible;
+      opacity: 1;
+    }
+  }
+
+  .add-card-section {
+    .btn {
+      background-color: #f8f9fa;
+      border: 2px dashed #dee2e6;
+      border-radius: 8px;
+      padding: 16px 24px;
+      font-weight: 500;
+      color: #6c757d;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+
+      mat-icon {
+        color: #6c757d;
+        font-size: 20px;
+        background-color: #dee2e6;
+        border-radius: 50%;
+        padding: 4px;
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      &:hover {
+        background-color: #e9ecef;
+        border-color: #adb5bd;
+        color: #495057;
+
+        mat-icon {
+          background-color: #adb5bd;
+          color: #495057;
+        }
+      }
+
+      &:focus {
+        box-shadow: 0 0 0 0.2rem rgba(0, 126, 167, 0.25);
+        border-color: #007ea7;
+      }
+    }
+
+    p {
+      color: #6c757d;
+      font-size: 14px;
+      margin: 12px 0 0 0;
+      text-align: center;
+    }
+  }
+
+  .add-card-section-compact {
+    .btn {
+      background-color: #f8f9fa;
+      border: 1px solid #dee2e6;
+      border-radius: 6px;
+      padding: 12px 20px;
+      font-weight: 400;
+      color: #495057;
+      font-size: 14px;
+
+      mat-icon {
+        color: #6c757d;
+        font-size: 18px;
+        margin-right: 8px;
+      }
+
+      &:hover {
+        background-color: #e9ecef;
+        border-color: #ced4da;
+      }
+    }
+  }
+
+  .add-card-form {
+    .payment-methods {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+
+      .payment-icon {
+        font-size: 28px;
+        color: #666;
+      }
+    }
+
+    mat-form-field {
+      ::ng-deep .mat-mdc-text-field-wrapper {
+        background-color: #fafafa;
+      }
+    }
+
+    .alert {
+      background-color: #f8f9fa;
+      border-radius: 4px;
+      border: none;
+    }
+
+    .btn-warning {
+      background-color: #007ea7;
+      color: white;
+      font-weight: 500;
+      border-radius: 20px;
+      padding: 8px 24px;
+
+      &:hover {
+        background-color: #006b91;
+      }
+    }
+  }
+
+  .security-features {
+    .d-flex {
+      mat-icon {
+        color: #2e7d32;
+        font-size: 18px;
+      }
+
+      span {
+        font-size: 16px;
+        color: #333;
+        font-weight: 400;
+      }
+    }
+  }
+
+  .security-logos {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 24px !important;
+
+    .security-logo {
+      font-size: 24px;
+      color: #007ea7;
+    }
+  }
+
+  .card-body {
+    h6 {
+      font-size: 18px;
+      font-weight: 500;
+      color: #333;
+    }
+
+    .text-success {
+      color: #2e7d32 !important;
+    }
+  }
+
+  .saved-cards-list {
+    margin-top: 20px;
+
+    .saved-card-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      margin-bottom: 12px;
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+
+      &:hover {
+        border-color: #007ea7;
+        box-shadow: 0 2px 8px rgba(0, 126, 167, 0.1);
+      }
+
+      .card-info {
+        flex: 1;
+
+        .card-header-info {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          margin-bottom: 8px;
+
+          .card-type-icon {
+            color: #007ea7;
+            font-size: 20px;
+          }
+
+          .card-number {
+            font-weight: 500;
+            font-size: 16px;
+            color: #333;
+            letter-spacing: 1px;
+          }
+
+          mat-chip-set {
+            mat-chip {
+              font-size: 11px;
+              height: 20px;
+              min-height: 20px;
+
+              &[color="primary"] {
+                background-color: #007ea7;
+                color: white;
+              }
+
+              &[color="accent"] {
+                background-color: #f5f5f5;
+                color: #666;
+              }
+            }
+          }
+        }
+
+        .card-details {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+
+          .card-holder {
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+          }
+
+          .card-expiry {
+            font-size: 12px;
+            color: #999;
+          }
+        }
+      }
+
+      .card-actions {
+        .more-options {
+          color: #666;
+
+          &:hover {
+            color: #007ea7;
+          }
+        }
+
+        .delete-option {
+          color: #dc3545;
+
+          mat-icon {
+            color: #dc3545;
+          }
+        }
+      }
+    }
+  }
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modal-dialog {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow: hidden;
+  animation: slideIn 0.3s ease-out;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e0e0e0;
+  background-color: #f8f9fa;
+
+  .modal-title {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    font-size: 20px;
+    font-weight: 500;
+    color: #333;
+
+    mat-icon {
+      color: #007ea7;
+    }
+  }
+
+  .close-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    transition: all 0.2s;
+
+    &:hover {
+      background-color: #f0f0f0;
+      color: #333;
+    }
+
+    mat-icon {
+      font-size: 20px;
+    }
+  }
+}
+
+.modal-body {
+  padding: 24px;
+  max-height: 60vh;
+  overflow-y: auto;
+
+  .payment-methods-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background-color: #f1f4f8;
+    border-radius: 8px;
+    margin-bottom: 24px;
+
+    .accepted-text {
+      font-weight: 500;
+      color: #555;
+    }
+
+    .payment-icons {
+      display: flex;
+      gap: 8px;
+
+      .payment-method-icon {
+        font-size: 24px;
+        color: #007ea7;
+      }
+    }
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+
+    .full-width {
+      width: 100%;
+    }
+  }
+
+  .form-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+
+    .expiry-field {
+      flex: 1;
+    }
+
+    .cvv-field {
+      flex: 0 0 120px;
+    }
+  }
+
+  .security-notice {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background-color: #e3f2fd;
+    border-radius: 8px;
+    color: #1565c0;
+    font-size: 14px;
+    margin-top: 16px;
+
+    .security-icon {
+      color: #1565c0;
+      font-size: 20px;
+    }
+  }
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 20px 24px;
+  border-top: 1px solid #e0e0e0;
+  background-color: #f8f9fa;
+
+  .cancel-button {
+    color: #666;
+    border-color: #ddd;
+
+    &:hover {
+      background-color: #f0f0f0;
+    }
+  }
+
+  .save-button {
+    background-color: #007ea7;
+    color: white;
+
+    &:hover:not(:disabled) {
+      background-color: #006b91;
+    }
+
+    &:disabled {
+      background-color: #ccc;
+      color: #888;
+    }
+
+    .me-1 {
+      margin-right: 4px;
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.me-1 {
+  margin-right: 4px;
+}
+
+.me-2 {
+  margin-right: 8px;
+}
+
+@media (max-width: 768px) {
+  .payment-container {
+    padding: 16px;
+
+    .payment-heading {
+      font-size: 24px;
+    }
+
+    .add-card-section {
+      .btn {
+        width: 100%;
+      }
+    }
+
+    .add-card-form {
+      .btn-warning {
+        width: 100%;
+      }
+    }
+  }
+
+  .modal-dialog {
+    width: 95%;
+    margin: 20px;
+  }
+
+  .modal-body {
+    padding: 16px;
+
+    .form-row {
+      flex-direction: column;
+      gap: 16px;
+
+      .cvv-field {
+        flex: 1;
+      }
+    }
+  }
+
+  .modal-header,
+  .modal-footer {
+    padding: 16px;
+  }
+}

@@ -1,0 +1,39 @@
+<div class="store-container">
+  <h2>Followed Stores</h2>
+
+  <!-- Search input -->
+ <mat-form-field appearance="outline" class="search-input">
+  <mat-label>Search by name</mat-label>
+  <input matInput placeholder="Search by name" [(ngModel)]="searchTerm" (input)="onSearchChange()">
+  <button mat-icon-button matSuffix class="suffix-circle-icon">
+    <mat-icon>search</mat-icon>
+  </button>
+</mat-form-field>
+  <!-- Loading State -->
+  <div *ngIf="loading">
+    Loading stores, please wait...
+  </div>
+
+  <!-- Error State
+  <div *ngIf="!loading && error">
+    {{ error }}
+  </div> -->
+
+  <!-- No Stores Found (after API) -->
+  <div *ngIf="!loading && !error && filteredStores.length === 0">
+    No stores available.
+  </div>
+
+  <!-- Render Stores -->
+  <div class="store-grid">
+    <div
+      class="store-card"
+      *ngFor="let store of filteredStores"
+      [ngStyle]="{ 'background-image': 'url(' + (store.imageUrl || defaultImg) + ')' }"
+    >
+      <div class="store-info">
+        <h3>{{ store.storeName }}</h3>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,328 @@
+<div class="product-detail-container">
+  <!-- Toast for notifications -->
+  <p-toast></p-toast>
+
+  <!-- Cart Summary Quick View (Optional) -->
+  <div *ngIf="currentCartSummary && currentCartSummary.totalItems > 0" class="cart-summary-bar">
+    <div class="cart-summary-content">
+      <span class="cart-info">
+        <mat-icon>shopping_cart</mat-icon>
+        {{ currentCartSummary.totalItems }} items in cart - ${{ getCartTotalValue() | number }}
+      </span>
+      <div class="cart-actions">
+        <button mat-stroked-button (click)="onViewCart()">
+          View Cart
+        </button>
+        <button mat-button color="warn" (click)="clearEntireCart()">
+          Clear Cart
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Left Side - Product Info -->
+    <div class="product-info-section">
+      <!-- Price Section -->
+      <div class="price-display">
+        <h1 class="main-price">${{ product.price | number }}</h1>
+        <span class="original-price">${{ product.originalPrice | number }}</span>
+        <p-chip label="Limited" styleClass="limited-chip"></p-chip>
+      </div>
+
+      <!-- Description -->
+      <div class="product-description">
+        <p>{{ product.description }}</p>
+      </div>
+
+      <!-- Quantity and Buy Section -->
+      <div class="purchase-section">
+        <div class="quantity-row">
+          <button mat-icon-button styleClass="qty-btn minus-btn" [disabled]="quantity <= 1"
+            (click)="decreaseQuantity()">
+            <mat-icon>remove</mat-icon>
+          </button>
+          <span class="quantity-display">{{ quantity }}</span>
+          <button mat-icon-button styleClass="qty-btn plus-btn" [disabled]="quantity >= 10"
+            (click)="increaseQuantity()">
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+
+        <!-- Updated Purchase Buttons -->
+        <div class="purchase-buttons">
+          <button mat-stroked-button styleClass="add-to-cart-button" (click)="onAddToCart()">
+            <mat-icon>shopping_cart</mat-icon>
+            Add to Cart
+          </button>
+
+          <button mat-raised-button color="primary" class="buy-now-button" (click)="placeOrder()">
+  <mat-icon>flash_on</mat-icon>
+  Buy Now
+</button>
+
+        </div>
+
+        <!-- Additional Action Buttons -->
+        <div class="action-buttons">
+          <button mat-button styleClass="wishlist-button" (click)="onAddToWishlist()">
+            <mat-icon>favorite_border</mat-icon>
+            Add to Wishlist
+          </button>
+        </div>
+      </div>
+
+      <!-- Cart Items Display (if any items in cart) -->
+      <div *ngIf="currentCartSummary && currentCartSummary.cartItems && currentCartSummary.cartItems.length > 0"
+        class="cart-items-preview">
+        <h4 class="cart-preview-title">Items in Your Cart</h4>
+        <div class="cart-items-list">
+          <div *ngFor="let item of currentCartSummary.cartItems" class="cart-item-preview">
+            <div class="cart-item-info">
+              <span class="item-name">{{ item.productName || item.name }}</span>
+              <span class="item-price">₦{{ item.unitPrice | number }} x {{ item.quantity }}</span>
+            </div>
+            <div class="cart-item-controls">
+              <button mat-icon-button size="small" (click)="decreaseCartQuantity()">
+                <mat-icon>remove</mat-icon>
+              </button>
+              <span class="item-quantity">{{ item.quantity }}</span>
+              <button mat-icon-button size="small" (click)="increaseCartQuantity()">
+                <mat-icon>add</mat-icon>
+              </button>
+              <button mat-icon-button size="small" color="warn" (click)="removeItemFromCart(item.cartItemId)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Seller Info -->
+      <div class="seller-info">
+        <div class="seller-left">
+          <p-avatar icon="pi pi-user" styleClass="seller-avatar">
+          </p-avatar>
+          <span class="seller-name">Merchant: {{ storeName }}</span>
+        </div>
+        <button mat-raised-button color="primary" styleClass="contact-seller-button" (click)="onContactSeller()">
+          Contact Seller
+        </button>
+      </div>
+
+      <div class="social-icons">
+        <span class="share-text">Share Via</span>
+        <div class="social-buttons">
+          <button mat-fab class="social-btn facebook-btn">
+            <i class="fab fa-facebook-f"></i>
+          </button>
+          <button mat-fab class="social-btn twitter-btn">
+            <i class="fab fa-twitter"></i>
+          </button>
+          <button mat-fab class="social-btn whatsapp-btn">
+            <i class="fab fa-whatsapp"></i>
+          </button>
+          <button mat-fab class="social-btn instagram-btn">
+            <i class="fab fa-instagram"></i>
+          </button>
+          <button mat-fab class="social-btn linkedin-btn">
+            <i class="fab fa-linkedin-in"></i>
+          </button>
+        </div>
+      </div>
+
+
+    </div>
+
+    <!-- Right Side - Product Images -->
+    <div class="product-images-section">
+      <div class="main-image-container">
+        <img [src]="currentImage" alt="Product Image" class="main-product-image">
+
+        <!-- Wishlist Button on Image -->
+        <button mat-fab color="accent" class="wishlist-btn-overlay" (click)="onAddToWishlist()">
+          <mat-icon>favorite_border</mat-icon>
+        </button>
+      </div>
+
+      <div class="thumbnail-row">
+        <img *ngFor="let img of product.images; let i = index" [src]="img.thumbnailImageSrc" [alt]="img.alt"
+          class="thumbnail-img" [class.active]="i === selectedImageIndex" (click)="selectImage(i)">
+      </div>
+    </div>
+  </div>
+
+  <!-- Reviews Section -->
+  <div class="reviews-container">
+    <div class="reviews-header">
+      <h3 class="reviews-title">All Reviews ({{ reviews.length }})</h3>
+      <!-- Updated button to use Angular Material Dialog -->
+      <button mat-raised-button color="primary" (click)="onWriteReview()" class="write-review-btn">
+        <mat-icon>edit</mat-icon>
+        Write a Review
+      </button>
+    </div>
+
+    <div class="reviews-grid col">
+      <div *ngFor="let review of displayedReviews" class="review-card"> 
+        <div class="review-header">
+          <p-avatar [label]="review.avatar" styleClass="reviewer-avatar">
+          </p-avatar>
+          <div class="reviewer-info">
+            <h4 class="reviewer-name">{{ review.user }}</h4>
+            <p-rating [(ngModel)]="review.rating" [cancel]="false" [readonly]="true" styleClass="review-stars">
+            </p-rating>
+          </div>
+        </div>
+        <p class="review-text">{{ review.comment }}</p>
+        <span class="review-date">Posted on {{ review.date }}</span>
+      </div>
+    </div>
+
+    <div class="load-more-container">
+     <button mat-stroked-button (click)="onLoadMoreReviews()"
+  *ngIf="displayedReviews.length < reviews.length">
+  Load More Reviews
+</button>
+
+    </div>
+  </div>
+
+  <!-- Related Products Section -->
+  <div class="products-section">
+    <div class="container">
+      <div class="row">
+        <div *ngFor="let product of relatedProducts; trackBy: trackByProductId"
+          class="col-12 col-sm-6 col-md-4 col-lg-3 product-card-wrapper">
+          <div class="product-card" (click)="onViewRelatedProduct(product.id)">
+
+            <!-- Product Image -->
+            <div class="product-image-container">
+              <img [src]="product.image" [alt]="product.name" class="product-image">
+
+              <div class="product-badge discount-badge"
+                *ngIf="product.originalPrice && product.originalPrice > product.price">
+                {{ ((product.originalPrice - product.price) / product.originalPrice * 100) | number:'1.0-0' }}% OFF
+              </div>
+
+              <div class="product-badge featured-badge" *ngIf="product.badge">{{ product.badge }}</div>
+
+              <!-- Cart Controls -->
+              <div class="image-cart-controls" *ngIf="product.id && getProductQuantityInCart(product.id) > 0"
+                (click)="$event.stopPropagation()">
+                <button class="image-quantity-btn decrease" (click)="decreaseCartQuantity()" [disabled]="addingToCart">
+                  <mat-icon>remove</mat-icon>
+                </button>
+                <span class="image-quantity-display">
+                  {{ getProductQuantityInCart(product.id) }}
+                </span>
+                <button class="image-quantity-btn increase" (click)="increaseCartQuantity()" [disabled]="addingToCart">
+                  <mat-icon>add</mat-icon>
+                </button>
+              </div>
+
+              <!-- Add to Cart Icon -->
+              <button *ngIf="getProductQuantityInCart(product.id) === 0" class="add-to-cart-icon"
+                (click)="onAddRelatedToCart(product); $event.stopPropagation()" [disabled]="addingToCart"
+                [attr.aria-label]="'Add ' + (product.title || product.name) + ' to cart'">
+                <mat-icon *ngIf="addingToCart" class="spinning">hourglass_empty</mat-icon>
+                <mat-icon *ngIf="!addingToCart">add_shopping_cart</mat-icon>
+              </button>
+            </div>
+
+            <!-- Product Info -->
+            <div class="product-info">
+              <div class="price-section">
+                <div class="price-details">
+                  <span class="current-price">${{ product.price | number:'1.0-0' }}</span>
+                  <span *ngIf="product.originalPrice && product.originalPrice > product.price" class="original-price">
+                    ${{ product.originalPrice | number:'1.0-0' }}
+                  </span>
+                </div>
+                <div class="wishlist-icon" (click)="$event.stopPropagation(); onAddToWishlist(product)">
+                  <mat-icon [class.favorited]="false">favorite_border</mat-icon>
+                </div>
+              </div>
+
+              <h3 class="product-title">{{ product.name }}</h3>
+
+              <div class="product-stats">
+                <div class="rating-section">
+                  <div class="stars">
+                    <mat-icon *ngFor="let star of [1,2,3,4,5]; let i = index"
+                      [ngClass]="{ star: true, filled: i < product.rating, empty: i >= product.rating }">
+                      {{ i < product.rating ? 'star' : 'star_border' }} </mat-icon>
+                  </div>
+                  <span class="rating-text">{{ product.rating.toFixed(1) }}</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add this section in your product-detail.component.html where you want the review form to appear -->
+  <!-- Usually this would go in the reviews section, after the existing reviews list -->
+
+  <!-- Inline Review Form -->
+  <div *ngIf="showReviewForm" id="review-form" class="review-form-container">
+    <div class="review-form-card">
+      <div class="form-header">
+        <h3>Write a Review for {{product.name}}</h3>
+        
+      </div>
+
+      <form [formGroup]="reviewForm" class="review-form" (ngSubmit)="onSubmitReview()">
+        
+ <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Your Review</mat-label>
+          <textarea matInput formControlName="comment" rows="4" placeholder="Share your experience with this product">
+        </textarea>
+          <mat-hint>{{ reviewForm.get('comment')?.value?.length || 0 }}/500 characters</mat-hint>
+          <mat-error *ngIf="reviewForm.get('comment')?.hasError('required')">
+            Review comment is required
+          </mat-error>
+          <mat-error *ngIf="reviewForm.get('comment')?.hasError('minlength')">
+            Review should be at least 10 characters long
+          </mat-error>
+          <mat-error *ngIf="reviewForm.get('comment')?.hasError('maxlength')">
+            Review cannot exceed 500 characters
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Rating Field -->
+        <div class="rating-field">
+          <label class="rating-label">Rating *</label>
+          <p-rating formControlName="rating" [stars]="5" [cancel]="false" styleClass="custom-rating">
+          </p-rating>
+          <div class="rating-error"
+            *ngIf="reviewForm.get('rating')?.hasError('required') && reviewForm.get('rating')?.touched">
+            Please provide a rating
+          </div>
+        </div>
+
+        
+       
+        <!-- Form Actions -->
+        <div class="form-actions">
+          <button type="button" mat-button (click)="onCancelReview()" [disabled]="isSubmittingReview">
+            Cancel
+          </button>
+          <button type="submit" mat-raised-button color="primary" [disabled]="reviewForm.invalid || isSubmittingReview">
+            <mat-icon *ngIf="isSubmittingReview">hourglass_empty</mat-icon>
+            {{ isSubmittingReview ? 'Submitting...' : 'Submit Review' }}
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Loading Overlay (Optional) -->
+    <div *ngIf="false" class="loading-overlay">
+      <p-progressSpinner strokeWidth="3"></p-progressSpinner>
+      <span>Loading...</span>
+    </div>
+  </div>

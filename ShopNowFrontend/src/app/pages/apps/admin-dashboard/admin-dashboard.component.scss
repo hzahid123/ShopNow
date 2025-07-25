@@ -1,0 +1,302 @@
+// Variables
+$primary-color: #0d6ba1;          
+$secondary-color: #48a3d1;        
+$accent-color: #FFA351;         
+$light-teal: #E0F2F1;           
+$dark-teal: #075A6E;            
+$text-primary: #2C3E50;         
+$text-secondary: #7F8C8D;         
+$bg-light: #F8F9FA;         
+$white: #FFFFFF;                
+$border-color: #E3E6F0;           
+
+$shadow-light: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+$shadow-card: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+
+
+
+@mixin gradient-bg {
+  background: linear-gradient(135deg, $primary-color 0%, $secondary-color 100%);
+}
+
+.dashboard {
+  padding: 15px;
+  background-color: #f8fafc;
+  min-height: 100vh;
+
+  h1 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 18px;
+  }
+}
+
+.summary-card {
+  background: white;
+  padding: 12px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 15px;
+}
+
+.summary-card h3 {
+  font-size: 10.5px;
+  color: #64748b;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.summary-card .value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+}
+// Chart Cards
+.chart-card {
+  background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    box-sizing: border-box;
+  height: 420px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 25px;
+  
+  h3 {
+    font-size: 12px;
+      font-weight: 600;
+      color: #1e293b;
+      margin: 0 0 15px 0;
+    
+  }
+  
+  .chart-header {
+     display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+
+  h2 {
+    margin: 0;
+  }
+  ::ng-deep .p-dropdown.p-focus {
+  box-shadow: 0 0 0 0.2rem #0d6ba140; 
+}
+
+
+
+  }
+  
+  canvas {
+    flex: 1;
+    max-height: 300px;
+  }
+  
+  @media (max-width: 768px) {
+    height: 350px;
+    padding: 20px;
+    
+    canvas {
+      max-height: 250px;
+    }
+  }
+}
+
+// Table Cards
+.table-card {
+ background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    box-sizing: border-box;
+  height: 420px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 25px;
+  
+  h3 {
+    font-size: 12px;
+      font-weight: 600;
+      color: #1e293b;
+      margin: 0 0 15px 0;
+    
+  }
+  
+  .table-responsive {
+    flex: 1;
+    overflow-y: auto;
+    
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: $bg-light;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: $primary-color;
+      border-radius: 3px;
+    }
+  }
+  
+  .table {
+    margin-bottom: 0;
+    font-size: 0.9rem;
+    
+    th {
+      background: $light-teal;
+      color: $dark-teal;
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 12px 8px;
+      border: none;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    
+    td {
+      padding: 12px 8px;
+      vertical-align: middle;
+      border-bottom: 1px solid #f0f0f0;
+      color: $text-primary;
+    }
+    
+    .table-striped tbody tr:nth-of-type(odd) {
+      background-color: rgba(32, 178, 170, 0.05);
+    }
+  }
+  
+  .rating {
+    color: #FFD700;
+    font-size: 0.9rem;
+    
+    .fas { 
+      margin-right: 2px;
+    }
+  }
+  
+  .review-text {
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    
+    &:hover {
+      white-space: normal;
+      overflow: visible;
+      background: $light-teal;
+      padding: 8px;
+      border-radius: 4px;
+      position: relative;
+      z-index: 10;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    height: 350px;
+    padding: 20px;
+    
+    .table {
+      font-size: 0.8rem;
+    }
+    
+    th, td {
+      padding: 8px 6px;
+    }
+    
+    .review-text {
+      max-width: 150px;
+    }
+  }
+}
+
+// Responsive Design
+@media (max-width: 1200px) {
+  .dashboard {
+    padding: 20px;
+    
+    h1 {
+      font-size: 2.2rem;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard {
+    padding: 16px;
+    
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 24px;
+    }
+    
+    .row {
+      margin-bottom: 16px;
+    }
+  }
+  
+  .col-lg-6, .col-lg-8, .col-lg-4 {
+    margin-bottom: 16px;
+  }
+}
+
+@media (max-width: 576px) {
+  .dashboard h1 {
+    font-size: 1.5rem;
+  }
+  
+  .summary-card {
+    margin-bottom: 16px;
+  }
+  
+  .chart-card, .table-card {
+    height: 300px;
+  }
+}
+
+// Animation Classes
+.fade-in {
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Loading States
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  color: $text-secondary;
+  font-style: italic;
+}
+
+// Utilities
+.text-teal {
+  color: $primary-color !important;
+}
+
+.bg-teal {
+  background-color: $primary-color !important;
+}
+
+.border-teal {
+  border-color: $primary-color !important;
+}

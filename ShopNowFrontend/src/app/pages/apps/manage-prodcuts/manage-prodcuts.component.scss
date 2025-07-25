@@ -1,0 +1,170 @@
+/* === FLEX AND LAYOUT UTILITIES === */
+.flex {
+    display: flex;
+  }
+  
+  .flex-column {
+    flex-direction: column;
+  }
+  
+  .flex-wrap {
+    flex-wrap: wrap;
+  }
+  
+  .justify-content-between {
+    justify-content: space-between;
+  }
+  
+  .justify-content-center {
+    justify-content: center;
+  }
+  
+  .align-items-center {
+    align-items: center;
+  }
+  
+  .flex-1 {
+    flex: 1;
+  }
+  
+  /* === GAP UTILITIES === */
+  .gap-2 {
+    gap: 0.5rem;
+  }
+  
+  .gap-3 {
+    gap: 1rem;
+  }
+  
+  .gap-5 {
+    gap: 1.5rem;
+  }
+  
+  /* === PADDING / MARGIN UTILITIES === */
+  .p-0 {
+    padding: 0;
+  }
+  
+  .p-5 {
+    padding: 1.5rem;
+  }
+  
+  .px-6 {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+  
+  .m-0 {
+    margin: 0;
+  }
+  
+  .mt-3 {
+    margin-top: 1rem;
+  }
+  
+  .mt-4 {
+    margin-top: 1.5rem;
+  }
+  
+  .mb-0 {
+    margin-bottom: 0;
+  }
+  
+  /* === WIDTH UTILITIES === */
+  .w-full {
+    width: 100%;
+  }
+  
+  .md\:w-20rem {
+    width: 20rem;
+  }
+  
+  /* === CONDITIONAL WIDTH (can also use media query for md) */
+  @media (min-width: 768px) {
+    .md\:ml-auto {
+      margin-left: auto;
+    }
+  }
+  
+  /* === BORDER + COLOR UTILITIES === */
+  .border-1 {
+    border: 1px solid #dee2e6;
+  }
+  
+  .border-2 {
+    border: 2px solid #dee2e6;
+  }
+  
+  .border-circle {
+    border-radius: 50%;
+  }
+  
+  .surface-border {
+    border-color: #dee2e6;
+  }
+  
+  /* === TEXT UTILITIES === */
+  .font-semibold {
+    font-weight: 600;
+  }
+  
+  .text-400 {
+    color: #6c757d;
+  }
+  
+  .text-8xl {
+    font-size: 4rem;
+  }
+  
+  /* === WHITE SPACE === */
+  .white-space-nowrap {
+    white-space: nowrap;
+  }
+  
+  /* === HELPER CLASSES === */
+  .exceeded-progress-bar {
+    background-color: #ff6b6b !important;
+  }
+  
+  .card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 1rem;
+    background-color: #fff;
+  }
+  .search-input {
+  width: 93%; 
+  margin: 10px;
+  margin-top: 12;
+  margin-bottom: 0 !important;
+}
+
+.search-btn {
+  white-space: nowrap;
+  margin-right: 10px;
+  height:55px ;
+  margin-bottom :14px;
+
+// padding:12;
+}
+.search-btn mat-icon {
+  margin-right: 5px;
+}
+
+.suffix-circle-icon {
+  background-color: #087CA0;
+  color: white;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  margin-right: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #087CA0;
+  }
+}

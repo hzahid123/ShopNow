@@ -1,0 +1,195 @@
+
+<div class="bg-light-primary rounded p-y-20 p-x-24 m-b-24 overflow-hidden ">
+    <div class="d-flex">
+        <div class="m-t-6">
+            <h4 class="page-title m-0 f-s-20 f-w-600 ">
+               Manage Orders
+            </h4>
+        </div>
+    </div>
+</div>
+
+
+
+<mat-card class="cardWithShadow">
+    <mat-card-content class="p-24">
+        <div class="table-responsive">
+             <div class="d-flex align-items-center justify-content-between">
+  <mat-form-field appearance="outline" class="search-input">
+    <mat-label>Search Orders</mat-label>
+    <input matInput>
+     <button mat-icon-button matSuffix class="suffix-circle-icon">
+  <mat-icon>search</mat-icon>
+</button>
+  </mat-form-field>
+
+  <button mat-flat-button color="primary" class="search-btn" (click)="filterVisible = true">
+    <mat-icon class="me-1">filter_list</mat-icon> Filter
+  </button>
+</div>
+            <p-table #dt [value]="dataSource" [sortMode]="'multiple'">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 3%">
+                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                        </th>
+                        <th pSortableColumn="name">Store Name <p-sortIcon field="name"></p-sortIcon></th>
+                        <th pSortableColumn="customerId">Customer ID <p-sortIcon field="customerId"></p-sortIcon></th>
+                        <th pSortableColumn="amount">Amount <p-sortIcon field="amount"></p-sortIcon></th>
+                        <th pSortableColumn="orderId">Order ID <p-sortIcon field="orderId"></p-sortIcon></th>
+                        <th pSortableColumn="orderItems">Order Items <p-sortIcon field="orderItems"></p-sortIcon></th>
+                        <th pSortableColumn="orderDate">Order Date <p-sortIcon field="orderDate"></p-sortIcon></th>
+                        <th pSortableColumn="orderReceived">Order Received <p-sortIcon field="orderReceived"></p-sortIcon></th>
+                        <th pSortableColumn="status">Status <p-sortIcon field="status"></p-sortIcon></th>
+                        <th style="width: 7%">Action</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-element>
+                    <tr>
+                        <td>
+                            <p-tableCheckbox [value]="element"></p-tableCheckbox>
+                        </td>
+                        <td>{{ element.name }}</td>
+                        <td>{{ element.customerId }}</td>
+                        <td>{{ element.amount }}</td>
+                        <td>{{ element.orderId }}</td>
+                        <td>{{ element.orderItems }}</td>
+                        <td>{{ element.orderDate }}</td>
+                        <td>{{ element.orderReceived }}</td>
+                        <td>{{ element.status }}</td>
+                        <td>
+
+                            <div class="m-l-16">
+                                <a [matMenuTriggerFor]="menu" class="cursor-pointer">
+                                    <i class="pi pi-ellipsis-h"></i>
+                                </a>
+                            </div>
+                            <mat-menu #menu="matMenu">
+                                <button mat-menu-item>
+                                    <div class="d-flex align-items-center">
+                                        <i-tabler name="pencil" class="icon-18"></i-tabler>
+                                        <span class="m-l-8">Edit</span>
+                                    </div>
+                                </button>
+                                <button mat-menu-item>
+                                    <div class="d-flex align-items-center">
+                                    <i-tabler name="trash" class="icon-18"></i-tabler>
+                                    <span class="m-l-8">Delete</span>
+                                    </div>
+                                </button>
+                            </mat-menu>
+
+
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+
+            <p-paginator [rows]="pageSize" [totalRecords]="totalRecords" [rowsPerPageOptions]="pageSizes"
+                (onPageChange)="onPageChange($event)">
+            </p-paginator>
+        </div>
+
+
+    </mat-card-content>
+</mat-card>
+
+
+
+<p-dialog header="Add Product" [modal]="true" [(visible)]="visible" 
+    [style]="{ width: '700px' }" position="top"
+    [draggable]="false" [resizable]="false">
+    <form [formGroup]="clientForm">
+      
+            <div class="card flex justify-content-center">
+                <p-fieldset legend="Shop Information" [toggleable]="true">
+                    <div class="row  p-t-5">
+                        <div class="col-sm-6">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Owner ID</mat-label>
+                                <input matInput formControlName="ownerId" placeholder="Enter owner ID">
+                            </mat-form-field>
+                        </div>
+                        <div class="col-sm-6">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Shop Name</mat-label>
+                                <input matInput formControlName="name" placeholder="Enter Shop Name">
+                            </mat-form-field>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Shop Description</mat-label>
+                                <input matInput formControlName="description" placeholder="Enter Shop Description">
+                            </mat-form-field>
+                        </div>
+
+
+                    </div>
+                </p-fieldset>
+            </div>
+
+
+            <div class="row m-t-24" style="margin-bottom: 20px;">
+                <div class="col-sm-12 d-flex justify-content-end gap-8">
+                    <button mat-raised-button type="button" (click)="visible = false">
+                        Cancel
+                    </button>
+                    <button mat-flat-button color="primary" type="submit">
+                        Save
+                    </button>
+                </div>
+            </div>
+       
+    </form>
+</p-dialog>
+
+
+<p-dialog
+  header="Filter Orders"
+  [(visible)]="filterVisible"
+  position="right"
+  [modal]="true"
+  [dismissableMask]="true"
+  [style]="{ width: '320px', height: '100vh' }"
+  [contentStyle]="{ height: 'calc(100vh - 56px)', overflow: 'auto', padding: '16px' }"
+  [draggable]="false"
+  [resizable]="false"
+>
+  <form [formGroup]="filterForm" class="d-flex flex-column gap-16">
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Select Range</mat-label>
+      <mat-select formControlName="range" (selectionChange)="onRangeChange($event.value)">
+        <mat-option *ngFor="let range of predefinedRanges" [value]="range.value">
+          {{ range.label }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <div *ngIf="showCustomRange" class="m-t-12">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Start Date</mat-label>
+        <input matInput [matDatepicker]="picker1" formControlName="start">
+        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+        <mat-datepicker #picker1></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>End Date</mat-label>
+        <input matInput [matDatepicker]="picker2" formControlName="end">
+        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+        <mat-datepicker #picker2></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    <!-- Show calculated date range -->
+    <div *ngIf="calculatedRange" class="text-muted m-t-12 f-s-13">
+      Selected Range: <strong>{{ calculatedRange }}</strong>
+    </div>
+
+    <div class="d-flex justify-content-end gap-8 m-t-16">
+      <button mat-stroked-button type="button" (click)="cancelFilter()">Cancel</button>
+      <button mat-flat-button color="primary" type="button" (click)="applyFilter()">Apply</button>
+    </div>
+  </form>
+</p-dialog>

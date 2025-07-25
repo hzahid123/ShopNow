@@ -1,0 +1,45 @@
+<mat-card class="cardWithShadow">
+    <mat-card-header>
+        <mat-card-title class="m-b-0 f-w-800">InfoMailer</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content class="p-l-20 p-r-20 m-t-16">
+        <div class="table-responsive">
+            <p-table [value]="dataSource.data" styleClass="p-datatable">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th class="f-s-16 f-w-600">Customer</th>
+                        <th class="f-s-16 f-w-600">Status</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-element>
+                    <tr>
+                        <td>
+                            <div class="row">
+                                <div>
+                                    <img [src]="element.img" alt="Customer Image" style="width: 40px; height: 40px; border-radius: 50%;">
+                                </div>
+                                <div class="m-l-12">
+                                    <div>
+                                        {{ element.customerName }}
+                                    </div>
+                                    <div style="color: #adadadfd;" class="f-s-12">
+                                        {{ element.date }}
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span *ngIf="element.status == 'UNPAID'" class="bg-light-accent text-accent rounded f-w-600 p-6 p-y-4 f-s-12">
+                                {{ element.status | uppercase }}
+                            </span>
+                            <span *ngIf="element.status == 'SCHEDULED'" class="bg-light-success text-success rounded f-w-600 p-6 p-y-4 f-s-12">
+                                {{ element.status | uppercase }}
+                            </span>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </mat-card-content>
+</mat-card>

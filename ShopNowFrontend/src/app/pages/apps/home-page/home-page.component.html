@@ -1,0 +1,383 @@
+<!-- Hero Carousel Section -->
+<div class="hero-carousel-container">
+  <div class="carousel-wrapper">
+    <div class="carousel-container" #carouselContainer>
+      <div class="carousel-track" [style.transform]="'translateX(' + (-currentSlide * 100) + '%)'">
+        @for(slide of carouselSlides; track $index) {
+        <div class="carousel-slide">
+          <div class="slide-content">
+            <img [src]="slide.image" [alt]="slide.title" class="slide-image">
+            <div class="slide-overlay">
+              <div class="slide-text">
+                <h2>{{ slide.title }}</h2>
+                <p>{{ slide.description }}</p>
+                <button pButton type="button" class="p-button-raised p-button-danger custom-carousel-btn"
+                  >
+                  {{ slide.buttonText }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+
+    <!-- Carousel Controls -->
+    <button mat-fab class="carousel-btn prev-btn" (click)="previousSlide()">
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+    <button mat-fab class="carousel-btn next-btn" (click)="nextSlide()">
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+
+    <!-- Carousel Indicators -->
+    <div class="carousel-indicators">
+      @for(slide of carouselSlides; track $index) {
+      <button class="indicator" [class.active]="currentSlide === $index" (click)="goToSlide($index)">
+      </button>
+      }
+    </div>
+  </div>
+</div>
+
+<!-- Categories Section -->
+<div class="categories-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Shop by Category</h2>
+      <p class="section-subtitle">Discover our wide range of product categories</p>
+    </div>
+    
+    <!-- Categories Loading State -->
+    @if(categoriesLoading) {
+      <div class="categories-loading">
+        <div class="loading-grid">
+          @for(item of [1,2,3,4,5,6]; track $index) {
+            <div class="category-skeleton">
+              <div class="skeleton-image"></div>
+              <div class="skeleton-text">
+                <div class="skeleton-title"></div>
+                <div class="skeleton-description"></div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+    
+    <!-- Categories Grid -->
+    @if(!categoriesLoading && category.length > 0) {
+      <div class="categories-grid">
+        @for (categoryItem of category; track categoryItem.id) {
+          <div class="category-tile" 
+               (click)="onCategoryClick(categoryItem)" 
+               [attr.data-category]="categoryItem.slug">
+            <div class="category-content">
+              <div class="category-icon-wrapper">
+                <!-- Category Icon -->
+                <div class="category-icon">
+                  <mat-icon>{{ categoryItem.icon || 'category' }}</mat-icon>
+                </div>
+                
+                <!-- Badges -->
+                @if (categoryItem.isNew) {
+                  <div class="category-badge new-badge">New</div>
+                }
+                
+                @if (categoryItem.isPopular) {
+                  <div class="category-badge popular-badge">Popular</div>
+                }
+              </div>
+              
+              <div class="category-info">
+                <h3 class="category-name">{{ categoryItem.name }}</h3>
+                
+                @if (categoryItem.description) {
+                  <p class="category-description">{{ categoryItem.description }}</p>
+                }
+                
+                <!-- Show product count only if available from API -->
+                @if (categoryItem.productCount && categoryItem.productCount > 0) {
+                  <span class="product-count">{{ categoryItem.productCount }} items</span>
+                }
+                
+                <!-- Show subcategories count if available -->
+                @if (categoryItem.subCategories && categoryItem.subCategories.length > 0) {
+                  <span class="subcategories-count">{{ categoryItem.subCategories.length }} subcategories</span>
+                }
+              </div>
+            </div>
+            
+            <div class="category-hover-overlay">
+              <mat-icon class="arrow-icon">arrow_forward</mat-icon>
+            </div>
+          </div>
+        }
+      </div>
+    }
+    
+    <!-- Empty State -->
+    @if(!categoriesLoading && category.length === 0) {
+      <div class="empty-categories">
+        <div class="empty-content">
+          <mat-icon class="empty-icon">category</mat-icon>
+          <h3>No Categories Found</h3>
+          <p>Categories are currently being updated. Please check back later.</p>
+          <button pButton 
+                  type="button" 
+                  label="Refresh" 
+                  icon="pi pi-refresh"
+                  (click)="refreshCategories()">
+          </button>
+        </div>
+      </div>
+    }
+    
+    <!-- View All Categories Button -->
+    @if(!categoriesLoading && category.length > 0) {
+      <div class="categories-footer">
+        <button pButton 
+                type="button"
+                class="p-button-outlined view-all-categories-btn"
+                label="View All Categories"
+                icon="pi pi-th-large"
+                iconPos="left"
+                (click)="viewAllCategories()">
+        </button>
+      </div>
+    }
+  </div>
+</div>
+
+<!-- Category Search (Optional) -->
+<!-- @if(!categoriesLoading && category.length > 0) {
+  <div class="category-search-section">
+    <div class="container">
+      <div class="search-wrapper">
+        <input type="text" 
+               placeholder="Search categories..." 
+               class="category-search-input"
+               #categorySearchInput
+               (keyup.enter)="searchCategories(categorySearchInput.value)"
+               (input)="onCategorySearchInput($event)">
+        <button class="search-btn" 
+                (click)="searchCategories(categorySearchInput.value)">
+          <mat-icon>search</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+} -->
+
+
+<!-- Products Section Header -->
+<div class="products-section-header">
+  <div class="container">
+    <div class="section-header-content">
+      <h2 class="section-title">Featured Products</h2>
+      <button class="view-all-btn" pButton type="button" label="View All" icon="pi pi-chevron-right"
+        iconPos="right"></button>
+    </div>
+  </div>
+</div>
+
+<!-- Loading State -->
+@if(isLoading) {
+<div class="loading-container">
+  <div class="container">
+    <div class="loading-content">
+      <p-progressSpinner></p-progressSpinner>
+      <p>Loading products...</p>
+    </div>
+  </div>
+</div>
+}
+
+<!-- Error State -->
+@if(loadingError && !isLoading) {
+<div class="error-container">
+  <div class="container">
+    <div class="error-content">
+      <mat-icon class="error-icon">error</mat-icon>
+      <h3>{{ loadingError }}</h3>
+      <button pButton type="button" label="Retry" icon="pi pi-refresh" (click)="retryLoadProducts()"></button>
+    </div>
+  </div>
+</div>
+}
+
+<!-- Products Grid Section -->
+@if (!isLoading && !loadingError) {
+  <div class="products-section">
+    <div class="container">
+      <div class="products-grid">
+        @for (p of homeService.products; track p.id) {
+          <div class="product-card-wrapper">
+            <div class="product-card" (click)="onProductClick(p)" style="cursor: pointer;">
+
+              <!-- Product Image Container -->
+              <div class="product-image-container">
+                <img [src]="getProductImage(p)" 
+                     [alt]="p.title || p.name" 
+                     class="product-image"
+                     (error)="onImageError($event, p)">
+
+                <!-- Discount Badge -->
+                @if (hasDiscount(p)) {
+                  <div class="product-badge discount-badge">
+                    -{{ getDiscountPercentage(p.originalPrice || p.regularPrice, p.price) }}%
+                  </div>
+                }
+
+                <!-- Brand Badge -->
+                @if (p.badge) {
+                  <div class="product-badge featured-badge">{{ p.badge }}</div>
+                }
+
+                <!-- Stock Status Badge -->
+                @if (!p.inStock || (p.stockQuantity && p.stockQuantity < 1)) {
+                  <div class="product-badge stock-badge out-of-stock">Out of Stock</div>
+                } @else if (p.stockQuantity && p.stockQuantity < 5) {
+                  <div class="product-badge stock-badge low-stock">Limited Stock</div>
+                }
+
+                <!-- Add to Cart Icon (Bottom Right) -->
+                @if (p.inStock && (!p.stockQuantity || p.stockQuantity >= 1)) {
+                  @if (isProductInCart(p.id || p.productId)) {
+                    <!-- Cart Quantity Controls on Image -->
+                    <div class="image-cart-controls" (click)="$event.stopPropagation()">
+                      <button class="image-quantity-btn decrease" 
+                              (click)="decreaseQuantity(p)"
+                              [disabled]="addingToCart">
+                        <mat-icon>remove</mat-icon>
+                      </button>
+                      <span class="image-quantity-display">{{ getProductQuantityInCart(p.id || p.productId) }}</span>
+                      <button class="image-quantity-btn increase" 
+                              (click)="increaseQuantity(p)"
+                              [disabled]="addingToCart">
+                        <mat-icon>add</mat-icon>
+                      </button>
+                    </div>
+                  } @else {
+                    <!-- Add to Cart Icon -->
+                    <button class="add-to-cart-icon" 
+                            (click)="addToCart(p); $event.stopPropagation()"
+                            [disabled]="addingToCart"
+                            [attr.aria-label]="'Add ' + (p.title || p.name) + ' to cart'">
+                      @if (addingToCart) {
+                        <mat-icon class="spinning">hourglass_empty</mat-icon>
+                      } @else {
+                        <mat-icon>add_shopping_cart</mat-icon>
+                      }
+                    </button>
+                  }
+                }
+                
+              </div>
+
+              <!-- Product Info -->
+              <div class="product-info">
+                <div class="price-section">
+                  <div class="price-details">
+                    <span class="current-price">{{ formatPrice(p.price) }}</span>
+                    @if (hasDiscount(p)) {
+                      <span class="original-price">{{ formatPrice(p.originalPrice || p.regularPrice) }}</span>
+                    }
+                  </div>
+                  <div class="wishlist-icon" 
+                     (click)="$event.stopPropagation(); toggleWishlist(p)"
+                     [class.favorited]="p.wishLis || p.wishList">
+                    <mat-icon [class.favorited]="p.wishLis || p.wishList">
+                      {{ (p.wishLis || p.wishList) ? 'favorite' : 'favorite_border' }}
+                    </mat-icon>
+                  </div>
+                </div>
+
+                <!-- Product Title -->
+                <h1 class="product-title">{{ p.title|| p.name}}</h1>
+
+                <!-- Brand and Category -->
+                <div class="product-meta">
+                  @if (p.brand) {
+                    <span class="product-brand">{{ p.brand }}</span>
+                  }
+                </div>
+
+                <!-- Rating and Stats -->
+                <div class="product-stats">
+                  <div class="rating-section">
+                    <div class="stars">
+                      @for (star of getStarArray(p.rating || 0); track $index) {
+                        <mat-icon class="star filled">star</mat-icon>
+                      }
+                      @for (star of getEmptyStarArray(p.rating || 0); track $index) {
+                        <mat-icon class="star empty">star_border</mat-icon>
+                      }
+                    </div>
+                    <span class="rating-text">{{ (p.rating || 0).toFixed(1) }}</span>
+                    <span></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+}
+<!-- Toast Messages -->
+<p-toast></p-toast>
+
+<!-- Cart Summary Sidebar (Optional)
+@if(showCartSidebar) {
+<div class="cart-sidebar-overlay" (click)="toggleCartSidebar()">
+  <div class="cart-sidebar" (click)="$event.stopPropagation()">
+    <div class="cart-sidebar-header">
+      <h3>Shopping Cart</h3>
+      <button mat-icon-button (click)="toggleCartSidebar()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    
+    <div class="cart-sidebar-content">
+      @if((cartSummary$ | async)?.itemCount > 0) {
+      <div class="cart-items">
+        @for(item of (cartItems$ | async); track item.cartItemId || item.id) {
+        <div class="cart-item">
+          <img [src]="item.image" [alt]="item.name" class="cart-item-image">
+          <div class="cart-item-details">
+            <h4>{{ item.name }}</h4>
+            <p class="cart-item-price">{{ formatPrice(item.price) }} x {{ item.quantity }}</p>
+          </div>
+        </div>
+        }
+      </div>
+      
+      <div class="cart-sidebar-summary">
+        <div class="summary-row">
+          <span>Subtotal:</span>
+          <span>{{ formatPrice((cartSummary$ | async)?.subtotal || 0) }}</span>
+        </div>
+        <div class="summary-row total">
+          <span>Total:</span>
+          <span>{{ formatPrice((cartSummary$ | async)?.total || 0) }}</span>
+        </div>
+      </div>
+      
+      <div class="cart-sidebar-actions">
+        <button pButton type="button" label="View Cart" class="p-button-outlined" (click)="goToCart()"></button>
+        <button pButton type="button" label="Checkout" class="p-button" (click)="goToCheckout()"></button>
+      </div>
+      }
+      @else {
+      <div class="empty-cart">
+        <mat-icon>shopping_cart</mat-icon>
+        <p>Your cart is empty</p>
+      </div>
+      }
+    </div>
+  </div>
+</div>
+-->

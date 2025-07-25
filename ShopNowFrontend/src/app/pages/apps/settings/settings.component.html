@@ -1,0 +1,48 @@
+
+<div class="bg-light-primary rounded p-y-20 p-x-24 m-b-24 overflow-hidden">
+  <div class="d-flex">
+    <div class="m-t-6">
+      <h4 class="page-title m-0 f-s-20 f-w-600">
+        Settings
+      </h4>
+    </div>
+  </div>
+</div>
+
+<mat-card class="settings-card">
+  <section class="settings-section">
+    <h3>Personal information</h3>
+    <div class="settings-actions">
+      <!-- 🛠️ Navigating to upload and edit pages -->
+      <button mat-button color="primary" [routerLink]="['/apps/settings/upload']">Upload picture</button>
+      <button mat-button color="primary" [routerLink]="['/apps/settings/edit']">Edit profile</button>
+
+      <!-- Delete can stay as method if it's doing logic -->
+      <button mat-button style="color: red;" (click)="deleteAccount()">Delete account</button>
+    </div>
+  </section>
+
+  <section class="settings-section">
+    <h3>Security Information</h3>
+    <div class="settings-actions">
+      <button mat-button color="primary" (click)="changeEmail()">Change email address</button>
+      <button mat-button color="primary" (click)="changePassword()">Change password</button>
+    </div>
+  </section>
+
+  <section class="settings-section">
+    <h3>Activate email notifications</h3>
+    <div class="settings-actions">
+      <button mat-button color="primary" (click)="activateNotifications()">Activate</button>
+    </div>
+  </section>
+
+  <section class="settings-section">
+    <h3>Social media accounts</h3>
+    <div class="settings-actions">
+      <button mat-stroked-button color="primary" (click)="linkMessenger()">
+        <mat-icon>message</mat-icon> Messenger Link
+      </button>
+    </div>
+  </section>
+</mat-card>

@@ -1,0 +1,138 @@
+<!-- 🔽 Page Header -->
+<div class="bg-light-primary rounded p-y-20 p-x-24 m-b-24 overflow-hidden">
+  <div class="d-flex">
+    <div class="m-t-6">
+      <h4 class="page-title m-0 f-s-20 f-w-600">
+        Edit Profile
+      </h4>
+    </div>
+  </div>
+</div>
+
+<!-- 🔽 Profile Form Card -->
+<mat-card class="cardWithShadow">
+  <mat-card-content class="p-24">
+
+    <!-- ✅ Member ID moved to top -->
+    <div class="profile-item" style="margin-bottom: 16px;">
+      <p><strong>Member ID:</strong> {{ profile.memberId }}</p>
+    </div>
+
+    <!-- Nickname -->
+    <div class="profile-item">
+      <ng-container *ngIf="isEditing; else nicknameView">
+        <mat-form-field appearance="outline" class="profile-input w-100">
+          <mat-label>Nickname</mat-label>
+          <input matInput [(ngModel)]="profile.nickname" />
+        </mat-form-field>
+      </ng-container>
+      <ng-template #nicknameView>
+        <p><strong>Nickname:</strong> {{ profile.nickname }}</p>
+      </ng-template>
+    </div>
+
+    <!-- Gender -->
+    <div class="profile-item">
+      <ng-container *ngIf="isEditing; else genderView">
+        <mat-form-field appearance="outline" class="profile-input w-100">
+          <mat-label>Gender</mat-label>
+          <input matInput [(ngModel)]="profile.gender" />
+        </mat-form-field>
+      </ng-container>
+      <ng-template #genderView>
+        <p><strong>Gender:</strong> {{ profile.gender }}</p>
+      </ng-template>
+    </div>
+
+    <!-- Email -->
+    <div class="profile-item">
+      <ng-container *ngIf="isEditing; else emailView">
+        <mat-form-field appearance="outline" class="profile-input w-100">
+          <mat-label>Email Address</mat-label>
+          <input matInput type="email" [(ngModel)]="profile.email" />
+        </mat-form-field>
+      </ng-container>
+      <ng-template #emailView>
+        <p><strong>Email:</strong> {{ profile.email }}</p>
+      </ng-template>
+    </div>
+
+    <!-- Birthday -->
+    <div class="profile-item">
+      <ng-container *ngIf="isEditing; else viewMode">
+        <mat-form-field appearance="outline" class="profile-input w-100">
+          <mat-label>Birthday</mat-label>
+          <input matInput [matDatepicker]="picker" [(ngModel)]="profile.birthday">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </ng-container>
+      <ng-template #viewMode>
+        <div class="view-field">
+          <strong>Birthday:</strong>
+          <span>{{ profile.birthday | date: 'longDate' }}</span>
+        </div>
+      </ng-template>
+    </div>
+
+    <!-- Address -->
+    <div class="profile-item">
+      <ng-container *ngIf="isEditing; else addressView">
+        <mat-form-field appearance="outline" class="profile-input w-100">
+          <mat-label>Contact Address</mat-label>
+          <input matInput [(ngModel)]="profile.address" />
+        </mat-form-field>
+      </ng-container>
+      <ng-template #addressView>
+        <p><strong>Address:</strong> {{ profile.address }}</p>
+      </ng-template>
+    </div>
+
+    <!-- Zip -->
+    <div class="profile-item">
+      <ng-container *ngIf="isEditing; else zipView">
+        <mat-form-field appearance="outline" class="profile-input w-100">
+          <mat-label>Zip/Postal Code</mat-label>
+          <input matInput [(ngModel)]="profile.zip" />
+        </mat-form-field>
+      </ng-container>
+      <ng-template #zipView>
+        <p><strong>Zip:</strong> {{ profile.zip }}</p>
+      </ng-template>
+    </div>
+
+    <!-- Tel -->
+    <div class="profile-item">
+      <ng-container *ngIf="isEditing; else telView">
+        <mat-form-field appearance="outline" class="profile-input w-100">
+          <mat-label>Tel</mat-label>
+          <input matInput [(ngModel)]="profile.tel" />
+        </mat-form-field>
+      </ng-container>
+      <ng-template #telView>
+        <p><strong>Tel:</strong> {{ profile.tel }}</p>
+      </ng-template>
+    </div>
+
+    <!-- Fax -->
+    <div class="profile-item">
+      <ng-container *ngIf="isEditing; else faxView">
+        <mat-form-field appearance="outline" class="profile-input w-100">
+          <mat-label>Fax</mat-label>
+          <input matInput [(ngModel)]="profile.fax" />
+        </mat-form-field>
+      </ng-container>
+      <ng-template #faxView>
+        <p><strong>Fax:</strong> {{ profile.fax }}</p>
+      </ng-template>
+    </div>
+
+    <!-- 🔘 Action Buttons -->
+    <div class="d-flex gap-3 m-t-20">
+      <button *ngIf="!isEditing" mat-raised-button color="primary" (click)="toggleEdit()">Edit</button>
+      <button *ngIf="isEditing" mat-raised-button color="primary" (click)="saveProfile()">Save</button>
+      <button mat-stroked-button color="warn" (click)="deleteAccount()">Delete Account</button>
+    </div>
+
+  </mat-card-content>
+</mat-card>

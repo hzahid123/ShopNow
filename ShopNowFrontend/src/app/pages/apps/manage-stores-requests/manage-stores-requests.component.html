@@ -1,0 +1,225 @@
+<div class="bg-light-primary rounded p-y-20 p-x-24 m-b-24 overflow-hidden">
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="m-t-6">
+            <h4 class="page-title m-0 f-s-20 f-w-600">
+                Manage Store Requests
+            </h4>
+        </div>
+        <!-- <div>
+            <button mat-raised-button color="primary" (click)="openCreateDialog()">
+                <mat-icon>add</mat-icon>
+                New Request
+            </button>
+        </div> -->
+    </div>
+</div>
+<div class="table-responsive">
+    <p-table #dt [value]="filteredDataSource" [loading]="isLoading">
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 3%">
+                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                </th>
+                <th pSortableColumn="storeOwnerId">
+                    Store Owner ID <p-sortIcon field="storeOwnerId"></p-sortIcon>
+                </th>
+                <th pSortableColumn="storeName">
+                    Store Name <p-sortIcon field="storeName"></p-sortIcon>
+                </th>
+                <th pSortableColumn="ownerName">
+                    Owner <p-sortIcon field="ownerName"></p-sortIcon>
+                </th>
+                <th pSortableColumn="ownerSurname">
+                    Owner Surname <p-sortIcon field="ownerSurname"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="ownerEmail">
+                    Email <p-sortIcon field="ownerEmail"></p-sortIcon>
+                </th>
+                <th>Status</th>
+                <th style="width: 10%">Actions</th>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-element>
+            <tr>
+                <td>
+                    <p-tableCheckbox [value]="element"></p-tableCheckbox>
+                </td>
+                <td>{{ element.storeOwnerId }}</td>
+                <td><strong>{{ element.storeName }}</strong></td>
+                <td>{{ element.ownerName || 'N/A' }}</td>
+                <td>{{ element.ownerSurname || 'N/A' }}</td>
+
+                <td>{{ element.ownerEmail || 'N/A' }}</td>
+
+                <!-- STATUS -->
+                <td>
+                    <span [ngClass]="{
+              'bg-light-success text-success': element.storerequestStatus == 1,
+              'bg-light-warning text-warning': element.storerequestStatus == 0,
+              'bg-light-error text-error': element.storerequestStatus == 2
+            }" class="rounded f-w-600 p-6 p-y-4 f-s-12">
+                        {{ getStatusLabel(element.storerequestStatus) }}
+                    </span>
+                    <ng-container *ngIf="element.storerequestStatus === 0">
+                        <button mat-icon-button color="accent" title="Approve Request"
+                            (click)="updateStatus(element, 1)" [disabled]="isUpdatingStatus">
+                            <mat-icon>check</mat-icon>
+                        </button>
+                        <button mat-icon-button color="warn" title="Reject Request" (click)="updateStatus(element, 2)"
+                            [disabled]="isUpdatingStatus">
+                            <mat-icon>close</mat-icon>
+                        </button>
+                    </ng-container>
+                </td>
+
+                <!-- ACTIONS -->
+                <td>
+                    <div class="d-flex align-items-center gap-2">
+                        <i-tabler name="pencil" class="icon-20 edit-icon" matTooltip="Edit"
+                            (click)="editRecord(element.id)">
+                        </i-tabler>
+                        <i-tabler name="trash" class="icon-20 delete-icon" matTooltip="Delete"
+                            (click)="deleteShop(element.id)">
+                        </i-tabler>
+                        <!-- <i-tabler name="eye" class="icon-20 view-icon" matTooltip="View Details"
+              (click)="viewDetails(element)">
+            </i-tabler> -->
+                        <i-tabler *ngIf="element.storerequestStatus !== 0" name="refresh" class="icon-20 view-icon"
+                            matTooltip="Refresh to Pending" (click)="resetToPending(element)">
+                        </i-tabler>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="8" class="text-center p-24">
+                    <div class="d-flex flex-column align-items-center">
+                        <mat-icon class="icon-48 text-muted m-b-16">store</mat-icon>
+                        <p class="text-muted">No store requests found</p>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+
+    <p-paginator [rows]="pageSize" [totalRecords]="totalRecords" [rowsPerPageOptions]="pageSizes"
+        (onPageChange)="onPageChange($event)">
+    </p-paginator>
+</div>
+
+<!-- Create/Edit Dialog -->
+<p-dialog [header]="storeHeader" [modal]="true" [(visible)]="visible" [style]="{width: '600px'}">
+    <form [formGroup]="storeRequestForm" (ngSubmit)="createShopRequest()">
+        <div class="card flex justify-content-center">
+            <p-fieldset legend="Store Information" [toggleable]="true">
+                <div class="row p-t-5">
+                    <div class="col-sm-6">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>Owner ID</mat-label>
+                            <input matInput formControlName="ownerId" placeholder="Enter owner ID">
+                            <mat-error *ngIf="storeRequestForm.get('ownerId')?.hasError('required')">
+                                Owner ID is required
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-sm-6">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>Store Name</mat-label>
+                            <input matInput formControlName="name" placeholder="Enter Store Name">
+                            <mat-error *ngIf="storeRequestForm.get('name')?.hasError('required')">
+                                Store name is required
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-sm-12">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>Store Description</mat-label>
+                            <textarea matInput formControlName="description" rows="3"
+                                placeholder="Enter Store Description"></textarea>
+                            <mat-error *ngIf="storeRequestForm.get('description')?.hasError('required')">
+                                Description is required
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </p-fieldset>
+        </div>
+
+        <div class="row m-t-24" style="margin-bottom: 20px;">
+            <div class="col-sm-12 d-flex justify-content-end gap-8">
+                <button mat-raised-button type="button" (click)="closeDialog()">
+                    Cancel
+                </button>
+                <button mat-flat-button color="primary" type="submit"
+                    [disabled]="storeRequestForm.invalid || isSubmitting">
+                    <mat-icon *ngIf="isSubmitting">hourglass_empty</mat-icon>
+                    {{ storeButton }}
+                </button>
+            </div>
+        </div>
+    </form>
+</p-dialog>
+
+<!-- Status Change Confirmation Dialog -->
+<p-dialog header="Confirm Status Change" [modal]="true" [(visible)]="showStatusConfirmDialog"
+    [style]="{width: '400px'}">
+    <div class="d-flex align-items-center m-b-16">
+        <mat-icon [ngClass]="{
+            'text-success': pendingStatusChange === 1,
+            'text-error': pendingStatusChange === 2,
+            'text-warning': pendingStatusChange === 0
+        }" class="m-r-8">
+            {{ pendingStatusChange === 1 ? 'check_circle' : (pendingStatusChange === 2 ? 'cancel' : 'schedule') }}
+        </mat-icon>
+        <span>Are you sure you want to {{ getStatusActionText(pendingStatusChange) }} this store request?</span>
+    </div>
+
+    <div *ngIf="pendingStatusChange === 2" class="m-b-16">
+        <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Rejection Reason (Optional)</mat-label>
+            <textarea matInput [(ngModel)]="rejectionReason" rows="2"
+                placeholder="Provide a reason for rejection..."></textarea>
+        </mat-form-field>
+    </div>
+
+    <div class="d-flex justify-content-end gap-8">
+        <button mat-raised-button (click)="cancelStatusChange()">Cancel</button>
+        <button mat-flat-button [color]="pendingStatusChange === 1 ? 'accent' : 'warn'" (click)="confirmStatusChange()"
+            [disabled]="isUpdatingStatus">
+            <mat-icon *ngIf="isUpdatingStatus">hourglass_empty</mat-icon>
+            {{ getStatusActionText(pendingStatusChange) }}
+        </button>
+    </div>
+</p-dialog>
+
+<!-- Delete Confirmation Dialog - PrimeNG -->
+<p-dialog header="Delete Store Request" [modal]="true" [(visible)]="showDeleteConfirmDialog" [style]="{width: '400px'}">
+    <div class="d-flex align-items-center m-b-16">
+        <!-- <mat-icon class="text-error m-r-8">warning</mat-icon> -->
+        <span>Are you sure you want to delete this store request? This action cannot be undone.</span>
+    </div>
+
+    <!-- <div class="d-flex justify-content-end gap-8">
+        <button mat-raised-button (click)="cancelDelete()">
+            Cancel
+        </button>
+        <button mat-flat-button color="warn" (click)="confirmDelete()">
+            <mat-icon>delete</mat-icon>
+            Delete
+        </button>
+    </div> -->
+
+    <div class="d-flex justify-content-end gap-8">
+        <button mat-raised-button type="button" (click)="cancelDelete()">Cancel</button>
+        <button mat-flat-button color="warn" (click)="confirmDelete()">
+            <!-- <span *ngIf="isDeleting">Deleting...</span>
+            <span *ngIf="!isDeleting">Delete</span> -->
+            Delete
+        </button>
+    </div>
+
+</p-dialog>

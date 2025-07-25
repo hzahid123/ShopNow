@@ -1,0 +1,100 @@
+[33mcommit 20e11c2b6ec81ad008cb838734af18fd2d7890e4[m[33m ([m[1;36mHEAD -> [m[1;32mdevelop[m[33m)[m
+Author: Hafiz Atta Ul Mohamin <77915138+Atta-ul-mohamin@users.noreply.github.com>
+Date:   Wed Mar 5 16:17:52 2025 +0500
+
+    Pre-Angular 19 update changes
+
+[33mcommit bf36686491a00c9d01c9fb20dbe6e6bf89a6663d[m[33m ([m[1;31morigin/develop[m[33m)[m
+Author: Hafiz Atta Ul Mohamin <77915138+Atta-ul-mohamin@users.noreply.github.com>
+Date:   Sat Mar 1 22:39:56 2025 +0500
+
+    integration backend and frontend
+
+[33mcommit 0c2beff832eeb5bcb22ea05d1bdd7b03e0e0de4d[m[33m ([m[1;31morigin/atta-branch[m[33m, [m[1;32matta-branch[m[33m)[m
+Author: Hafiz Atta Ul Mohamin <77915138+Atta-ul-mohamin@users.noreply.github.com>
+Date:   Sun Feb 23 18:00:24 2025 +0500
+
+    shop component ui make
+
+[33mcommit 05840060e8543166afbbe5928756d5b08d43b914[m[33m ([m[1;32mmain[m[33m)[m
+Author: Hafiz Atta Ul Mohamin <77915138+Atta-ul-mohamin@users.noreply.github.com>
+Date:   Sat Feb 22 17:27:41 2025 +0500
+
+    merge resolve in backend by atta and haseeb
+
+[33mcommit e91ffe996b78ce2e0d48a3b1e472b0b66cbcb6f2[m
+Author: Hassan Nisar <hassannisar808@gmail.com>
+Date:   Sat Feb 22 12:10:55 2025 +0500
+
+    ErrorResolved
+
+[33mcommit ade427188784390896a506e6332038594fc7ad47[m
+Merge: 2712791 100be3c
+Author: Hassan Nisar <hassannisar808@gmail.com>
+Date:   Sat Feb 22 02:20:46 2025 +0500
+
+    ConflictResolved
+
+[33mcommit 27127919068fc00c36b10549f8ee4bb359b9c053[m
+Author: Hassan Nisar <hassannisar808@gmail.com>
+Date:   Sat Feb 22 02:16:37 2025 +0500
+
+    RoleManageAndDataSeed
+
+[33mcommit 100be3c28233d5778b00d202aac376d4ceeb9757[m
+Merge: c1d0237 9079531
+Author: hzahid123 <haseebzahid908@gmail.com>
+Date:   Wed Feb 19 01:10:15 2025 +0600
+
+    merge resolved
+
+[33mcommit c1d0237837dee00ee813538c6c9b0e756d27f7ce[m
+Author: hzahid123 <haseebzahid908@gmail.com>
+Date:   Tue Feb 18 23:43:26 2025 +0600
+
+    angular default theme added
+
+[33mcommit 9079531492e70da8ce373f28213f9d65c4ec72aa[m
+Author: Hassan Nisar <hassannisar808@gmail.com>
+Date:   Sat Feb 15 22:01:03 2025 +0500
+
+    CompleteauthenticationFlowWithEmail
+
+[33mcommit 2dfc7941bbdf48b84f5d3e868d213d02b94a4f7a[m
+Merge: ec2e5d8 9174df3
+Author: waleed1-github <waleedrazaanjum1@gmail.com>
+Date:   Sat Feb 15 13:14:27 2025 +0500
+
+    Merge pull request #1 from Hassan-Nisar-UET/waleed_2-14
+    
+    new app services waleed
+
+[33mcommit 9174df35424926c5938b4be2bcc4c0891d644b4e[m[33m ([m[1;31morigin/waleed_2-14[m[33m)[m
+Author: waleed1-github <waleedrazaanjum1@gmail.com>
+Date:   Fri Feb 14 23:55:49 2025 +0500
+
+    new app services waleed
+
+[33mcommit ec2e5d8a5356f9a4c76ad75a62e367217b26cdc9[m
+Author: Hassan Nisar <hassannisar808@gmail.com>
+Date:   Thu Feb 13 00:17:14 2025 +0500
+
+    tables more 6 added
+
+[33mcommit f0b250064ca2c404894e1c1d1636e8c455bd00fa[m
+Author: Hassan Nisar <hassannisar808@gmail.com>
+Date:   Wed Feb 5 20:22:15 2025 +0500
+
+    cruds
+
+[33mcommit 8dbb685bcaa4af7373d73723ce9862b34f187771[m
+Author: Hassan Nisar <hassannisar808@gmail.com>
+Date:   Wed Feb 5 00:27:45 2025 +0500
+
+    Your commit message
+
+[33mcommit d01fb8151c9af164714cd78e456cf15262b64f68[m
+Author: Hassan Nisar <93261648+Hassan-Nisar-UET@users.noreply.github.com>
+Date:   Wed Feb 5 00:19:43 2025 +0500
+
+    Initial commit

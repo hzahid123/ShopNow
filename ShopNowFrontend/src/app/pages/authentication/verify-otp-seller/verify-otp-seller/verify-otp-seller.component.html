@@ -1,0 +1,109 @@
+<!-- verify-otp-seller.component.html
+<div class="otp-container">
+  <p-card class="otp-card">
+    <ng-template pTemplate="header">
+      <div class="text-center p-4">
+        <img 
+          [src]="options.theme === 'light' ? './assets/images/logos/dark-logo.svg' : './assets/images/logos/light-logo.svg'" 
+          alt="logo" 
+          class="logo"
+        />
+      </div>
+    </ng-template>
+
+    <div class="card-content">
+      <p class="verification-text">
+        We sent a verification code to your mobile. Enter the code from the mobile in the field below.
+      </p>
+      
+      <p class="masked-number">******1234</p>
+      
+      <div class="otp-section">
+        <label class="otp-label">Type your 6 digits security code</label>
+        
+        <!-- PrimeNG OTP Input-
+        <p-inputOtp 
+          [(ngModel)]="otpValue" 
+          [length]="6"
+          [integerOnly]="true"
+          class="otp-input-container">
+        </p-inputOtp>
+        
+        <p-button 
+          label="Verify My Account" 
+          (onClick)="onVerify()"
+          class="verify-button"
+          styleClass="w-full">
+        </p-button>
+      </div>
+      
+      <div class="resend-section">
+        <span>Didn't get the code? </span>
+        <a 
+          href="javascript:void(0)" 
+          (click)="onResend()"
+          [class.disabled]="isResendDisabled"
+          class="resend-link">
+          Resend {{ isResendDisabled ? '(' + countdown + 's)' : '' }}
+        </a>
+      </div>
+    </div>
+  </p-card>
+</div> -->
+
+<!-- verify-otp-seller.component.html -->
+<div class="otp-page-wrapper">
+  <div class="otp-container">
+    <p-card class="otp-card">
+      <ng-template pTemplate="header">
+        <div class="text-center p-4">
+          <img 
+            [src]="options.theme === 'light' ? './assets/images/logos/dark-logo.svg' : './assets/images/logos/light-logo.svg'" 
+            alt="logo" 
+            class="logo"
+          />
+        </div>
+      </ng-template>
+
+      <div class="card-content">
+        <p class="verification-text">
+          We sent a verification code to your mobile.<br> Enter the code from the mobile in the field below.
+        </p>
+
+        <p class="masked-number">******1234</p>
+
+        <div class="otp-section">
+          <label class="otp-label">Type your 6 digits security code</label>
+
+          <!-- PrimeNG OTP Input-->
+          <p-inputOtp 
+            [(ngModel)]="otpValue" 
+            [length]="6"
+            [integerOnly]="true"
+            class="otp-input-container">
+          </p-inputOtp>
+
+          <p-button 
+  label="Verify My Account" 
+  (onClick)="onVerify()"
+  [disabled]="!otpValue || otpValue.length < 6"
+  class="verify-button"
+  styleClass="w-full">
+</p-button>
+
+        </div>
+
+        <div class="resend-section">
+          <span>Didn't get the code? </span>
+          <a 
+            href="javascript:void(0)" 
+            (click)="onResend()"
+            [class.disabled]="isResendDisabled"
+            class="resend-link">
+            Resend {{ isResendDisabled ? '(' + countdown + 's)' : '' }}
+          </a>
+        </div>
+      </div>
+    </p-card>
+  </div>
+</div>

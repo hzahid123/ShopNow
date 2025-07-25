@@ -1,0 +1,153 @@
+<!-- Product Category-wise Component HTML -->
+<div class="product-categorywise-container">
+
+    <!-- Header Section -->
+    <div class="header-section" *ngIf="!isLoading && !loadingError">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="page-title">Category Products</h2>
+                <button pButton type="button" label="Back to Home" icon="pi pi-home" 
+                        (click)="goBack()" class="p-button-outlined">
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error State -->
+    @if(loadingError && !isLoading) {
+    <div class="error-container">
+        <div class="container">
+            <div class="error-content text-center py-5">
+                <i class="pi pi-exclamation-triangle error-icon" style="font-size: 3rem; color: #dc3545;"></i>
+                <h3 class="mt-3">{{ loadingError }}</h3>
+                <button pButton type="button" label="Retry" icon="pi pi-refresh" 
+                        (click)="retryLoading()" class="mt-3">
+                </button>
+            </div>
+        </div>
+    </div>
+    }
+
+    <!-- Loading State -->
+    @if(isLoading) {
+    <div class="loading-container text-center py-5">
+        <p-progressSpinner></p-progressSpinner>
+        <p class="mt-3">Loading products...</p>
+    </div>
+    }
+
+    <!-- Products Section -->
+    <div class="products-section" *ngIf="!isLoading && !loadingError">
+        <div class="container">
+            
+            <!-- Products Count -->
+            <div class="products-count mb-4" *ngIf="products.length > 0">
+                <p class="text-muted">Showing {{ products.length }} product{{ products.length !== 1 ? 's' : '' }}</p>
+            </div>
+
+            <!-- Products Grid -->
+            <div class="products-grid" *ngIf="products.length > 0">
+                <div *ngFor="let product of products; trackBy: trackByProductId" class="product-card-wrapper">
+                    <div class="product-card" (click)="onProductClick(product)" style="cursor: pointer;">
+
+                        <!-- Product Image Container -->
+                        <div class="product-image-container">
+                            <img [src]="getProductImage(product)" 
+                                 [alt]="product.title || product.name" 
+                                 class="product-image"
+                                 (error)="onImageError($event)">
+
+                            <!-- Discount Badge -->
+                            <div class="product-badge discount-badge" *ngIf="hasDiscount(product)">
+                                -{{ getDiscountPercentage(product.originalPrice || product.regularPrice, product.price) }}%
+                            </div>
+
+                            <!-- Brand Badge -->
+                            <div class="product-badge featured-badge" *ngIf="product.badge">{{ product.badge }}</div>
+
+                            <!-- Stock Status Badge -->
+                            <div class="product-badge stock-badge" 
+                                 [class.out-of-stock]="!isProductAvailable(product)"
+                                 [class.low-stock]="product.stockQuantity && product.stockQuantity < 5 && product.stockQuantity > 0">
+                                <span *ngIf="!isProductAvailable(product)">Out of Stock</span>
+                                <span *ngIf="product.stockQuantity && product.stockQuantity < 5 && product.stockQuantity > 0">Limited Stock</span>
+                            </div>
+
+                            <!-- Add to Cart Icon (Bottom Right) -->
+                            <div *ngIf="isProductAvailable(product)">
+                                <div *ngIf="isProductInCart(product.id)" class="image-cart-controls" (click)="$event.stopPropagation()">
+                                    <button class="image-quantity-btn decrease" 
+                                            (click)="decreaseQuantity(product)"
+                                            [disabled]="addingToCart">
+                                        <mat-icon>remove</mat-icon>
+                                    </button>
+                                    <span class="image-quantity-display">{{ getProductQuantityInCart(product.id) }}</span>
+                                    <button class="image-quantity-btn increase" 
+                                            (click)="increaseQuantity(product)"
+                                            [disabled]="addingToCart">
+                                        <mat-icon>add</mat-icon>
+                                    </button>
+                                </div>
+
+                                <!-- Add to Cart Icon -->
+                                <button *ngIf="!isProductInCart(product.id)" class="add-to-cart-icon"
+                                        (click)="addToCart(product); $event.stopPropagation()" 
+                                        [disabled]="addingToCart"
+                                        [attr.aria-label]="'Add ' + (product.title || product.name) + ' to cart'">
+                                    <mat-icon *ngIf="addingToCart" class="spinning">hourglass_empty</mat-icon>
+                                    <mat-icon *ngIf="!addingToCart">add_shopping_cart</mat-icon>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Product Info -->
+                        <div class="product-info">
+                            <div class="price-section">
+                                <div class="price-details">
+                                    <span class="current-price">{{ formatPrice(product.price) }}</span>
+                                    <span *ngIf="hasDiscount(product)" class="original-price">
+                                        {{ formatPrice(product.originalPrice || product.regularPrice) }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Product Title -->
+                            <h1 class="product-title">{{ product.title || product.name }}</h1>
+
+                            <!-- Brand and Category -->
+                            <div class="product-meta">
+                                <span *ngIf="product.brand" class="product-brand">{{ product.brand }}</span>
+                            </div>
+
+                            <!-- Rating and Stats -->
+                            <div class="product-stats">
+                                <div class="rating-section">
+                                    <div class="stars">
+                                        <mat-icon *ngFor="let star of getStarArray(product.rating || 0); trackBy: trackByProductId" 
+                                                 class="star filled">star</mat-icon>
+                                        <mat-icon *ngFor="let star of getEmptyStarArray(product.rating || 0); trackBy: trackByProductId" 
+                                                 class="star empty">star_border</mat-icon>
+                                    </div>
+                                    <span class="rating-text">{{ (product.rating || 0).toFixed(1) }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- No Products Message -->
+            <div class="no-products-message text-center py-5" *ngIf="products.length === 0">
+                <i class="pi pi-info-circle" style="font-size: 3rem; color: #6c757d;"></i>
+                <h4 class="mt-3">No Products Found</h4>
+                <p class="text-muted">There are no products available in this category at the moment.</p>
+                <button pButton type="button" label="Go Back" icon="pi pi-arrow-left" 
+                        (click)="goBack()" class="mt-3">
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Messages -->
+    <p-toast></p-toast>
+</div>

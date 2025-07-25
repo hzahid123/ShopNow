@@ -1,0 +1,164 @@
+<div class="dashboard">
+  <h1>Dashboard</h1>
+  
+  <!-- Summary Cards -->
+  <div class="row">
+    <div class="col-lg-4 col-md-4 col-sm-6">
+      <div class="summary-card">
+        <h3>Total Sales</h3>
+        <p class="value">{{ totalSales | currency:'PKR':'symbol':'1.0-0' }}</p>
+      </div>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-6">
+      <div class="summary-card">
+        <h3>Total Orders</h3>
+        <p class="value">{{ totalOrders }}</p>
+      </div>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-6">
+      <div class="summary-card">
+        <h3>Total Users</h3>
+        <p class="value">{{ totalUsers }}</p>
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6">
+      <div class="summary-card">
+        <h3>Total Stores</h3>
+        <p class="value">{{ totalStores }}</p>
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6">
+      <div class="summary-card">
+        <h3>Total WishList Items</h3>
+        <p class="value">{{ totalWishlistItems }}</p>
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6">
+      <div class="summary-card">
+        <h3>Pending Store Requests</h3>
+        <p class="value">{{ totalPendingStoreRequests }}</p>
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6">
+      <div class="summary-card">
+        <h3>Total Store Followers</h3>
+        <p class="value">{{ totalStoreFollowers }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 1: Monthly Sales Chart & Top Followed Stores -->
+  <div class="row">
+    <div class="col-lg-6 col-md-6">
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3>Monthly Sales</h3>
+           <p-dropdown
+        [(ngModel)]="selectedYear" [options]="yearOptions" 
+            (onChange)="onYearChange()"
+          optionLabel="label"
+          optionValue="value" >
+        </p-dropdown>
+       
+        </div>
+        <canvas id="monthlySalesChart" width="400" height="200"></canvas>
+      </div>
+    </div>
+    <div class="col-lg-6 col-md-6">
+      <div class="chart-card">
+        <h3>Top Followed Stores</h3>
+        <canvas id="topFollowedStoresChart" width="400" height="200"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 2: Top Selling Products & Recent Stores -->
+  <div class="row">
+    <div class="col-lg-7 col-md-7">
+      <div class="chart-card">
+        <h3>Top Selling Products</h3>
+        <canvas id="topSellingProductsChart" width="400" height="200"></canvas>
+      </div>
+    </div>
+    <div class="col-lg-5 col-md-5">
+      <div class="table-card">
+        <h3>Recent Stores</h3>
+        <div class="table-responsive">
+        <p-table [value]="recentStores" [scrollable]="true" scrollHeight="250px">
+  <ng-template pTemplate="header">
+    <tr>
+      <th>Store Name</th>
+      <th>Owner ID</th>
+      <th>Created</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-store>
+    <tr>
+      <td>{{ store.name }}</td>
+      <td>{{ store.ownerId }}</td>
+      <td>{{ store.creationTime | date:'short' }}</td>
+    </tr>
+  </ng-template>
+</p-table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 3: Order Status & Recent Unapproved Reviews -->
+  <div class="row">
+    <div class="col-lg-4 col-md-4">
+      <div class="chart-card">
+        <h3>Orders by Status</h3>
+        <canvas id="orderStatusChart" width="400" height="200"></canvas>
+      </div>
+    </div>
+    <div class="col-lg-8 col-md-8">
+      <div class="table-card">
+        <h3>Recent Unapproved Reviews</h3>
+        <div class="table-responsive">
+         <p-table [value]="recentUnapprovedReviews" [scrollable]="true" scrollHeight="250px">
+  <ng-template pTemplate="header">
+    <tr>
+      <th>User</th>
+      <th>Product</th>
+      <th>Rating</th>
+      <th>Review</th>
+      <th>Created</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-review>
+    <tr>
+      <td>{{ review.userName }}</td>
+      <td>{{ review.productName }}</td>
+      <td>
+        <span class="rating">
+          <i class="fas fa-star" *ngFor="let star of [].constructor(review.rating)"></i>
+        </span>
+      </td>
+      <td class="review-text">{{ review.reviewText }}</td>
+      <td>{{ review.creationTime | date:'short' }}</td>
+    </tr>
+  </ng-template>
+</p-table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 4: Top Stores by Sales & Top Wishlisted Products -->
+  <div class="row">
+    <div class="col-lg-6 col-md-6">
+      <div class="chart-card">
+        <h3>Top Stores by Sales</h3>
+        <canvas id="topStoresBySalesChart" width="400" height="200"></canvas>
+      </div>
+    </div>
+    <div class="col-lg-6 col-md-6">
+      <div class="chart-card">
+        <h3>Top Wishlisted Products</h3>
+        <canvas id="topWishlistedProductsChart" width="400" height="200"></canvas>
+      </div>
+    </div>
+  </div>
+</div>

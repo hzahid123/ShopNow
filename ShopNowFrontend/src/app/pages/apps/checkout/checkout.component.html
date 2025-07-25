@@ -1,0 +1,210 @@
+<!-- checkout.component.html -->
+<div class="checkout-container">
+  <!-- Toast for notifications -->
+  <p-toast></p-toast>
+
+  <!-- Header -->
+  <div class="checkout-header">
+    <div class="header-nav">
+      <button mat-icon-button class="back-btn" (click)="goBackToCart()">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <h1 class="checkout-title">
+        <mat-icon>shopping_cart</mat-icon>
+        Complete Your Order
+      </h1>
+    </div>
+  </div>
+
+  <div class="checkout-content">
+    <div class="checkout-form-container">
+      <!-- Left Side - Form Section -->
+      <div class="form-section">
+        <form [formGroup]="checkoutForm" (ngSubmit)="onSubmitOrder()" class="checkout-form">
+          <!-- Shipping Address Section -->
+          <div class="section-header">
+            <mat-icon class="section-icon">location_on</mat-icon>
+            <h3 class="section-title">Shipping address</h3>
+          </div>
+          
+          <div class="security-notice">
+            <mat-icon class="security-icon">lock</mat-icon>
+            <p class="security-text">Your personal information is encrypted and will only be used for delivery purposes</p>
+          </div>
+
+          <div class="form-grid">
+            <!-- Country Selection -->
+            <div class="form-field full-width">
+              <mat-form-field appearance="outline">
+                <mat-label>Country / region *</mat-label>
+                <mat-select formControlName="country">
+                  <mat-option *ngFor="let country of countries" [value]="country.name">
+                    {{ country.name }}
+                  </mat-option>
+                </mat-select>
+                <mat-error>{{ getFieldError('country') }}</mat-error>
+              </mat-form-field>
+            </div>
+
+            <!-- Full Name -->
+            <div class="form-field full-width">
+              <mat-form-field appearance="outline">
+                <mat-label>First name and Last name *</mat-label>
+                <input matInput formControlName="fullName" placeholder="Enter your full name">
+                <mat-error>{{ getFieldError('fullName') }}</mat-error>
+              </mat-form-field>
+            </div>
+
+            <!-- Street Address -->
+            <div class="form-field full-width">
+              <mat-form-field appearance="outline">
+                <mat-label>Street address or P.O. box *</mat-label>
+                <input matInput formControlName="streetAddress" placeholder="Enter street address">
+                <mat-icon matSuffix class="location-icon" (click)="useCurrentLocation()">my_location</mat-icon>
+                <mat-error>{{ getFieldError('streetAddress') }}</mat-error>
+              </mat-form-field>
+              <div class="location-helper">
+                <button type="button" mat-button class="location-btn" (click)="useCurrentLocation()">
+                  <mat-icon>location_searching</mat-icon>
+                  Use my current location
+                </button>
+              </div>
+            </div>
+
+            <!-- Apartment -->
+            <div class="form-field full-width">
+              <mat-form-field appearance="outline">
+                <mat-label>Apartment, suite, unit, building, floor (optional)</mat-label>
+                <input matInput formControlName="apartment" placeholder="Enter apartment details">
+              </mat-form-field>
+            </div>
+
+            <!-- State/Province, City, Postal Code -->
+            <div class="form-field">
+              <mat-form-field appearance="outline">
+                <mat-label>State / province *</mat-label>
+                <input matInput formControlName="stateProvince" placeholder="Enter state">
+                <mat-error>{{ getFieldError('stateProvince') }}</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="form-field">
+              <mat-form-field appearance="outline">
+                <mat-label>City *</mat-label>
+                <input matInput formControlName="city" placeholder="Enter city">
+                <mat-error>{{ getFieldError('city') }}</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="form-field">
+              <mat-form-field appearance="outline">
+                <mat-label>Postal code *</mat-label>
+                <input matInput formControlName="postalCode" placeholder="Enter postal code">
+                <mat-icon matSuffix matTooltip="Postal code helps us calculate accurate shipping costs">help_outline</mat-icon>
+                <mat-error>{{ getFieldError('postalCode') }}</mat-error>
+              </mat-form-field>
+            </div>
+
+            <!-- Phone Number -->
+            <div class="form-field full-width">
+              <mat-form-field appearance="outline">
+                <mat-label>Phone number *</mat-label>
+                <span matPrefix class="phone-prefix">{{ getSelectedCountryPhone() }}&nbsp;</span>
+                <input matInput formControlName="phoneNumber" placeholder="Enter phone number">
+                <mat-icon matSuffix matTooltip="Only used to contact you for delivery updates">help_outline</mat-icon>
+                <mat-error>{{ getFieldError('phoneNumber') }}</mat-error>
+              </mat-form-field>
+              <p class="phone-helper">Only used to contact you for delivery updates</p>
+            </div>
+
+            <!-- Address Type -->
+            <div class="form-field full-width">
+              <div class="address-type-section">
+                <mat-radio-group formControlName="addressType" class="address-type-group">
+                  <mat-radio-button *ngFor="let type of addressTypes" [value]="type.value" class="address-type-option">
+                    <div class="address-type-content">
+                      <mat-icon class="address-type-icon">{{ type.icon }}</mat-icon>
+                      <span class="address-type-label">{{ type.label }}</span>
+                    </div>
+                  </mat-radio-button>
+                </mat-radio-group>
+              </div>
+            </div>
+
+            <!-- Set as Default -->
+            <div class="form-field full-width">
+              <mat-checkbox formControlName="setAsDefault" class="default-address-checkbox">
+                Set as default shipping address
+              </mat-checkbox>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Right Side - Order Summary Section -->
+      <div class="order-summary-section">
+        <div class="summary-card">
+          <h3 class="summary-title">Order summary ({{ cartSummary.itemCount }} items)</h3>
+          
+          <div class="summary-details">
+            <div class="summary-row">
+              <span class="summary-label">Item subtotal</span>
+              <div class="summary-value">
+                <span class="original-price" *ngIf="cartSummary.subtotal < 1000000">PKR {{ (cartSummary.subtotal * 1.2) | number:'1.2-2' }}</span>
+                <span class="current-price">PKR {{ cartSummary.subtotal | number:'1.2-2' }}</span>
+              </div>
+            </div>
+            
+            <div class="summary-row">
+              <span class="summary-label">Tax</span>
+              <span class="summary-value">PKR {{ cartSummary.tax | number:'1.2-2' }}</span>
+            </div>
+            
+            <div class="summary-row">
+              <span class="summary-label">Estimated shipping fee</span>
+              <span class="summary-value">PKR {{ cartSummary.shipping | number:'1.2-2' }}</span>
+            </div>
+
+            <div class="summary-row" *ngIf="cartSummary.discount > 0">
+              <span class="summary-label">Discount</span>
+              <span class="summary-value discount-value">-PKR {{ cartSummary.discount | number:'1.2-2' }}</span>
+            </div>
+
+            <mat-divider></mat-divider>
+            
+            <div class="summary-row total-row">
+              <span class="summary-label total-label">Total</span>
+              <span class="summary-value total-value">PKR {{ cartSummary.total | number:'1.2-2' }}</span>
+            </div>
+          </div>
+
+          <div class="savings-notice" *ngIf="hasSavings()">
+            <div class="savings-content">
+              <span class="savings-text">PKR {{ (calculateSavings()) | number:'1.2-2' }} saved</span>
+              <span class="savings-label">on your order</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="checkout-actions">
+    <button type="button" mat-stroked-button class="cancel-btn" (click)="onCancel()">
+      <mat-icon>arrow_back</mat-icon>
+      Back to Cart
+    </button>
+    <button type="submit" mat-raised-button color="primary" class="submit-btn" 
+            [disabled]="isProcessing || checkoutForm.invalid"
+            (click)="onSubmitOrder()">
+      <span *ngIf="!isProcessing" class="submit-content">
+        <mat-icon>payment</mat-icon>
+        Complete Order
+      </span>
+      <span *ngIf="isProcessing" class="processing-content">
+        <mat-spinner diameter="20"></mat-spinner>
+        Processing...
+      </span>
+    </button>
+  </div>
+</div>

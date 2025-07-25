@@ -1,0 +1,208 @@
+<div class="bg-light-primary rounded p-y-20 p-x-24 m-b-24 overflow-hidden ">
+    <div class="d-flex">
+        <div class="m-t-6">
+            <h4 class="page-title m-0 f-s-20 f-w-600 ">
+                Manage Users
+            </h4>
+        </div>
+
+        <div class="m-l-auto m-r-4">
+            <div class="d-flex">
+                <button mat-flat-button color="primary" (click)="showDialog()" class=" m-l-auto">
+                    <div class="d-flex align-items-center">
+                        <i-tabler name="plus" class="icon-18"></i-tabler>
+                        <span class="m-l-8">Add Users</span>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Success/Error Toast Notifications -->
+<p-toast position="top-right" [style]="{marginTop: '80px'}"></p-toast>
+
+<div class="table-responsive">
+    <!--searchbar-->
+    <div class="d-flex align-items-center justify-content-between w-100">
+        <mat-form-field appearance="outline" class="search-input w-100">
+            <mat-label>Search Users</mat-label>
+            <input matInput 
+                   placeholder="Search Users"
+                   autocomplete="off"
+                   [(ngModel)]="searchText"
+                   (keyup.enter)="loadUsers(searchText)">
+            <button mat-icon-button matSuffix class="suffix-circle-icon"
+                aria-label="Search"
+                (click)="loadUsers(searchText)">
+                <mat-icon>search</mat-icon>
+            </button>
+        </mat-form-field>
+
+        <button mat-flat-button color="primary" class="search-btn">
+            <mat-icon class="me-1">filter_list</mat-icon> Filter
+        </button>
+    </div>
+
+    <!-- Progress Bar - Shows when loading users -->
+    <div *ngIf="isLoadingUsers" class="loading-container m-b-16">
+        <p-progressBar mode="indeterminate" [style]="{'height': '6px'}"></p-progressBar>
+    </div>
+
+    <!-- Table - Hidden when loading -->
+    <div [style.opacity]="isLoadingUsers ? '0.5' : '1'" [style.pointer-events]="isLoadingUsers ? 'none' : 'auto'">
+        <p-table #dt [value]="dataSource" [sortMode]="'multiple'">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="width: 3%">
+                        <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                    </th>
+                    <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
+                    <th pSortableColumn="fullName">Full Name <p-sortIcon field="fullName"></p-sortIcon></th>
+                    <th pSortableColumn="emailAddress">Email Address <p-sortIcon field="emailAddress"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="isActive">Is Active <p-sortIcon field="isActive"></p-sortIcon></th>
+                    <th style="width: 7%">Action</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-element>
+                <tr>
+                    <td>
+                        <p-tableCheckbox [value]="element"></p-tableCheckbox>
+                    </td>
+                    <td>{{ element.userName }}</td>
+                    <td>{{ element.name }} {{ element.surname }}</td>
+                    <td>{{ element.emailAddress }}</td>
+                    <td>
+                        <i-tabler [name]="element.isActive ? 'circle-check' : 'xbox-x'" class="icon-18"
+                            [style.color]="element.isActive ? '#32cd32' : '#ff4c4c'">
+                        </i-tabler>
+                    </td>
+
+                    <td>
+                        <div class="m-l-16">
+                        <i-tabler name="pencil" class="icon-18 edit-icon" matTooltip="Edit"
+                            (click)="editRecord(element.id)">
+                        </i-tabler>
+
+                        <i-tabler name="trash" class="icon-18 delete-icon" matTooltip="Delete"
+                            (click)="confirmDelete(element.id, element.userName, element.name, element.surname)">
+                        </i-tabler>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+            <!-- Empty State Template -->
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="6" class="text-center p-4">
+                        <div *ngIf="!isLoadingUsers" class="empty-state">
+                            <i class="pi pi-users" style="font-size: 2rem; color: #6c757d; margin-bottom: 1rem;"></i>
+                            <p class="text-muted m-0">No users found</p>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+
+        <p-paginator [rows]="pageSize" [totalRecords]="totalRecords" [rowsPerPageOptions]="pageSizes"
+            (onPageChange)="onPageChange($event)">
+        </p-paginator>
+    </div>
+</div>
+
+<!-- Main User Form Dialog -->
+<p-dialog header="{{usersHeader}}" [modal]="true" (onHide)="closeDialog()" [(visible)]="visible">
+    <form [formGroup]="usersForm" (ngSubmit)="onSubmitUserForm()">
+
+        <div class="card flex justify-content-center m-t-5">
+            <div class="row p-t-5">
+                <div class="col-sm-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Username</mat-label>
+                        <input matInput formControlName="userName" placeholder="Enter Username">
+                    </mat-form-field>
+                </div>
+
+                <div class="col-sm-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Name</mat-label>
+                        <input matInput formControlName="name" placeholder="Enter Name">
+                    </mat-form-field>
+                </div>
+
+                <div class="col-sm-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Surname</mat-label>
+                        <input matInput formControlName="surname" placeholder="Enter Surname">
+                    </mat-form-field>
+                </div>
+
+                <div class="col-sm-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Email Address</mat-label>
+                        <input matInput formControlName="emailAddress" placeholder="Enter Email Address">
+                    </mat-form-field>
+                </div>
+
+                <div class="col-sm-6" *ngIf="usersButton !== 'Update'">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Password</mat-label>
+                        <input matInput type="password" formControlName="password" placeholder="Enter Password">
+                    </mat-form-field>
+                </div>
+
+                <div class="col-sm-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Role</mat-label>
+                        <mat-select formControlName="roleNames" (selectionChange)="onRoleChange($event.value)">
+                            <mat-option *ngFor="let role of roles" [value]="role.name">{{ role.name }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="col-sm-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>User Type</mat-label>
+                        <input matInput type="number" formControlName="userType" placeholder="Enter User Type" readonly>
+                    </mat-form-field>
+                </div>
+
+                <div class="col-sm-6 d-flex align-items-center" style="margin-top: 16px;">
+                    <mat-checkbox formControlName="isActive">Active</mat-checkbox>
+                </div>
+            </div>
+        </div>
+
+        <div class="row m-t-24" style="margin-bottom: 20px;">
+            <div class="col-sm-12 d-flex justify-content-end gap-8">
+                <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
+                <button mat-flat-button color="primary" type="submit">{{usersButton}}</button>
+            </div>
+        </div>
+    </form>
+</p-dialog>
+
+<!-- Delete Confirmation Dialog -->
+<p-dialog header="Confirm Delete" [modal]="true" [draggable]="false" [(visible)]="showDeleteDialog" [style]="{width: '450px'}">
+    <div class="confirmation-content">
+        <div class="d-flex align-items-center m-b-16">
+            <i class="pi pi-exclamation-triangle text-warning" style="font-size: 2rem; margin-right: 12px;"></i>
+            <div>
+                <p class="m-0 f-w-600">Are you sure you want to delete this user?</p>
+                <p class="m-0 text-muted m-t-8">This action cannot be undone.</p>
+            </div>
+        </div>
+        <div class="user-info bg-light-warning p-12 rounded m-b-16">
+            <p class="m-0"><strong>Username:</strong> {{ userToDelete?.userName }}</p>
+            <p class="m-0"><strong>Full Name:</strong> {{ userToDelete?.fullName }}</p>
+        </div>
+        <div class="d-flex justify-content-end gap-8">
+            <button mat-raised-button type="button" (click)="cancelDelete()">Cancel</button>
+            <button mat-flat-button color="warn" (click)="confirmDeleteUser()" [disabled]="isDeleting">
+                <span *ngIf="isDeleting">Deleting...</span>
+                <span *ngIf="!isDeleting">Delete</span>
+            </button>
+        </div>
+    </div>
+</p-dialog>

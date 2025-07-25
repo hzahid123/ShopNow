@@ -1,0 +1,130 @@
+<div class="feedback-container">
+  <!-- Header -->
+ <div class="bg-light-primary rounded p-y-20 p-x-24 m-b-24 overflow-hidden ">
+    <div class="d-flex">
+        <div class="m-t-6">
+            <h4 class="page-title m-0 f-s-20 f-w-600 ">
+                Feedback
+            </h4>
+        </div>
+    </div>
+</div>
+
+  <!-- Guidelines Card -->
+  <div class="guidelines-card">
+    <h3>Guidelines</h3>
+    <ul>
+      <li>You can leave feedback for sellers within 30 days in <strong>"Orders Awaiting My Feedback"</strong>.</li>
+      <li>Feedback will be published when both you and the seller have left feedback, or at the end of the 30 days.</li>
+      <li><a href="#" class="learn-more-link">Learn more about our Feedback Rating Policies</a></li>
+    </ul>
+  </div>
+
+  <!-- Status Tabs -->
+  <div class="status-tabs">
+    <div class="tab orders"
+         (click)="setTab('orders')"
+         [ngClass]="{'active': selectedTab === 'orders'}">
+      <span class="tab-text">Orders Awaiting My Feedback</span>
+      <span class="count">({{ordersAwaitingFeedback.length}})</span>
+    </div>
+
+    <div class="tab reviews"
+         (click)="setTab('reviews')"
+         [ngClass]="{'active': selectedTab === 'reviews'}">
+      <span class="tab-text">Reviews</span>
+      <span class="count">({{reviews.length}})</span>
+    </div>
+  </div>
+
+  
+
+
+ <!-- Results Section -->
+<div class="results-section">
+  <!-- Search Section -->
+  <div class="search-section">
+    <div class="search-form">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Order Number</mat-label>
+        <input matInput
+               [(ngModel)]="searchOrderNo"
+               placeholder="Enter order number">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="search-field">
+  <mat-label>Product Name</mat-label>
+  <input matInput
+         [(ngModel)]="searchProductName"
+         placeholder="Enter product name">
+  <mat-icon matSuffix>inventory</mat-icon>
+</mat-form-field>
+      <button mat-button
+              color="primary"
+              class="search-button"
+              (click)="onSearch()">
+        <mat-icon>search</mat-icon>
+        Search
+      </button>
+    </div>
+  </div>
+  <p-table [value]="getCurrentData()" [paginator]="true" [rows]="10" 
+           [showCurrentPageReport]="true" responsiveLayout="scroll">
+    
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Order Information</th>
+        <th *ngIf="selectedTab === 'reviews'">Feedback</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </ng-template>
+    
+    <ng-template pTemplate="body" let-item>
+      <tr>
+        <td>
+          <div class="order-number">{{item.orderNo}}</div>
+          <div class="store-name">{{item.storeName}}</div>
+          <div class="order-details">{{item.orderInfo}}</div>
+        </td>
+        <td *ngIf="selectedTab === 'reviews'">
+          <div class="feedback-text">{{item.feedback}}</div>
+        </td>
+        <td>
+  <span [ngClass]="{
+      'bg-light-success text-success': (selectedTab === 'reviews' ? item.status : item.feedback) === 'Published',
+      'bg-light-warning text-warning': (selectedTab === 'reviews' ? item.status : item.feedback) === 'Pending'
+    }" class="rounded f-w-600 p-6 p-y-4 f-s-12">
+    {{selectedTab === 'reviews' ? item.status : item.feedback}}
+  </span>
+</td>
+       
+ <td>
+  <div class="action-icons">
+    <i-tabler name="pencil" class="icon-18 edit-icon" matTooltip="Edit"
+        (click)="editFeedback(item.orderNo)">
+    </i-tabler>
+
+    <i-tabler name="trash" class="icon-18 delete-icon" matTooltip="Delete"
+        (click)="deleteFeedback(item.orderNo)">
+    </i-tabler>
+  </div>
+
+</td>
+      </tr>
+    </ng-template>
+    
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="4" style="text-align: center;">
+          <div class="no-results">
+            <i class="pi pi-info-circle" style="font-size: 2rem; color: #ccc;"></i>
+            <p>No results for this term. Please try another.</p>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    
+  </p-table>
+</div>
+</div>

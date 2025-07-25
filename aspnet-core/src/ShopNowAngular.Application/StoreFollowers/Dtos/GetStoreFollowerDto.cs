@@ -1,0 +1,17 @@
+﻿using Abp.Application.Services.Dto;
+using Abp.AutoMapper;
+using ShopNowAngular.Stores;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ShopNowAngular.StoreFollowers.Dtos
+{
+    [AutoMapFrom(typeof(StoreFollower))]
+    public class GetStoreFollowerDto : EntityDto<Guid>
+    {
+        public Guid StoreId { get; set; }
+    }
+}

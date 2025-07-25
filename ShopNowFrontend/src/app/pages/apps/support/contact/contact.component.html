@@ -1,0 +1,27 @@
+<p-toast></p-toast>
+
+<div class="page-wrapper">
+  <div class="contact-container">
+    <p-card header="Contact Us" styleClass="p-shadow-4">
+        <p class="p-mb-4">If you have any questions or need assistance, please fill out the form below and we will get back to you as soon as possible.</p>
+      <form (ngSubmit)="onSubmit()" #contactForm="ngForm" class="p-fluid">
+        <div class="p-field">
+          <label for="name">Name</label>
+          <input id="name" pInputText name="name" [(ngModel)]="form.name" required />
+        </div>
+
+        <div class="p-field">
+          <label for="email">Email</label>
+          <input id="email" type="email" pInputText name="email" [(ngModel)]="form.email" required />
+        </div>
+
+        <div class="p-field">
+          <label for="message">Message</label>
+          <textarea id="message" rows="5" pInputTextarea name="message" [(ngModel)]="form.message" required></textarea>
+        </div>
+
+        <button pButton type="submit" label="Send Message" icon="pi pi-send" class="p-mt-2"></button>
+      </form>
+    </p-card>
+  </div>
+</div>

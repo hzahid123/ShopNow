@@ -1,0 +1,64 @@
+<div class="full-background-container">
+  <!-- Full screen background image -->
+  <div class="background-image"></div>
+
+  <!-- Centered card with form -->
+  <div class="form-card-container">
+    <div class="form-card">
+      <h4 class="f-w-700 f-s-24 m-0 text-center">OTP Verification</h4><br>
+      <span class="f-s-14 d-block mat-body-1 m-t-8 text-center">
+        Enter the verification code we just sent to abc&#64;example.com
+      </span><br>
+
+      <form class="m-t-30" [formGroup]="form" (ngSubmit)="submit()">
+        <div class="otp-container">
+          <input type="text" id="otp1" name="otp1" class="otp-input" formControlName="otp1" maxlength="1"
+            (input)="onOtpChange($event, 'otp2', '')"
+            (keydown)="onKeyDown($event, 'otp1', '')"
+            (paste)="onPaste($event)" autocomplete="off" />
+          <input type="text" id="otp2" name="otp2" class="otp-input" formControlName="otp2" maxlength="1"
+            (input)="onOtpChange($event, 'otp3', 'otp1')"
+            (keydown)="onKeyDown($event, 'otp2', 'otp1')"
+            (paste)="onPaste($event)" autocomplete="off" />
+          <input type="text" id="otp3" name="otp3" class="otp-input" formControlName="otp3" maxlength="1"
+            (input)="onOtpChange($event, 'otp4', 'otp2')"
+            (keydown)="onKeyDown($event, 'otp3', 'otp2')"
+            (paste)="onPaste($event)" autocomplete="off" />
+          <input type="text" id="otp4" name="otp4" class="otp-input" formControlName="otp4" maxlength="1"
+            (input)="onOtpChange($event, 'otp5', 'otp3')"
+            (keydown)="onKeyDown($event, 'otp4', 'otp3')"
+            (paste)="onPaste($event)" autocomplete="off" />
+          <input type="text" id="otp5" name="otp5" class="otp-input" formControlName="otp5" maxlength="1"
+            (input)="onOtpChange($event, 'otp6', 'otp4')"
+            (keydown)="onKeyDown($event, 'otp5', 'otp4')"
+            (paste)="onPaste($event)" autocomplete="off" />
+          <input type="text" id="otp6" name="otp6" class="otp-input" formControlName="otp6" maxlength="1"
+            (input)="onOtpChange($event, '', 'otp5')"
+            (keydown)="onKeyDown($event, 'otp6', 'otp5')"
+            (paste)="onPaste($event)" autocomplete="off" />
+        </div>
+
+        <div class="otp-error" *ngIf="form.invalid && form.touched">
+          <span class="text-error f-s-12">Please enter a valid 6-digit OTP</span>
+        </div><br>
+<p class="text-secondary f-s-14 m-t-16 color:grey text-center">
+  *Didn’t receive the OTP? Please check your spam or junk folder in your email. 
+</p>
+        <button type="submit" mat-flat-button color="primary" class="w-100 m-t-24" [disabled]="!form.valid">
+          Verify OTP
+        </button>
+
+        <button 
+  type="button"
+  mat-stroked-button 
+  color="primary" 
+  class="w-100 m-t-8"
+  [disabled]="isResendDisabled"
+  (click)="resendOtp()">
+  {{ isResendDisabled ? ('Resend in 00:' + (resendCountdown < 10 ? '0' + resendCountdown : resendCountdown)) : 'Resend Code' }}
+</button>
+
+      </form>
+    </div>
+  </div>
+</div>

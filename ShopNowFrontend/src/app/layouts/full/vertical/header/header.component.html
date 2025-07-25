@@ -1,0 +1,885 @@
+<!-- header.component.html - Fixed version -->
+<mat-toolbar class="topbar">
+  <!-- --------------------------------------------------------------- -->
+  <!-- Desktop Menu -->
+  @if(showToggle) {
+  <button mat-icon-button (click)="toggleCollapsed.emit()" class="d-flex justify-content-center">
+    <i-tabler name="menu-2" class="icon-20 d-flex"></i-tabler>
+  </button>
+  }
+
+  <!-- Mobile Menu -->
+  @if(!showToggle) {
+  <button mat-icon-button (click)="toggleMobileNav.emit()" class="d-flex justify-content-center">
+    <i-tabler name="menu-2" class="icon-20 d-flex"></i-tabler>
+  </button>
+  }
+
+  <app-breadcrumb></app-breadcrumb>
+
+  <!-- --------------------------------------------------------------- -->
+  <!-- Enhanced Search with Category Integration -->
+  <!-- --------------------------------------------------------------- -->
+  <div class="search-container position-relative">
+    <button mat-icon-button (click)="openDialog()" class="d-flex justify-content-center">
+      <i-tabler name="search" class="icon-20 d-flex"></i-tabler>
+    </button>
+
+    <!-- Quick Search Input (visible on larger screens) -->
+    <div class="d-none d-md-flex search-input-container">
+      <mat-form-field appearance="outline" class="compact-search">
+        <mat-label>Search categories...</mat-label>
+        <input matInput [(ngModel)]="searchText" (input)="onSearchInput($event)" (focus)="showSearchResults = true"
+          (blur)="showSearchResults = false" placeholder="Search categories, products...">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+
+      <!-- Search Results Dropdown -->
+      @if(showSearchResults && searchText.length > 0) {
+      <div class="search-results-dropdown" (mouseenter)="showSearchResults = true"
+        (mouseleave)="showSearchResults = false">
+        <div class="search-results-content">
+          <!-- Loading State -->
+          @if(isSearching) {
+          <div class="search-loading">
+            <mat-spinner diameter="20"></mat-spinner>
+            <span>Searching...</span>
+          </div>
+          }
+
+          <!-- Categories Results -->
+          @if(!isSearching && filteredCategories.length > 0) {
+          <div class="search-section">
+            <h6 class="search-section-title">Categories</h6>
+            @for(category of filteredCategories; track category.id) {
+            <div class="search-item category-item" (mouseenter)="onCategoryHover(category)"
+              (mouseleave)="clearHoverStates()" (click)="onCategoryChange({value: category.id})">
+              <div class="search-item-content">
+                <i-tabler [name]="category.icon || 'category'" class="icon-16"></i-tabler>
+                <span>{{ category.name }}</span>
+                @if(category.subCategories && category.subCategories.length > 0) {
+                <i-tabler name="chevron-right" class="icon-12 ml-auto"></i-tabler>
+                }
+              </div>
+
+              <!-- Subcategories Dropdown -->
+              @if(hoveredCategory?.id === category.id && category.subCategories && category.subCategories.length > 0) {
+              <div class="subcategories-dropdown">
+                @for(subCategory of category.subCategories; track subCategory.id) {
+                <div class="search-item subcategory-item" (mouseenter)="onSubCategoryHover(subCategory)"
+                  (click)="onSubCategorySelect(subCategory)">
+                  <div class="search-item-content">
+                    <i-tabler name="arrow-right" class="icon-12"></i-tabler>
+                    <span>{{ subCategory.name }}</span>
+                    @if(subCategory.subSubCategories && subCategory.subSubCategories.length > 0) {
+                    <i-tabler name="chevron-right" class="icon-12 ml-auto"></i-tabler>
+                    }
+                  </div>
+
+                  <!-- Sub-subcategories Dropdown -->
+                  @if(hoveredSubCategory?.id === subCategory.id && subCategory.subSubCategories &&
+                  subCategory.subSubCategories.length > 0) {
+                  <div class="subsubcategories-dropdown">
+                    @for(subSubCategory of subCategory.subSubCategories; track subSubCategory.id) {
+                    <div class="search-item subsubcategory-item" (click)="onSubSubCategorySelect(subSubCategory)">
+                      <div class="search-item-content">
+                        <i-tabler name="arrow-right" class="icon-12"></i-tabler>
+                        <span>{{ subSubCategory.name }}</span>
+                      </div>
+                    </div>
+                    }
+                  </div>
+                  }
+                </div>
+                }
+              </div>
+              }
+            </div>
+            }
+          </div>
+          }
+
+          <!-- No Results -->
+          @if(!isSearching && filteredCategories.length === 0 && searchText.length > 0) {
+          <div class="search-no-results">
+            <i-tabler name="search-off" class="icon-24"></i-tabler>
+            <span>No categories found for "{{ searchText }}"</span>
+          </div>
+          }
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+
+  <span class="flex-1-auto"></span>
+
+  <!-- Dark Mode Toggle -->
+  <button mat-icon-button aria-label="Toggle Dark Mode" (click)="toggleDarkMode()"
+    *ngIf="hideSingleSelectionIndicator()" [(ngModel)]="options.theme">
+    @if(darkmode == true){
+    <i-tabler class="d-flex" name="sun" matTooltip="Enable Light Mode"></i-tabler>
+    }
+    @else {
+    <i-tabler class="d-flex" name="moon" matTooltip="Enable Dark Mode"></i-tabler>
+    }
+  </button>
+
+  <!-- Enhanced Shopping Cart Button -->
+  <button mat-icon-button (click)="onCartClick()" aria-label="Shopping Cart" class="m-r-8 cart-button-enhanced"
+    [class.cart-has-items]="!isCartEmpty()" [class.cart-empty]="isCartEmpty()" [matTooltip]="getCartTooltip()"
+    matTooltipPosition="below">
+    <div class="cart-icon-wrapper">
+      <i-tabler class="d-flex cart-icon" name="shopping-cart" mat-icon-button matBadge="{{ cartItemsCount }}"
+        matBadgeColor="primary" (click)="onCartClick()">
+      </i-tabler>
+    </div>
+  </button>
+
+  <button mat-icon-button [matMenuTriggerFor]="profilemenu" aria-label="Profile">
+    <img src="/assets/images/profile/user-1.jpg" class="rounded-circle object-cover icon-35 profile-dd" width="35" />
+  </button>
+
+  <mat-menu #profilemenu="matMenu" class="topbar-dd cardWithShadow">
+    <ng-scrollbar class="position-relative" style="height: 647px">
+      <div class="p-x-32 p-y-16">
+        <h6 class="f-s-16 f-w-600 m-0 mat-subtitle-1">User Profile</h6>
+        <div class="d-flex align-items-center p-b-24 b-b-1 m-t-16">
+          <img src="/assets/images/profile/user-1.jpg" class="rounded-circle" width="95" />
+          <div class="m-l-16">
+            <h6 class="f-s-14 f-w-600 m-0 mat-subtitle-1"><span>{{ userFullName }}</span></h6>
+            <!-- <span class="f-s-14 d-block m-b-4">Designer</span> -->
+            <span class="d-flex align-items-center">
+              <i-tabler name="mail" class="icon-15 m-r-4"></i-tabler>
+               <div >{{ userEmail }}</div>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-x-32">
+        @for(profile of profiledd; track profile.title) {
+        <a class="p-y-16 text-decoration-none d-block text-hover-primary" [routerLink]="[profile.link]">
+          <div class="d-flex align-items-center">
+            <button mat-mini-fab class="text-primary bg-light-primary shadow-none rounded">
+              <img [src]="profile.img" width="20" />
+            </button>
+            <div class="m-l-16">
+              <h5 class="f-s-14 f-w-600 m-0 textprimary mat-subtitle-1 hover-text">
+                {{ profile.title }}
+              </h5>
+              <span class="mat-body-1">{{ profile.subtitle }}</span>
+            </div>
+          </div>
+        </a>
+        }
+
+        <!-- upgrade -->
+        <div class="p-24 overflow-hidden bg-light-primary rounded position-relative m-y-16">
+          <div class="d-flex align-items-center">
+            <div>
+              <h5 class="f-s-18 m-0 f-w-600 m-b-12 mat-subtitle-1">
+                Unlimited <br />
+                Access
+              </h5>
+              <button mat-flat-button color="primary">Upgrade</button>
+            </div>
+            <div class="m-l-auto">
+              <img src="/assets/images/backgrounds/unlimited-bg.png" alt="upgrade-bg" class="upgrade-bg" />
+            </div>
+          </div>
+        </div>
+      </div> 
+
+      <div class="p-y-12 p-x-32">
+        <a (click)="logout()" mat-stroked-button color="primary" class="w-100">Logout</a>
+      </div>
+    </ng-scrollbar>
+  </mat-menu>
+</mat-toolbar>
+
+<!-- FIXED: Enhanced Subheader with Dynamic Categories -->
+<mat-toolbar class="subheader bg-light" style="min-height: 48px;">
+  <div class="d-flex align-items-center w-100">
+
+    <!-- FIXED: Click-based Category Dropdown with proper structure -->
+    <div class="category-hover-dropdown">
+      <!-- FIXED: Toggle button with proper class -->
+      <button mat-button class="category-toggle-btn" (click)="togglemenu($event)">
+        Categories
+        <i-tabler name="chevron-down" class="icon-12 ml-2"></i-tabler>
+      </button>
+
+      <!-- FIXED: Category menu with proper conditional display -->
+      @if(isCategoryMenuOpen) {
+      <div class="category-menu">
+        @for(category of categories; track category.id) {
+        <div class="menu-item" (mouseenter)="onCategoryHover(category)"
+          (click)="onCategoryChange({ value: category.id }); $event.stopPropagation()">
+          {{ category.name }}
+          @if(category.subCategories?.length) {
+          <i-tabler name="chevron-right" class="icon-12 ml-auto"></i-tabler>
+          }
+
+          <!-- FIXED: Subcategories with proper event handling -->
+          @if(hoveredCategory?.id === category.id && category.subCategories?.length) {
+          <div class="submenu">
+            @for(subCategory of category.subCategories; track subCategory.id) {
+            <div class="submenu-item" (mouseenter)="onSubCategoryHover(subCategory)"
+              (click)="onSubCategorySelect(subCategory); $event.stopPropagation()">
+              {{ subCategory.name }}
+              @if(subCategory.subSubCategories?.length) {
+              <i-tabler name="chevron-right" class="icon-12 ml-auto"></i-tabler>
+              }
+
+              <!-- FIXED: Sub-subcategories with proper event handling -->
+              @if(hoveredSubCategory?.id === subCategory.id && subCategory.subSubCategories?.length) {
+              <div class="subsubmenu">
+                @for(subSubCategory of subCategory.subSubCategories; track subSubCategory.id) {
+                <div class="subsubmenu-item" (click)="onSubSubCategorySelect(subSubCategory); $event.stopPropagation()">
+                  {{ subSubCategory.name }}
+                </div>
+                }
+              </div>
+              }
+            </div>
+            }
+          </div>
+          }
+        </div>
+        }
+      </div>
+      }
+    </div>
+
+    <!-- Replace the quick categories section in your HTML with this fixed version -->
+
+    <!-- Quick Category Buttons - FIXED VERSION -->
+    <div class="quick-categories m-l-16 d-flex">
+      @for(categor of categories.slice(0, 6); track categor.id) {
+      <button mat-button class="category-quick-btn" (click)="onCategoryChange({ value: categor.id })"
+        [class.active]="selectedCategory === categor.id" matTooltip="{{ categor.name }}">
+        @if(categor.icon) {
+        <i-tabler [name]="categor.icon" class="icon-16 m-r-4"></i-tabler>
+        }
+        {{ categor.name }}
+      </button>
+      }
+
+      @if(categories.length > 6) {
+      <button mat-button class="more-categories-btn" (click)="togglemenu($event)">
+        <i-tabler name="dots" class="icon-16 m-r-4"></i-tabler>
+        More
+      </button>
+      }
+    </div>
+
+    <!-- Search Status -->
+    @if(isSearching) {
+    <div class="search-status m-l-16">
+      <mat-spinner diameter="16"></mat-spinner>
+      <span class="m-l-8">Loading categories...</span>
+    </div>
+    }
+
+    <!-- Filter Actions -->
+
+
+    @if(searchKeyword) {
+    <mat-chip-set class="m-l-8">
+      <mat-chip color="primary" selected>
+        Search: {{ searchKeyword }}
+        <mat-icon matChipRemove (click)="clearSearch()">cancel</mat-icon>
+      </mat-chip>
+    </mat-chip-set>
+    }
+
+
+    <span class="flex-1-auto"></span>
+
+  </div> <!-- End .d-flex -->
+</mat-toolbar> <!-- End mat-toolbar -->
+
+<style>
+  .category-hover-dropdown {
+    position: relative;
+    display: inline-block;
+  }
+
+  .category-trigger button {
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  .category-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: white;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 200;
+    min-width: 200px;
+  }
+
+  .menu-item {
+    padding: 10px 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+  }
+
+  .menu-item:hover {
+    background-color: #f0f0f0;
+  }
+
+  .submenu {
+    position: absolute;
+    top: 0;
+    left: 100%;
+    background: white;
+    border: 1px solid #ddd;
+    min-width: 200px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .submenu-item {
+    padding: 10px 16px;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .submenu-item:hover {
+    background-color: #f5f5f5;
+  }
+
+  .subsubmenu {
+    position: absolute;
+    top: 0;
+    left: 100%;
+    background: white;
+    border: 1px solid #ddd;
+    min-width: 200px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .subsubmenu-item {
+    padding: 10px 16px;
+    cursor: pointer;
+  }
+
+  .subsubmenu-item:hover {
+    background-color: #eaeaea;
+  }
+
+
+  .subheader {
+    border-bottom: 1px solid #e0e0e0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    position: sticky;
+    top: 64px;
+    /* Adjust based on your main toolbar height */
+    z-index: 100;
+
+    &.bg-light {
+      background-color: rgba(255, 255, 255, 0.95) !important;
+    }
+
+    /* Dark mode support */
+    &.dark-mode {
+      background-color: rgba(30, 30, 30, 0.95) !important;
+      border-bottom-color: #424242;
+
+      .mat-form-field {
+        .mat-mdc-form-field-outline {
+          color: #666;
+        }
+
+        .mat-mdc-form-field-label {
+          color: #ccc;
+        }
+      }
+    }
+  }
+
+  /* ------------------------------------- */
+  /* QUICK CATEGORY BUTTONS                */
+  /* ------------------------------------- */
+
+  .quick-categories {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  flex: 1; /* Take remaining space */
+  min-width: 0; /* Allow shrinking */
+}
+
+.quick-categories::-webkit-scrollbar {
+  display: none;
+}
+
+.category-quick-btn {
+  flex: 1; /* Distribute available space equally */
+  min-width: 80px; /* Minimum width to prevent too narrow buttons */
+  max-width: 120px; /* Maximum width to prevent too wide buttons */
+  padding: 6px 12px;
+  height: 32px;
+  border-radius: 16px;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  border: 1px solid #e0e0e0;
+  background: white;
+  color: #666;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.category-quick-btn:hover {
+  background-color: #f5f8ff;
+  border-color: #1976d2;
+  color: #1976d2;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.15);
+}
+
+.category-quick-btn.active {
+  background-color: #1976d2;
+  border-color: #1976d2;
+  color: white;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.25);
+}
+
+.category-quick-btn.active:hover {
+  background-color: #1565c0;
+  border-color: #1565c0;
+}
+
+.more-categories-btn {
+  flex-shrink: 0; /* Don't shrink the more button */
+  min-width: auto;
+  padding: 6px 12px;
+  height: 32px;
+  border-radius: 16px;
+  font-size: 13px;
+  font-weight: 500;
+  border: 1px dashed #ccc;
+  background: transparent;
+  color: #666;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.more-categories-btn:hover {
+  background-color: #f0f0f0;
+  border-color: #999;
+  color: #333;
+}
+
+/* Alternative layout for better space utilization */
+.quick-categories-container {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  gap: 8px;
+}
+
+.quick-categories-wrapper {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Responsive behavior */
+@media (max-width: 768px) {
+  .category-quick-btn {
+    min-width: 60px;
+    max-width: 100px;
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+  
+  .quick-categories {
+    gap: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .category-quick-btn {
+    min-width: 50px;
+    max-width: 80px;
+    padding: 4px 6px;
+    font-size: 11px;
+  }
+  
+  .quick-categories {
+    gap: 4px;
+  }
+}
+
+/* Dark mode support for quick categories */
+.subheader.dark-mode {
+  .category-quick-btn {
+    background: #424242;
+    border-color: #666;
+    color: #ccc;
+  }
+
+  .category-quick-btn:hover {
+    background-color: #303f9f;
+    border-color: #3f51b5;
+    color: white;
+  }
+
+  .category-quick-btn.active {
+    background-color: #3f51b5;
+    border-color: #3f51b5;
+    color: white;
+  }
+
+  .more-categories-btn {
+    border-color: #666;
+    color: #ccc;
+  }
+
+  .more-categories-btn:hover {
+    background-color: #515151;
+    border-color: #888;
+    color: #fff;
+  }
+}
+
+/* Enhanced layout option with grid-like distribution */
+.quick-categories.grid-layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 8px;
+  overflow-x: visible;
+}
+
+.quick-categories.grid-layout .category-quick-btn {
+  flex: none;
+  width: 100%;
+}
+
+.quick-categories.grid-layout .more-categories-btn {
+  grid-column: -1;
+}
+
+  /* ------------------------------------- */
+  /* SEARCH BAR ENHANCEMENTS               */
+  /* ------------------------------------- */
+
+  .search-input-container {
+    position: relative;
+    width: 350px;
+  }
+
+  .compact-search {
+    width: 100%;
+  }
+
+  .search-results-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: white;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+    z-index: 100;
+    width: 100%;
+    padding: 0.5rem 0;
+    animation: fadeInUp 0.25s ease-out;
+  }
+
+  .search-section {
+    padding: 0 1rem;
+  }
+
+  .search-section-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 4px;
+  }
+
+  .search-item {
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    border-radius: 4px;
+  }
+
+  .search-item:hover {
+    background-color: #f5f8ff;
+  }
+
+  .search-item-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .category-item,
+  .subcategory-item,
+  .subsubcategory-item {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .subcategories-dropdown,
+  .subsubcategories-dropdown {
+    position: absolute;
+    top: 0;
+    left: 100%;
+    background: white;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    border-radius: 6px;
+    min-width: 220px;
+    padding: 6px 0;
+    z-index: 101;
+  }
+
+  .search-no-results {
+    text-align: center;
+    padding: 1rem;
+    color: #999;
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .search-loading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: #333;
+    padding: 1rem;
+  }
+
+  /* Icon consistency */
+  .icon-12,
+  .icon-16,
+  .icon-20,
+  .icon-24 {
+    color: #666;
+    transition: color 0.2s ease;
+  }
+
+  .search-item:hover .icon-12,
+  .search-item:hover .icon-16 {
+    color: #1976d2;
+  }
+
+  /* Responsive Tweaks */
+  @media (max-width: 768px) {
+    .search-input-container {
+      width: 100%;
+    }
+
+    .search-results-dropdown {
+      width: 100%;
+      left: 0;
+    }
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .subheader {
+      padding: 0 8px;
+      min-height: 48px !important;
+
+      .d-flex {
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .category-dropdown {
+        width: 100% !important;
+        max-width: none;
+        margin-bottom: 8px;
+      }
+
+      .quick-categories {
+        display: none !important;
+        /* Hide quick categories on mobile */
+      }
+
+      .m-l-16 {
+        margin-left: 0 !important;
+        flex: 1;
+        justify-content: space-between;
+      }
+
+      .view-toggle {
+        margin-left: auto;
+      }
+    }
+  }
+
+  @media (max-width: 1024px) {
+    .quick-categories {
+      max-width: 300px;
+      /* Limit width on tablets */
+    }
+  }
+
+  @media (min-width: 769px) and (max-width: 1200px) {
+    .category-quick-btn {
+      padding: 6px 10px;
+      font-size: 12px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .subheader {
+      .d-flex {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .category-dropdown {
+        margin-bottom: 12px;
+      }
+
+      .m-l-16 {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+  }
+
+  /* Animation for smooth transitions */
+  .subheader * {
+    transition: all 0.2s ease;
+  }
+
+  /* Focus styles for accessibility */
+  .subheader button:focus,
+  .category-dropdown .mat-mdc-form-field:focus-within {
+    outline: 2px solid #1976d2;
+    outline-offset: 2px;
+  }
+
+  /* Loading state */
+  .subheader.loading {
+    opacity: 0.7;
+    pointer-events: none;
+  }
+
+  /* Custom utility classes */
+  .d-flex {
+    display: flex;
+  }
+
+  .align-items-center {
+    align-items: center;
+  }
+
+  .w-100 {
+    width: 100%;
+  }
+
+  .m-l-16 {
+    margin-left: 16px;
+  }
+
+  .m-r-4 {
+    margin-right: 4px;
+  }
+
+  .m-r-8 {
+    margin-right: 8px;
+  }
+
+  .flex-1-auto {
+    flex: 1 1 auto;
+  }
+
+  .icon-16 {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* Enhanced visual hierarchy */
+  .subheader {
+    .mat-mdc-form-field-label {
+      font-size: 12px;
+      letter-spacing: 0.5px;
+    }
+
+    .mat-mdc-select-value-text {
+      font-weight: 500;
+      color: #2c3e50;
+    }
+  }
+
+  /* Subtle animations */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .subheader {
+    animation: fadeInUp 0.3s ease-out;
+  }
+
+  /* Improved contrast for better accessibility */
+  .mat-mdc-option:hover,
+  .mat-mdc-option.mat-mdc-option-active {
+    .d-flex span {
+      color: #1976d2;
+      font-weight: 500;
+    }
+  }
+</style>

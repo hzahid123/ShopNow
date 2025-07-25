@@ -1,0 +1,93 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssetTargetFallback>$(AssetTargetFallback);portable-net45+win8+wp8+wpa81;</AssetTargetFallback>
+    <RootNamespace>ShopNowAngular</RootNamespace>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Migrations\20180726102624_Upgrade_ABP_380.cs" />
+    <Compile Remove="Migrations\20180927062408_test.cs" />
+    <Compile Remove="Migrations\20190111071724_Upgraded_To_Abp_v4_1_0.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="StoredProcedures\order\GetAllOrders.sql" />
+    <None Remove="StoredProcedures\order\GetMonthlySalesAllStores.sql" />
+    <None Remove="StoredProcedures\order\GetMonthlySalesByStore.sql" />
+    <None Remove="StoredProcedures\order\GetOrderCountByStatus.sql" />
+    <None Remove="StoredProcedures\order\GetRecentOrdersByStore.sql" />
+    <None Remove="StoredProcedures\order\GetTopSellingProducts.sql" />
+    <None Remove="StoredProcedures\order\GetTotalCustomersByStore.sql" />
+    <None Remove="StoredProcedures\order\GetTotalOrderCountByStatus.sql" />
+    <None Remove="StoredProcedures\order\GetTotalOrdersByStore.sql" />
+    <None Remove="StoredProcedures\order\GetTotalSales.sql" />
+    <None Remove="StoredProcedures\order\GetTotalSalesByStore.sql" />
+    <None Remove="StoredProcedures\Products\GetAllProduct.sql" />
+    <None Remove="StoredProcedures\Products\GetProductsByCategory.sql" />
+    <None Remove="StoredProcedures\Products\GetProductsByStoreIdPagedSorted.sql" />
+    <None Remove="StoredProcedures\Products\GetProductsBySubCategory.sql" />
+    <None Remove="StoredProcedures\Products\GetProductsBySubSubCategory.sql" />
+    <None Remove="StoredProcedures\Products\GetRecentUnapprovedReviews.sql" />
+    <None Remove="StoredProcedures\Products\GetTopProductsByStore.sql" />
+    <None Remove="StoredProcedures\Products\GetTopWishlistedProducts.sql" />
+    <None Remove="StoredProcedures\Products\GetTotalWishlistItems.sql" />
+    <None Remove="StoredProcedures\StoreRequests\GetAllStoreRequest.sql" />
+    <None Remove="StoredProcedures\StoreRequests\GetPendingStoreRequests.sql" />
+    <None Remove="StoredProcedures\Stores\GetAllStore.sql" />
+    <None Remove="StoredProcedures\Stores\GetRecentStores.sql" />
+    <None Remove="StoredProcedures\Stores\GetTopFollowedStores.sql" />
+    <None Remove="StoredProcedures\Stores\GetTopStoresBySales.sql" />
+    <None Remove="StoredProcedures\Stores\GetTotalStoreFollowers.sql" />
+    <None Remove="StoredProcedures\Stores\GetTotalStores.sql" />
+    <None Remove="StoredProcedures\Users\GetTotalUsers.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="StoredProcedures\order\GetAllOrders.sql" />
+    <EmbeddedResource Include="StoredProcedures\order\GetMonthlySalesAllStores.sql" />
+    <EmbeddedResource Include="StoredProcedures\order\GetMonthlySalesByStore.sql" />
+    <EmbeddedResource Include="StoredProcedures\order\GetOrderCountByStatus.sql" />
+    <EmbeddedResource Include="StoredProcedures\order\GetRecentOrdersByStore.sql" />
+    <EmbeddedResource Include="StoredProcedures\order\GetTopSellingProducts.sql" />
+    <EmbeddedResource Include="StoredProcedures\order\GetTotalCustomersByStore.sql" />
+    <EmbeddedResource Include="StoredProcedures\order\GetTotalOrderCountByStatus.sql" />
+    <EmbeddedResource Include="StoredProcedures\order\GetTotalOrdersByStore.sql" />
+    <EmbeddedResource Include="StoredProcedures\order\GetTotalOrders.sql" />
+    <EmbeddedResource Include="StoredProcedures\order\GetTotalSales.sql" />
+    <EmbeddedResource Include="StoredProcedures\order\GetTotalSalesByStore.sql" />
+    <EmbeddedResource Include="StoredProcedures\Products\GetAllProduct.sql" />
+    <EmbeddedResource Include="StoredProcedures\Products\GetProductsByCategory.sql" />
+    <EmbeddedResource Include="StoredProcedures\Products\GetProductsByStoreIdPagedSorted.sql" />
+    <EmbeddedResource Include="StoredProcedures\Products\GetProductsBySubCategory.sql" />
+    <EmbeddedResource Include="StoredProcedures\Products\GetProductsBySubSubCategory.sql" />
+    <EmbeddedResource Include="StoredProcedures\Products\GetRecentUnapprovedReviews.sql" />
+    <EmbeddedResource Include="StoredProcedures\Products\GetTopProductsByStore.sql" />
+    <EmbeddedResource Include="StoredProcedures\Products\GetTopWishlistedProducts.sql" />
+    <EmbeddedResource Include="StoredProcedures\Products\GetTotalWishlistItems.sql" />
+    <EmbeddedResource Include="StoredProcedures\StoreRequests\GetAllStoreRequest.sql" />
+    <EmbeddedResource Include="StoredProcedures\StoreRequests\GetPendingStoreRequests.sql" />
+    <EmbeddedResource Include="StoredProcedures\Stores\GetAllStore.sql" />
+    <EmbeddedResource Include="StoredProcedures\Stores\GetRecentStores.sql" />
+    <EmbeddedResource Include="StoredProcedures\Stores\GetTopFollowedStores.sql" />
+    <EmbeddedResource Include="StoredProcedures\Stores\GetTopStoresBySales.sql" />
+    <EmbeddedResource Include="StoredProcedures\Stores\GetTotalStoreFollowers.sql" />
+    <EmbeddedResource Include="StoredProcedures\Stores\GetTotalStores.sql" />
+    <EmbeddedResource Include="StoredProcedures\Users\GetAllUser.sql" />
+    <EmbeddedResource Include="StoredProcedures\Users\GetTotalUsers.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.8">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.8">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ShopNowAngular.Core\ShopNowAngular.Core.csproj" />
+  </ItemGroup>
+</Project>

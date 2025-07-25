@@ -1,0 +1,90 @@
+<div class="page-wrapper">
+  <div class="wishlist-page">
+
+    <!-- Tabs + Edit -->
+    <div class="tabs">
+      <span class="tab active">All items ({{ items.length }})</span>
+      <button mat-flat-button color="primary" (click)="toggleEdit()" class="m-l-auto">
+        <div class="d-flex align-items-center">
+          <span class="m-l-8">{{ editMode ? 'Done' : 'Edit' }}</span>
+        </div>
+      </button>
+    </div>
+
+    <!-- Items or Empty Message -->
+    <div *ngIf="hasItems; else noItemsTemplate">
+      <div class="wishlist-item" *ngFor="let item of items">
+        <mat-checkbox *ngIf="editMode" [(ngModel)]="item.selected" color="primary"></mat-checkbox>
+
+        <img [src]="item.image" alt="item" />
+        <div class="details">
+          <p>{{ item.name }}</p>
+          <p class="price">PKR {{ item.price }}</p>
+          <small>{{ item.sold }} sold | ⭐ {{ item.rating }}</small>
+
+          <div class="status">
+            <button mat-flat-button color="primary" class="cart-btn" [disabled]="item.addedToCart"
+              (click)="addToCart(item)">
+              <mat-icon>shopping_cart</mat-icon>
+              {{ item.addedToCart ? 'Added to cart' : 'Add to cart' }}
+            </button>
+          </div>
+        </div>
+
+      
+
+        <button class="delete-icon" (click)="deleteItem(item)">
+          <mat-icon>close</mat-icon>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- Empty State Template -->
+    <ng-template #noItemsTemplate>
+      <div class="features-list">
+        <!-- 3D Illustration -->
+        <img class="empty-img" src="assets/images/backgrounds/empty-wishlist.png" alt="Man sharing shopping feedback"
+          style="width: 30%; margin-bottom: 1.5rem;" />
+
+        <h2 class="main-title">Lists for all your shopping needs</h2>
+
+        <!-- Features -->
+        <div class="feature-item">
+          <mat-icon color="primary">card_giftcard</mat-icon>
+          <span class="feature-text">
+            Save time by adding your items and ideas in one convenient location
+          </span>
+        </div>
+
+        <div class="feature-item">
+          <mat-icon color="primary">person</mat-icon>
+          <span class="feature-text">
+            Give great gifts to remember your friend's lists and share yours
+          </span>
+        </div>
+
+        <div class="feature-item">
+          <mat-icon color="primary">price_change</mat-icon>
+          <span class="feature-text">
+            Check price changes when items from your lists drop in price
+          </span>
+        </div>
+      </div>
+    </ng-template>
+
+    <!-- Footer -->
+    <div class="footer-actions" *ngIf="editMode">
+      <div class="footer-left">
+        <mat-checkbox color="primary" (change)="toggleSelectAll($event)">All</mat-checkbox>
+      </div>
+
+      <div class="footer-right">
+        <button mat-raised-button color="Primary" (click)="deleteSelected()" class="delete-btn">
+          Delete ({{ selectedItemsCount }})
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>

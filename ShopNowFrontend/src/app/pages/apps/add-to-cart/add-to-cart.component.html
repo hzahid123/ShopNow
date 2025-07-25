@@ -1,0 +1,357 @@
+<!-- add-to-cart.component.html -->
+<div class="cart-container">
+  <!-- Toast for notifications -->
+  <p-toast></p-toast>
+
+  <!-- Header -->
+  <!-- <div class="cart-header">
+    <div class="header-nav">
+      <button mat-icon-button class="back-btn" (click)="router.navigate(['/apps/home'])">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <h1 class="cart-title">Shopping Cart</h1>
+    </div>
+    <div class="cart-count">
+      <p-chip [label]="cartSummary.itemCount + ' items'" styleClass="cart-count-chip">
+      </p-chip>
+    </div>
+  </div>--
+
+  <!-- Empty Cart State -->
+  <div *ngIf="cartItems.length === 0" class="empty-cart">
+    <div class="empty-cart-content">
+      <i class="pi pi-shopping-cart empty-cart-icon"></i>
+      <h2>Your cart is empty</h2>
+      <p>Looks like you haven't added any items to your cart yet.</p>
+      <button mat-raised-button color="primary" class="continue-shopping-btn" (click)="router.navigate(['/apps/home'])">
+        <mat-icon>arrow_forward</mat-icon>
+        Start Shopping
+      </button>
+    </div>
+  </div>
+
+  <!-- Cart Content -->
+  <div *ngIf="cartItems.length > 0" class="cart-content">
+    <!-- Cart Items Section -->
+    <div class="cart-items-section">
+      <!-- Cart Items List -->
+      <div class="cart-items-list">
+        <div *ngFor="let item of cartItems; let i = index" class="cart-item product-card">
+          <button mat-icon-button color="warn" class="remove-btn" matTooltip="Remove from Cart"
+                  matTooltipPosition="above" (click)="removeItem(item)">
+                  <mat-icon>close</mat-icon>
+          </button>
+         
+
+          <div class="product-image-container">
+            <img [src]="item.image" [alt]="item.name" class="product-image">
+            <div *ngIf="!item.inStock" class="out-of-stock-overlay">
+              <span class="out-of-stock-text">Out of Stock</span>
+            </div>
+            <!-- Stock badge -->
+            <div class="product-badge" [ngClass]="item.inStock ? 'featured-badge' : 'sponsored-badge'">
+              {{ item.inStock ? 'In Stock' : 'Out of Stock' }}
+            </div>
+          </div>
+
+          <div class="product-info">
+            <div class="item-header">
+              <h3 class="product-title">{{ item.name }}</h3>
+              <div class="item-brand" *ngIf="item.brand">
+                <span class="brand-text">{{ item.brand }}</span>
+                <span *ngIf="item.model" class="model-text">{{ item.model }}</span>
+              </div>
+            </div>
+
+            <div class="price-section">
+              <span class="current-price">{{ formatPrice(item.price) }}</span>
+              <span *ngIf="item.originalPrice && item.originalPrice > item.price" class="original-price">{{ formatPrice(item.originalPrice) }}</span>
+              <div class="discount-badge" *ngIf="item.originalPrice && item.originalPrice > item.price">
+                {{ ((item.originalPrice - item.price) / item.originalPrice * 100).toFixed(0) }}% OFF
+              </div>
+               <!-- Wishlist Icon (matching home page style) -->
+                <div class="wishlist-icon" (click)="toggleWishlist(item)">
+                  <mat-icon [class.favorited]="item.isWishlisted">
+                    {{ item.isWishlisted ? 'favorite' : 'favorite_border' }}
+                  </mat-icon>
+                </div>
+            </div>
+
+            <div class="product-stats cart-specific-stats">
+              <div class="quantity-section">
+                <label class="quantity-label">Quantity:</label>
+                <div class="quantity-controls">
+                  <button mat-icon-button class="qty-btn" [disabled]="item.quantity <= 1"
+                    (click)="decreaseCartItemQuantity(item)">
+                    <mat-icon>remove</mat-icon>
+                  </button>
+                  <span class="quantity-display">{{ item.quantity }}</span>
+                  <button mat-icon-button class="qty-btn" [disabled]="item.quantity >= (item.maxQuantity || 10)"
+                    (click)="increaseCartItemQuantity(item)">
+                    <mat-icon>add</mat-icon>
+                  </button>
+                </div>
+              </div>
+
+              <div class="item-total-price">
+                <span class="total-label">Total:</span>
+                <span class="item-total">{{ formatPrice(item.price * item.quantity) }}</span>
+              </div>
+            </div>
+
+            <div class="item-actions">
+
+              <div class="item-meta">
+                <span class="added-date">Added {{ item.addedAt | date:'short' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cart Summary Section -->
+    <div class="cart-summary-section">
+      <div class="summary-card product-card">
+        <h3 class="product-title summary-title">Order Summary</h3>
+
+        <div class="summary-details">
+          <div class="summary-row">
+            <span class="summary-label">Subtotal ({{ cartSummary.itemCount }} items)</span>
+            <span class="summary-value">{{ formatPrice(cartSummary.subtotal) }}</span>
+          </div>
+
+          <div class="summary-row">
+            <span class="summary-label">Tax (8%)</span>
+            <span class="summary-value">{{ formatPrice(cartSummary.tax) }}</span>
+          </div>
+
+          <div class="summary-row">
+            <span class="summary-label">Shipping</span>
+            <span class="summary-value" [class.free-shipping]="cartSummary.shipping === 0">
+              {{ cartSummary.shipping === 0 ? 'FREE' : formatPrice(cartSummary.shipping) }}
+            </span>
+          </div>
+
+          <div *ngIf="cartSummary.discount > 0" class="summary-row discount-row">
+            <span class="summary-label">Discount</span>
+            <span class="summary-value discount-value">-{{ formatPrice(cartSummary.discount) }}</span>
+          </div>
+
+          <mat-divider></mat-divider>
+
+          <div class="summary-row total-row">
+            <span class="summary-label total-label">Total</span>
+            <span class="summary-value total-value">{{ formatPrice(cartSummary.total) }}</span>
+          </div>
+        </div>
+
+        <!-- Coupon Section -->
+        <div class="coupon-section" *ngIf="!appliedCoupon">
+          <form [formGroup]="couponForm" (ngSubmit)="applyCoupon()" class="coupon-form">
+            <mat-form-field appearance="outline" class="coupon-input">
+              <mat-label>Coupon Code</mat-label>
+              <input matInput formControlName="couponCode" placeholder="Enter coupon code">
+              <mat-icon matSuffix>local_offer</mat-icon>
+            </mat-form-field>
+            <button mat-raised-button type="submit" color="accent" [disabled]="couponForm.invalid">
+              Apply
+            </button>
+          </form>
+        </div>
+
+        <!-- Applied Coupon -->
+        <div class="applied-coupon" *ngIf="appliedCoupon">
+          <div class="coupon-info">
+            <mat-icon color="primary">local_offer</mat-icon>
+            <span class="coupon-code">{{ appliedCoupon }}</span>
+            <span class="coupon-savings">-{{ formatPrice(cartSummary.discount) }}</span>
+          </div>
+          <button mat-icon-button color="warn" (click)="removeCoupon()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+
+        <!-- Free Shipping Progress -->
+        <div *ngIf="cartSummary.shipping > 0" class="free-shipping-progress">
+          <div class="progress-info">
+            <mat-icon>local_shipping</mat-icon>
+            <span class="progress-text">
+              Add {{ formatPrice(5000 - cartSummary.subtotal) }} more for free shipping
+            </span>
+          </div>
+          <mat-progress-bar mode="determinate" [value]="(cartSummary.subtotal / 5000) * 100"
+            class="shipping-progress-bar">
+          </mat-progress-bar>
+        </div>
+
+        <!-- Total Savings Display -->
+        <div *ngIf="getTotalSavings() > 0" class="total-savings">
+          <mat-icon color="primary">savings</mat-icon>
+          <span class="savings-text">You're saving {{ formatPrice(getTotalSavings()) }} on this order!</span>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="summary-actions">
+          <button mat-stroked-button color="primary" class="continue-btn" (click)="continueShopping()">
+            Continue Shopping
+          </button>
+
+          <button mat-raised-button color="primary" class="checkout-btn" [disabled]="!isCartValid() || isLoading"
+            (click)="proceedToCheckout()">
+            <mat-icon>payment</mat-icon>
+            <span *ngIf="!isLoading">Proceed to Checkout</span>
+            <span *ngIf="isLoading">Processing...</span>
+          </button>
+
+          <!-- Additional Action Buttons -->
+          <div class="secondary-actions">
+            <button mat-button color="accent" class="move-wishlist-btn" (click)="moveAllToWishlist()">
+              <mat-icon>favorite</mat-icon>
+              Move All to Wishlist
+            </button>
+
+            <button mat-button color="warn" class="clear-all-btn" (click)="confirmClearEntireCart()">
+              <mat-icon>clear_all</mat-icon>
+              Clear All Items
+            </button>
+          </div>
+        </div>
+
+        <!-- Validation Errors -->
+        <div *ngIf="validationErrors.length > 0" class="validation-errors">
+          <div *ngFor="let error of validationErrors" class="error-message">
+            <mat-icon color="warn">warning</mat-icon>
+            <span>{{ error }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Indicator -->
+  <div *ngIf="isLoading" class="loading-overlay">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Updating cart...</p>
+  </div>
+
+  <!-- Recommended Products Section -->
+  <div class="products-section-header">
+    <div class="container">
+      <div class="section-header-content">
+        <h2 class="section-title">Recommended Products</h2>
+        <button class="view-all-btn" pButton type="button" label="View All" icon="pi pi-chevron-right"
+          iconPos="right" (click)="router.navigate(['/apps/home'])"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Products Grid Section -->
+  <div class="products-section">
+    <div class="container">
+      <div class="products-grid">
+        @for(product of recommendedProducts; track product.id) {
+        <div class="product-card-wrapper">
+          <div class="product-card" (click)="selectBlog(product.name)">
+
+            <!-- Product Image -->
+            <div class="product-image-container">
+              <img [src]="product.image" [alt]="product.name" class="product-image">
+
+              <!-- Discount Badge -->
+              @if(product.originalPrice && product.originalPrice > product.price) {
+              <div class="product-badge discount-badge">
+                {{ ((product.originalPrice - product.price) / product.originalPrice * 100).toFixed(0) }}% OFF
+              </div>
+              }
+
+              <!-- Brand Badge -->
+              @if(product.brand) {
+              <div class="product-badge featured-badge">{{ product.brand }}</div>
+              }
+              <!-- Add to Cart Icon (Bottom Right) -->
+                @if (product.inStock && (!product.stockQuantity || product.stockQuantity >= 1)) {
+                  @if (isProductInCart(product.id || product.productId)) {
+                    <!-- Cart Quantity Controls on Image -->
+                    <div class="image-cart-controls" (click)="$event.stopPropagation()">
+                      <button class="image-quantity-btn decrease" 
+                              (click)="decreaseQuantity(product)"
+                              [disabled]="addingToCart">
+                        <mat-icon>remove</mat-icon>
+                      </button>
+                      <span class="image-quantity-display">{{ getProductQuantityInCart(product.id || product.productId) }}</span>
+                      <button class="image-quantity-btn increase" 
+                              (click)="increaseQuantity(product)"
+                              [disabled]="addingToCart">
+                        <mat-icon>add</mat-icon>
+                      </button>
+                    </div>
+                  } @else {
+                    <!-- Add to Cart Icon -->
+                    <button class="add-to-cart-icon" 
+                            (click)="addToCart(product); $event.stopPropagation()"
+                            [disabled]="addingToCart"
+                            [attr.aria-label]="'Add ' + (product.title || product.name) + ' to cart'">
+                      @if (addingToCart) {
+                        <mat-icon class="spinning">hourglass_empty</mat-icon>
+                      } @else {
+                        <mat-icon>add_shopping_cart</mat-icon>
+                      }
+                    </button>
+                  }
+                }
+            </div>
+
+            <!-- Product Info -->
+            <div class="product-info">
+              <!-- Price Section -->
+              <div class="price-section">
+                <div class="price-details">
+                  <span class="current-price">{{ formatPrice(product.price) }}</span>
+                  @if(product.originalPrice && product.originalPrice > product.price) {
+                  <span class="original-price">{{ formatPrice(product.originalPrice) }}</span>
+                  }
+                </div>
+                <!-- Heart Icon for Wishlist -->
+                <div class="wishlist-icon" (click)="$event.stopPropagation(); toggleRecommendedWishlist(product)">
+                  <mat-icon [class.favorited]="product.isWishlisted">
+                    {{ product.isWishlisted ? 'favorite' : 'favorite_border' }}
+                  </mat-icon>
+                </div>
+              </div>
+
+              <!-- Product Title -->
+              <h3 class="product-title">{{ product.name }}</h3>
+
+              <!-- Brand Name -->
+              @if(product.brand) {
+              <p class="product-brand">{{ product.brand }}</p>
+              }
+
+              <!-- Rating and Stats -->
+              <div class="product-stats">
+                <div class="rating-section">
+                  <div class="stars">
+                    @for(i of [1,2,3,4,5]; track i) {
+                      @if(i <= product.rating) {
+                        <mat-icon class="star filled">star</mat-icon>
+                      } @else {
+                        <mat-icon class="star empty">star_border</mat-icon>
+                      }
+                    }
+                  </div>
+                  <span class="rating-text">{{ product.rating.toFixed(1) }}</span>
+                  <span class="review-count">({{ (Math.random() * 100 + 10).toFixed(0) }})</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirmation Dialog -->
+  <p-confirmDialog></p-confirmDialog>
+</div>
