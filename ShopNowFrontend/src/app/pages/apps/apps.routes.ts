@@ -31,7 +31,7 @@ import { EditProfileComponent } from './settings/edit-profile/edit-profile.compo
 import { OverviewComponent } from './apps/overview/overview.component';
 import { ContactComponent } from './support/contact/contact.component';
 import { PolicyComponent } from './support/policy/policy.component';
-
+import { ShippingAddressComponent } from './shipping-address/shipping-address.component';
 export const AppsRoutes: Routes = [
   {
     path: '',
@@ -62,6 +62,19 @@ export const AppsRoutes: Routes = [
         },
       },
 
+{
+  path: 'shipping-address',
+  component: ShippingAddressComponent,
+  data: {
+    title: 'Shipping Address',
+    urls: [
+      { title: 'Dashboard', url: '/dashboards/dashboard1' },
+      { title: 'Shipping Address' },
+    ],
+  },
+},
+
+
 
       // manage-users-roles
       {
@@ -75,6 +88,7 @@ export const AppsRoutes: Routes = [
           ],
         },
       },
+
 
       // home page pages
       {

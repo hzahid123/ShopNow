@@ -23,11 +23,16 @@ export const navItems: NavItem[] = [
     route: '/apps/home',
   },
   //overview
-    {
+ {
   displayName: 'Overview',
   iconName: 'category',
   route: '/apps/overview'
-},
+ },
+ {
+  displayName: 'Shipping Address',
+  iconName: 'building',
+  route: '/apps/shipping-address'
+ },
   {
     displayName: 'Wish List',
     iconName: 'heart',

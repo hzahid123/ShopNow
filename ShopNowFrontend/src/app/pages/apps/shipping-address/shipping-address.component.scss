@@ -1,0 +1,222 @@
+.shipping-address-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.shipping-address-container h2 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.shipping-address-container h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 25px 0 15px 0;
+  color: #333;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #555;
+}
+
+.contact-row {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.contact-name {
+  flex: 1;
+}
+
+.mobile-number {
+  flex: 1;
+}
+
+.mobile-input {
+  display: flex;
+  align-items: center;
+}
+
+.country-code {
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  border-right: none;
+  padding: 10px 12px;
+  border-radius: 4px 0 0 4px;
+  font-weight: 500;
+}
+
+.mobile-input input {
+  border-radius: 0 4px 4px 0 !important;
+  flex: 1;
+}
+
+.address-row {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.street-address {
+  flex: 2;
+}
+
+.apt-suite {
+  flex: 1;
+}
+
+.location-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.checkbox-group {
+  margin: 30px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.checkbox-group label {
+  margin-bottom: 0;
+  cursor: pointer;
+}
+
+.custom-checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.button-group {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.confirm-btn {
+  background-color: #0A7EA4;
+  border: none;
+  color: white;
+  padding: 12px 30px;
+  border-radius: 25px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.confirm-btn:hover:not(:disabled) {
+  background-color: #0A7EA4;
+}
+
+.confirm-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.cancel-btn {
+  background-color: transparent;
+  color: #666;
+  border: 2px solid #ddd;
+  padding: 10px 30px;
+  border-radius: 25px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.cancel-btn:hover {
+  background-color: #f5f5f5;
+}
+
+.error-message {
+  color: #0A7EA4;
+  font-size: 12px;
+  margin-top: 5px;
+  display: block;
+}
+
+/* Input styling */
+input.ng-invalid.ng-touched {
+  border-color: #0A7EA4;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .contact-row {
+    flex-direction: column;
+  }
+  
+  .address-row {
+    flex-direction: column;
+  }
+  
+  .location-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .button-group {
+    flex-direction: column;
+  }
+  
+  .mobile-input {
+    flex-direction: column;
+  }
+  
+  .country-code {
+    border-radius: 4px 4px 0 0;
+    border-right: 1px solid #ddd;
+    border-bottom: none;
+  }
+  
+  .mobile-input input {
+    border-radius: 0 0 4px 4px !important;
+  }
+}
+/* ===========================
+   THEME COLOR: #0A7EA4
+   =========================== */
+
+/* Apply to PrimeNG dropdown borders */
+:host ::ng-deep .p-dropdown {
+  border: 1px solid #0A7EA4;
+  border-radius: 4px;
+}
+
+/* Input and dropdown focus border color */
+:host ::ng-deep input:focus,
+:host ::ng-deep .p-dropdown.p-focus {
+  border-color: #0A7EA4 !important;
+  box-shadow: 0 0 0 1px #0A7EA4 !important;
+}
+
+/* Checkbox outline */
+.custom-checkbox:focus {
+  outline: 2px solid #0A7EA4;
+}
+
+/* Apply theme color to mobile number border group */
+.mobile-input input {
+  border: 1px solid #0A7EA4 !important;
+}
+
+/* Country code box */
+.country-code {
+  border-color: #0A7EA4 !important;
+  background-color: #E3F4F8;
+  color: #0A7EA4;
+}
