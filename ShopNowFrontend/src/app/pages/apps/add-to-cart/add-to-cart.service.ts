@@ -3,6 +3,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, catchError, of, tap } from 'rxjs';
 import { ApiService } from '../../../services/api.service'; // Adjust path as needed
+import { CartBadgeService } from '../../../services/cart-badge.service';
 
 export interface CartItem {
   cartItemId?: string;
@@ -59,10 +60,10 @@ export class CartService {
   });
   public cartSummary$ = this.cartSummarySubject.asObservable();
 
-  private customerId: number = 4; // This should come from authentication service
+  private customerId: number = Number(sessionStorage.getItem('customer_id'));
   private cartId: string = '';
 
-  constructor(private apiService: ApiService) {
+  constructor(private apiService: ApiService, private cartBadgeService: CartBadgeService) {
     this.loadCartFromDatabase();
   }
 
@@ -138,29 +139,54 @@ export class CartService {
       quantity: quantity
     };
 
+    // ✅ Immediately update local cart first
+    const existingItem = this.cartItemsSubject.value.find(item =>
+      item.productId === addToCartRequest.productId
+    );
+
+    if (existingItem) {
+      existingItem.quantity += quantity;
+    } else {
+      this.cartItemsSubject.next([
+        ...this.cartItemsSubject.value,
+        {
+          productId: addToCartRequest.productId,
+          name: product.name,
+          price: product.price,
+          quantity: quantity,
+          image: product.image || '',
+          brand: product.brand || '',
+          inStock: true
+        }
+      ]);
+      this.cartBadgeService.fetchAndUpdateCartCount();
+
+    }
+
+    // ✅ Recalculate summary
+    this.updateCartSummary();
+
+    // Then call the API (to keep DB in sync)
     return this.apiService.addItemToCart(addToCartRequest).pipe(
       tap((response) => {
-        console.log('Item added to cart:', response);
-        // Reload cart to get updated data
+        console.log('✅ Server confirmed item added to cart:', response);
         this.loadCartFromDatabase();
+        this.cartBadgeService.fetchAndUpdateCartCount();
       }),
       catchError((error) => {
-        console.error('Error adding to cart:', error);
+        console.error('❌ Error adding to cart:', error);
         return of(false);
       }),
       tap(() => true)
     );
   }
-
   removeFromCart(cartItemId: string): Observable<boolean> {
     return this.apiService.removeItemFromCart(cartItemId).pipe(
       tap((response) => {
-        console.log('Item removed from cart:', response);
-        // Reload cart to get updated data
         this.loadCartFromDatabase();
+        this.cartBadgeService.fetchAndUpdateCartCount();
       }),
       catchError((error) => {
-        console.error('Error removing from cart:', error);
         return of(false);
       }),
       tap(() => true)
@@ -182,6 +208,7 @@ export class CartService {
         console.log('Cart item quantity updated:', response);
         // Reload cart to get updated data
         this.loadCartFromDatabase();
+        this.cartBadgeService.fetchAndUpdateCartCount();
       }),
       catchError((error) => {
         console.error('Error updating quantity:', error);
@@ -210,6 +237,7 @@ export class CartService {
           total: 0,
           itemCount: 0
         });
+        this.cartBadgeService.fetchAndUpdateCartCount();
       }),
       catchError((error) => {
         console.error('Error clearing cart:', error);

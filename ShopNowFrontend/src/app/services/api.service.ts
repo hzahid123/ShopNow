@@ -42,6 +42,9 @@ export interface CartItem {
   providedIn: 'root'
 })
 export class ApiService {
+  getProductDetails(productId: string) {
+    throw new Error('Method not implemented.');
+  }
   private apiUrl = `${environment.commonURLs.Api}`;
   private authUrl = `${environment.commonURLs.Auth}`;
 
@@ -452,5 +455,6 @@ getCustomerById(customerId: number): Observable<any> {
     params: { Id: customerId.toString() }
   });
 }
+
 
 }

@@ -28,6 +28,9 @@ import { BrandingComponent } from '../../vertical/sidebar/branding.component';
 import { Subject, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs';
 import { MatChipsModule } from '@angular/material/chips';
 import { ApiService } from '../../../../services/api.service';
+import { CartBadgeService } from 'src/app/services/cart-badge.service';
+
+import { filter } from 'rxjs/operators';
 
 // Interfaces for category structure
 interface Category {
@@ -123,6 +126,19 @@ export class HeaderComponent implements OnInit, OnDestroy {
   searchKeyword: string = '';
   isSearching = false;
 
+  // ✅ NEW: Property to control subheader visibility
+  showSubheader = false;
+
+  // List of routes where subheader should be visible
+  private subheaderRoutes = [
+    '/',
+    '/apps/home',
+    '/dashboard',
+    '/apps/product-details/{:id}',
+    '/apps/cart',
+    '/apps/category'
+  ];
+
   // Search state
   searchText: string = '';
   showSearchResults = false;
@@ -170,7 +186,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private router: Router,
     private cartService: CartService,
     private apiService: ApiService,
-    private elementRef: ElementRef
+    private elementRef: ElementRef,
+    private cartBadgeService: CartBadgeService
   ) {
     translate.setDefaultLang('en');
   }
@@ -178,24 +195,28 @@ export class HeaderComponent implements OnInit, OnDestroy {
   options = this.settings.getOptions();
 
   ngOnInit(): void {
-    this.cartService.cartItems$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((items) => {
-        this.cartItems = items;
-        this.cartItemsCount = this.cartService.getCartItemCount(); // Use service logic
-        this.cartTotal = this.cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
-      });
-    this.cartService.cartSummary$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(summary => {
-        this.cartItemsCount = summary.totalItems ?? 0;
+
+    // ✅ NEW: Subscribe to router events to track route changes
+    this.router.events
+      .pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((event: NavigationEnd) => {
+        this.handleSubheaderVisibility(event.url);
       });
 
+    this.cartBadgeService.cartCount$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(count => {
+        this.cartItemsCount = count;
+      });
+    this.cartBadgeService.fetchAndUpdateCartCount();
 
     this.loadCategories();
     this.setupSearchDebouncing();
 
-     // ✅ User Info - Get user data from localStorage
+    // ✅ User Info - Get user data from localStorage
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     console.log('User:', user);
 
@@ -216,6 +237,60 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+
+  // ✅ NEW: Method to update subheader visibility based on current route
+  private updateSubheaderVisibility(url: string): void {
+    console.log('Current URL:', url); // Debug log
+
+    // Check if current route should show subheader
+    this.showSubheader = this.subheaderRoutes.some(route => {
+      // Handle exact matches
+      if (route === url) {
+        return true;
+      }
+
+      // Handle routes with parameters (like /apps/product-details/123)
+      if (route.includes('/apps/product-details') && url.includes('/apps/product-details')) {
+        return true;
+      }
+
+      // Handle category routes (like /apps/category/electronics)
+      if (route.includes('/apps/category') && url.includes('/apps/category')) {
+        return true;
+      }
+
+      // Handle root route variations
+      if ((route === '/' || route === '/home') && (url === '/' || url === '/home' || url === '/dashboard')) {
+        return true;
+      }
+
+      return false;
+    });
+
+    console.log('Show subheader:', this.showSubheader); // Debug log
+  }
+
+  // ✅ NEW: Method to manually check if subheader should be visible (utility method)
+  shouldShowSubheader(): boolean {
+    return this.showSubheader;
+  }
+
+  // ✅ NEW: Method to add/remove routes from subheader visibility list
+  addSubheaderRoute(route: string): void {
+    if (!this.subheaderRoutes.includes(route)) {
+      this.subheaderRoutes.push(route);
+      this.updateSubheaderVisibility(this.router.url);
+    }
+  }
+
+  removeSubheaderRoute(route: string): void {
+    const index = this.subheaderRoutes.indexOf(route);
+    if (index > -1) {
+      this.subheaderRoutes.splice(index, 1);
+      this.updateSubheaderVisibility(this.router.url);
+    }
+  }
+
   // FIXED: Initialize cart data on component load
   private initializeCart(): void {
     try {
@@ -233,6 +308,20 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
   }
 
+  handleSubheaderVisibility(url: string): void {
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event) => {
+        const navEndEvent = event as NavigationEnd;
+        const url = navEndEvent.urlAfterRedirects;
+
+        this.showSubheader =
+          url === '/apps/home' ||
+          url === '/apps/cart' ||
+          url.startsWith('/apps/product-detail/') ||
+          url.startsWith('/apps/category/');
+      });
+  }
   // FIXED: Update cart data method
   private updateCartData(items: CartItem[]): void {
     try {
@@ -284,12 +373,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     console.log('Cart clicked - Items:', this.cartItemsCount); // Debug log
     this.router.navigate(['/apps/cart']);
   }
-
-  // FIXED: Method to manually refresh cart (for debugging)
-  refreshCart(): void {
-    this.initializeCart();
-  }
-
+  
   trackByCategoryId(index: number, category: any): string {
     return category.id;
   }
@@ -377,7 +461,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
 
-logout() {
+  logout() {
     // Remove the token
     sessionStorage.removeItem('accessToken');
 
@@ -400,7 +484,7 @@ logout() {
       link: '/apps/settings', // Updated link
     }
   ];
-  
+
 
 
 

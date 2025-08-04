@@ -52,7 +52,7 @@ export class AddToCartComponent implements OnInit, OnDestroy {
   addingToCart: boolean = false;
   
   // Database-specific properties
-  customerId: number = 4;
+  customerId: number = 2;
   cartId: string = '';
   currentCartSummary: any = null;
 

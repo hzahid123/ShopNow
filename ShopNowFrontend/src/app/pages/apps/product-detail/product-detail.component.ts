@@ -34,7 +34,7 @@ interface Product {
   name: string;
   title?: string;
   price: number;
-    storeId?: string;
+  storeId?: string;
 
   originalPrice?: number;
   discount?: number;
@@ -81,7 +81,7 @@ interface RelatedProduct {
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    
+
     // Import your custom modules
     PrimeSharedModule,
     SharedModule,
@@ -94,7 +94,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
   quantity: number = 1;
   selectedImageIndex: number = 0;
   currentImage: string = '';
-  
+
   // Cart and Wishlist state tracking
   isInWishlist: boolean = false;
   isInCart: boolean = false;
@@ -102,14 +102,14 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
   cartItemCount: number = 0;
   addingToCart: boolean = false;
   addingToWishlist: boolean = false;
-  
+
   // Review form state
   showReviewForm: boolean = false;
   reviewForm: FormGroup;
   isSubmittingReview: boolean = false;
-  
+
   private destroy$ = new Subject<void>();
-  
+
   // Product data - Initialize with default values
   product: Product = {
     id: 0,
@@ -119,8 +119,8 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     originalPrice: 0,
     discount: 0,
     rating: 0,
-      // storeId: sessionStorage.getItem('store_id') || '',  
-      storeId: '32701114-3f77-42b4-216b-08ddb7d0de62',
+    // storeId: sessionStorage.getItem('store_id') || '',  
+    storeId: '32701114-3f77-42b4-216b-08ddb7d0de62',
     reviewCount: 0,
     inStock: true,
     brand: '',
@@ -132,15 +132,15 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     stockQuantity: 10
   };
 
- reviews: Review[] = [];
-displayedReviews: Review[] = [];   
-page = 1;
-pageSize = 4;
+  reviews: Review[] = [];
+  displayedReviews: Review[] = [];
+  page = 1;
+  pageSize = 4;
   relatedProducts: RelatedProduct[] = [];
   recommendedProducts: RelatedProduct[] = [];
+  storeName: string = '';
 
- customerId: number = Number(sessionStorage.getItem('customer_id')|| '');
-storeName: string = '';
+  customerId: number = Number(sessionStorage.getItem('customer_id') || '');
   cartId: string = ''; // Will be set when cart is created/retrieved
   currentCartSummary: any = null;
   cartItems: any[] = [];
@@ -167,12 +167,12 @@ storeName: string = '';
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
-  const productId = params['id'];             
-  this.loadProductData(productId);
-  this.loadReviews(productId);
-});
-// In your ngOnInit method, add this line after you have the storeId
-this.loadStoreDetails(this.product.storeId || '32701114-3f77-42b4-216b-08ddb7d0de62');
+      const productId = params['id'];
+      this.loadProductData(productId);
+      this.loadReviews(productId);
+    });
+    // In your ngOnInit method, add this line after you have the storeId
+    this.loadStoreDetails(this.product.storeId || '32701114-3f77-42b4-216b-08ddb7d0de62');
 
     // Load related products
     this.loadRelatedProducts();
@@ -205,7 +205,7 @@ this.loadStoreDetails(this.product.storeId || '32701114-3f77-42b4-216b-08ddb7d0d
       next: (wishlistResponse) => {
         console.log('Wishlist loaded:', wishlistResponse);
         this.wishlistItems = wishlistResponse.wishlistItems || wishlistResponse || [];
-        
+
         // Update wishlist status for current product
         this.updateWishlistStatus();
       },
@@ -216,50 +216,50 @@ this.loadStoreDetails(this.product.storeId || '32701114-3f77-42b4-216b-08ddb7d0d
       }
     });
   }
-placeOrder(): void {
-  const orderPayload = {
-    userId: this.customerId,
-    storeId: this.product.storeId || 'b519e9bf-f20e-4a72-b66c-08ddc098f052',  // replace if null
-    totalAmount: this.product.price * this.quantity,
-    orderStatus: 0, 
-    orderItems: [
-      {
-        orderId: '00000000-0000-0000-0000-000000000000', // ignored by backend if auto-handled
-        productId: this.product.id,
-        unitPrice: this.product.price,
-        quantity: this.quantity
-      }
-    ]
-  };
+  placeOrder(): void {
+    const orderPayload = {
+      userId: this.customerId,
+      storeId: this.product.storeId || 'b519e9bf-f20e-4a72-b66c-08ddc098f052',  // replace if null
+      totalAmount: this.product.price * this.quantity,
+      orderStatus: 0,
+      orderItems: [
+        {
+          orderId: '00000000-0000-0000-0000-000000000000', // ignored by backend if auto-handled
+          productId: this.product.id,
+          unitPrice: this.product.price,
+          quantity: this.quantity
+        }
+      ]
+    };
 
-  this.apiService.createOrder(orderPayload).subscribe({
-    next: (response) => {
-      this.snackBar.open('Order placed successfully', 'Close', { duration: 3000 });
-    },
-    error: (err) => {
-      console.error('Order placement failed:', err);
-      this.snackBar.open('Failed to place order', 'Close', { duration: 3000 });
-    }
-  });
-}
-// Add this method to your component
-loadStoreDetails(storeId: string): void {
-  this.apiService.getStoreById(storeId).subscribe({
-    next: (storeResponse) => {
-      console.log('Store details:', storeResponse);
-      this.storeName = storeResponse.result.name; // ✅ correct path
-    },
-    error: (error) => {
-      console.error('Error loading store details:', error);
-      this.storeName = 'Store Not Found';
-    }
-  });
-}
+    this.apiService.createOrder(orderPayload).subscribe({
+      next: (response) => {
+        this.snackBar.open('Order placed successfully', 'Close', { duration: 3000 });
+      },
+      error: (err) => {
+        console.error('Order placement failed:', err);
+        this.snackBar.open('Failed to place order', 'Close', { duration: 3000 });
+      }
+    });
+  }
+  // Add this method to your component
+  loadStoreDetails(storeId: string): void {
+    this.apiService.getStoreById(storeId).subscribe({
+      next: (storeResponse) => {
+        console.log('Store details:', storeResponse);
+        this.storeName = storeResponse.result.name; // ✅ correct path
+      },
+      error: (error) => {
+        console.error('Error loading store details:', error);
+        this.storeName = 'Store Not Found';
+      }
+    });
+  }
 
   // Add/Remove product to/from wishlist using API
   onAddToWishlist(product?: any): void {
     const productToToggle = product || this.product;
-    
+
     if (!productToToggle || !productToToggle.id) {
       this.messageService.add({
         severity: 'error',
@@ -279,14 +279,14 @@ loadStoreDetails(storeId: string): void {
         next: (response) => {
           this.addingToWishlist = false;
           console.log('Removed from wishlist:', response);
-          
+
           this.isInWishlist = false;
-          
+
           // Update local wishlist items
-          this.wishlistItems = this.wishlistItems.filter(item => 
+          this.wishlistItems = this.wishlistItems.filter(item =>
             item.productId !== productId && item.productId !== productToToggle.id
           );
-          
+
           this.messageService.add({
             severity: 'success',
             summary: 'Removed from Wishlist',
@@ -297,7 +297,7 @@ loadStoreDetails(storeId: string): void {
         error: (error) => {
           this.addingToWishlist = false;
           console.error('Error removing from wishlist:', error);
-          
+
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
@@ -312,9 +312,9 @@ loadStoreDetails(storeId: string): void {
         next: (response) => {
           this.addingToWishlist = false;
           console.log('Added to wishlist:', response);
-          
+
           this.isInWishlist = true;
-          
+
           // Add to local wishlist items
           this.wishlistItems.push({
             productId: productId,
@@ -323,7 +323,7 @@ loadStoreDetails(storeId: string): void {
             productImage: this.getProductImage(productToToggle),
             price: productToToggle.price
           });
-          
+
           this.messageService.add({
             severity: 'success',
             summary: 'Added to Wishlist',
@@ -334,7 +334,7 @@ loadStoreDetails(storeId: string): void {
         error: (error) => {
           this.addingToWishlist = false;
           console.error('Error adding to wishlist:', error);
-          
+
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
@@ -349,7 +349,7 @@ loadStoreDetails(storeId: string): void {
   // Add related product to wishlist
   onAddRelatedToWishlist(item: RelatedProduct): void {
     console.log('Adding related product to wishlist:', item);
-    
+
     this.addingToWishlist = true;
     const productId = String(item.id);
 
@@ -357,7 +357,7 @@ loadStoreDetails(storeId: string): void {
       next: (response) => {
         this.addingToWishlist = false;
         console.log('Related product added to wishlist:', response);
-        
+
         // Add to local wishlist items
         this.wishlistItems.push({
           productId: productId,
@@ -366,7 +366,7 @@ loadStoreDetails(storeId: string): void {
           productImage: item.image,
           price: item.price
         });
-        
+
         this.messageService.add({
           severity: 'success',
           summary: 'Added to Wishlist',
@@ -377,7 +377,7 @@ loadStoreDetails(storeId: string): void {
       error: (error) => {
         this.addingToWishlist = false;
         console.error('Error adding related product to wishlist:', error);
-        
+
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
@@ -390,8 +390,8 @@ loadStoreDetails(storeId: string): void {
 
   // Helper method to check if product is in wishlist
   private isProductInWishlist(productId: number): boolean {
-    return this.wishlistItems.some(item => 
-      item.productId === productId || 
+    return this.wishlistItems.some(item =>
+      item.productId === productId ||
       item.productId === productId.toString()
     );
   }
@@ -406,7 +406,7 @@ loadStoreDetails(storeId: string): void {
   // Enhanced Add to cart method using the database-driven API
   onAddToCart(): void {
     console.log('Adding to cart:', this.product);
-    
+
     // Validate product and quantity
     if (!this.product || !this.product.id) {
       this.messageService.add({
@@ -417,7 +417,7 @@ loadStoreDetails(storeId: string): void {
       });
       return;
     }
-    
+
     if (this.quantity < 1 || this.quantity > (this.product.maxQuantity || this.product.stockQuantity || 10)) {
       this.messageService.add({
         severity: 'warn',
@@ -427,7 +427,7 @@ loadStoreDetails(storeId: string): void {
       });
       return;
     }
-    
+
     // Check stock availability
     if (!this.product.inStock || (this.product.stockQuantity && this.product.stockQuantity < this.quantity)) {
       this.messageService.add({
@@ -458,7 +458,7 @@ loadStoreDetails(storeId: string): void {
       next: (response) => {
         this.addingToCart = false;
         console.log('Cart API response:', response);
-        
+
         if (response && response.success !== false) {
           // Show success message
           this.messageService.add({
@@ -470,10 +470,10 @@ loadStoreDetails(storeId: string): void {
 
           // Update local cart status
           this.updateCartStatus();
-          
+
           // Reload cart summary to get updated cart data
           this.loadCartSummary();
-          
+
         } else {
           // Show error message
           this.messageService.add({
@@ -487,7 +487,7 @@ loadStoreDetails(storeId: string): void {
       error: (error) => {
         this.addingToCart = false;
         console.error('Error adding to cart:', error);
-        
+
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
@@ -501,7 +501,7 @@ loadStoreDetails(storeId: string): void {
   // Enhanced Add related product to cart method
   onAddRelatedToCart(item: RelatedProduct): void {
     console.log('Adding related product to cart:', item);
-    
+
     this.addingToCart = true;
 
     // Prepare cart item data for API
@@ -518,7 +518,7 @@ loadStoreDetails(storeId: string): void {
     this.apiService.addItemToCart(cartItemData).subscribe({
       next: (response) => {
         this.addingToCart = false;
-        
+
         if (response && response.success !== false) {
           this.messageService.add({
             severity: 'success',
@@ -526,10 +526,10 @@ loadStoreDetails(storeId: string): void {
             detail: `${item.name} has been added to your cart`,
             life: 3000
           });
-          
+
           // Update cart item count
           this.loadCartSummary();
-          
+
         } else {
           this.messageService.add({
             severity: 'error',
@@ -542,7 +542,7 @@ loadStoreDetails(storeId: string): void {
       error: (error) => {
         this.addingToCart = false;
         console.error('Error adding related product to cart:', error);
-        
+
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
@@ -556,10 +556,10 @@ loadStoreDetails(storeId: string): void {
   // Increase quantity for product already in cart
   increaseCartQuantity(): void {
     const cartItem = this.getCartItemForProduct(this.product.id);
-    
+
     if (cartItem) {
       const newQuantity = cartItem.quantity + 1;
-      
+
       if (newQuantity > (this.product.maxQuantity || this.product.stockQuantity || 10)) {
         this.messageService.add({
           severity: 'warn',
@@ -577,10 +577,10 @@ loadStoreDetails(storeId: string): void {
   // Decrease quantity for product in cart
   decreaseCartQuantity(): void {
     const cartItem = this.getCartItemForProduct(this.product.id);
-    
+
     if (cartItem) {
       const newQuantity = cartItem.quantity - 1;
-      
+
       if (newQuantity < 1) {
         // Remove item if quantity becomes 0
         this.removeItemFromCart(cartItem.cartItemId);
@@ -604,10 +604,10 @@ loadStoreDetails(storeId: string): void {
       next: (response) => {
         this.addingToCart = false;
         console.log('Cart item quantity updated:', response);
-        
+
         // Reload cart summary to get updated data
         this.loadCartSummary();
-        
+
         this.messageService.add({
           severity: 'success',
           summary: 'Updated',
@@ -637,10 +637,10 @@ loadStoreDetails(storeId: string): void {
       next: (response) => {
         this.addingToCart = false;
         console.log('Cart item removed:', response);
-        
+
         // Reload cart summary to get updated data
         this.loadCartSummary();
-        
+
         this.messageService.add({
           severity: 'success',
           summary: 'Removed',
@@ -667,16 +667,16 @@ loadStoreDetails(storeId: string): void {
       next: (summary) => {
         console.log('Cart summary loaded:', summary);
         this.currentCartSummary = summary;
-        
+
         // Update local cart items from API response
         this.cartItems = summary.cartItems || [];
-        
+
         // Update cart status for current product
         this.updateCartStatusFromAPI();
-        
+
         // Update cart item count
         this.cartItemCount = summary.totalItems || 0;
-        
+
       },
       error: (error) => {
         console.error('Error loading cart summary:', error);
@@ -703,10 +703,10 @@ loadStoreDetails(storeId: string): void {
     this.apiService.clearCart(this.currentCartSummary.cartId).subscribe({
       next: (response) => {
         console.log('Cart cleared:', response);
-        
+
         // Reload cart summary
         this.loadCartSummary();
-        
+
         this.messageService.add({
           severity: 'success',
           summary: 'Cart Cleared',
@@ -728,8 +728,8 @@ loadStoreDetails(storeId: string): void {
 
   // Helper method to get cart item for current product
   private getCartItemForProduct(productId: number): any {
-    return this.cartItems.find(item => 
-      item.productId === productId || 
+    return this.cartItems.find(item =>
+      item.productId === productId ||
       item.productId === productId.toString()
     );
   }
@@ -737,7 +737,7 @@ loadStoreDetails(storeId: string): void {
   // Update cart status based on API data
   private updateCartStatusFromAPI(): void {
     const cartItem = this.getCartItemForProduct(this.product.id);
-    
+
     this.isInCart = !!cartItem;
     this.cartQuantity = cartItem ? cartItem.quantity : 0;
   }
@@ -781,7 +781,7 @@ loadStoreDetails(storeId: string): void {
   // Get default product image
   private getDefaultProductImage(product: any): string {
     const productName = (product.title || product.name || '').toLowerCase();
-    
+
     if (productName.includes('phone')) {
       return 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=400&fit=crop';
     } else if (productName.includes('laptop')) {
@@ -789,7 +789,7 @@ loadStoreDetails(storeId: string): void {
     } else if (productName.includes('tv')) {
       return 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400&h=400&fit=crop';
     }
-    
+
     return 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=400&fit=crop';
   }
 
@@ -817,13 +817,13 @@ loadStoreDetails(storeId: string): void {
   onBuyNow(): void {
     // First add to cart via API
     this.onAddToCart();
-    
+
     // Wait for cart addition to complete, then navigate to checkout
     setTimeout(() => {
       this.router.navigate(['/apps/checkout'], {
-        queryParams: { 
-          direct: true, 
-          productId: this.product.id, 
+        queryParams: {
+          direct: true,
+          productId: this.product.id,
           quantity: this.quantity,
           fromProduct: true
         }
@@ -841,13 +841,13 @@ loadStoreDetails(storeId: string): void {
   // Rest of the existing methods remain the same...
   private loadProductData(productId: number): void {
     console.log('Loading product data for ID:', productId);
-    
+
     // Get product from home service
     const homeProduct = this.homeService.getProductById(productId);
-    
+
     if (homeProduct) {
       console.log('Found home product:', homeProduct);
-      
+
       // Map home product data to detail product format
       this.product = {
         id: homeProduct.id,
@@ -855,7 +855,7 @@ loadStoreDetails(storeId: string): void {
         title: homeProduct.title || homeProduct.name || 'Product Name',
         price: homeProduct.price || 0,
         originalPrice: homeProduct.originalPrice || (homeProduct.price ? homeProduct.price + Math.floor(homeProduct.price * 0.2) : 0),
-        discount: homeProduct.originalPrice && homeProduct.price ? 
+        discount: homeProduct.originalPrice && homeProduct.price ?
           Math.round(((homeProduct.originalPrice - homeProduct.price) / homeProduct.originalPrice) * 100) : 17,
         rating: homeProduct.rating || 4.0,
         reviewCount: homeProduct.reviewCount || Math.floor(Math.random() * 30) + 5,
@@ -877,24 +877,24 @@ loadStoreDetails(storeId: string): void {
 
       // Set current image
       this.currentImage = this.product.images[0]?.itemImageSrc || homeProduct.imgSrc || '';
-      
+
       // Update cart status for this product
       this.updateCartStatus();
-      
+
       // Update wishlist status after product is loaded
       this.updateWishlistStatus();
-      
+
       console.log('Mapped product data:', this.product);
     } else {
       console.error('Product not found for ID:', productId);
-      
+
       // Show error message and navigate back
       this.messageService.add({
         severity: 'error',
         summary: 'Product Not Found',
         detail: 'The requested product could not be found.'
       });
-      
+
       setTimeout(() => {
         this.router.navigate(['/apps/home']);
       }, 2000);
@@ -908,7 +908,7 @@ loadStoreDetails(storeId: string): void {
 
     const title = homeProduct.title || homeProduct.name || '';
     const category = homeProduct.category || '';
-    
+
     if (title.toLowerCase().includes('tv') || title.toLowerCase().includes('television')) {
       return 'Experience stunning picture quality with crystal-clear display technology. This smart TV delivers exceptional performance with vibrant colors and sharp details, perfect for your entertainment needs.';
     } else if (title.toLowerCase().includes('phone') || title.toLowerCase().includes('mobile')) {
@@ -928,7 +928,7 @@ loadStoreDetails(storeId: string): void {
 
   private generateFeatures(homeProduct: any): string[] {
     const title = homeProduct.title || homeProduct.name || '';
-    
+
     if (title.toLowerCase().includes('tv')) {
       return [
         'Crystal Clear 4K UHD Display',
@@ -972,10 +972,10 @@ loadStoreDetails(storeId: string): void {
     }
   }
 
-  private generateImages(homeProduct: any): Array<{itemImageSrc: string, thumbnailImageSrc: string, alt: string}> {
+  private generateImages(homeProduct: any): Array<{ itemImageSrc: string, thumbnailImageSrc: string, alt: string }> {
     const mainImage = homeProduct.imgSrc || 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=800&h=600&fit=crop';
     const title = homeProduct.title || homeProduct.name || 'Product';
-    
+
     return [
       {
         itemImageSrc: mainImage,
@@ -998,12 +998,12 @@ loadStoreDetails(storeId: string): void {
   private extractBrandFromTitle(title: string): string {
     const commonBrands = ['Samsung', 'Apple', 'Sony', 'LG', 'Dell', 'HP', 'Lenovo', 'Nike', 'Adidas', 'Canon', 'Nikon'];
     const titleWords = title.split(' ');
-    
+
     for (const word of titleWords) {
       const brand = commonBrands.find(b => b.toLowerCase() === word.toLowerCase());
       if (brand) return brand;
     }
-    
+
     return titleWords[0] || 'Premium Brand';
   }
 
@@ -1014,7 +1014,7 @@ loadStoreDetails(storeId: string): void {
 
   private loadRelatedProducts(): void {
     const allProducts = this.homeService.products || [];
-    
+
     this.relatedProducts = allProducts
       .filter(product => product.id !== this.product.id)
       .slice(0, 4)
@@ -1072,16 +1072,16 @@ loadStoreDetails(storeId: string): void {
   // Updated review methods
   onWriteReview() {
     this.showReviewForm = !this.showReviewForm;
-    
+
     if (this.showReviewForm) {
       // Reset form when showing
       this.reviewForm.reset();
       this.reviewForm.patchValue({
-       
+
         rating: 0,
         comment: ''
       });
-      
+
       // Scroll to review form
       setTimeout(() => {
         const reviewFormElement = document.getElementById('review-form');
@@ -1092,83 +1092,83 @@ loadStoreDetails(storeId: string): void {
     }
   }
 
-onSubmitReview() {
-  if (this.reviewForm.invalid || this.isSubmittingReview) {
-    Object.values(this.reviewForm.controls).forEach(c => c.markAsTouched());
-    return;
+  onSubmitReview() {
+    if (this.reviewForm.invalid || this.isSubmittingReview) {
+      Object.values(this.reviewForm.controls).forEach(c => c.markAsTouched());
+      return;
+    }
+
+    this.isSubmittingReview = true;
+    const { comment, rating } = this.reviewForm.value;
+
+    const payload = {
+      storeId: '32701114-3f77-42b4-216b-08ddb7d0de62',
+      customerId: Number(sessionStorage.getItem('customer_id')),
+      productId: String(this.product.id),
+      rating,
+      reviewText: comment,
+      isApproved: true
+    };
+
+    this.apiService.submitProductReview(payload)
+      .subscribe({
+        next: () => {
+
+          this.reviewForm.reset();
+          this.showReviewForm = false;
+          this.isSubmittingReview = false;
+
+
+          this.loadReviews(String(this.product.id));
+
+          this.snackBar.open(
+            'Review submitted successfully!',
+            'Close',
+            { duration: 3000, horizontalPosition: 'center', verticalPosition: 'bottom' }
+          );
+        },
+        error: () => {
+          this.isSubmittingReview = false;
+          this.snackBar.open('Failed to submit review', 'Close', { duration: 3000 });
+        }
+      });
+  }
+  loadReviews(productId: string) {
+    this.apiService.getAllProductReviews(productId).subscribe({
+      next: async (res: any) => {
+        const approved = res.result.items.filter((r: any) => r.isApproved);
+
+        const reviewStreams = approved.map(async (rev: any) => {
+          const cust = await this.apiService.getCustomerById(rev.customerId).toPromise();
+          const fullName = cust.result.fullName;
+          return {
+            id: rev.id,
+            user: fullName,
+            rating: rev.rating,
+            comment: rev.reviewText,
+            date: new Date().toLocaleDateString(),
+            avatar: this.generateAvatar(fullName)
+          };
+        });
+
+        const list = await Promise.all(reviewStreams);
+        this.reviews = list;
+        this.updateProductRating();
+        this.page = 1;
+        this.displayedReviews = this.reviews.slice(0, this.page * this.pageSize);
+      },
+      error: err => console.error('Failed to load reviews', err)
+    });
+  }
+  generateAvatar(fullName: string): string {
+    return fullName?.charAt(0).toUpperCase() || '?';
   }
 
-  this.isSubmittingReview = true;
-  const { comment, rating } = this.reviewForm.value;
-
-  const payload = {
-    storeId:    '32701114-3f77-42b4-216b-08ddb7d0de62',
-    customerId: Number(sessionStorage.getItem('customer_id')),
-    productId:  String(this.product.id),
-    rating,
-    reviewText: comment,
-    isApproved: true
-  };
-
-  this.apiService.submitProductReview(payload)
-    .subscribe({
-      next: () => {
-       
-        this.reviewForm.reset();
-        this.showReviewForm = false;
-        this.isSubmittingReview = false;
-
-       
-        this.loadReviews(String(this.product.id));
-
-        this.snackBar.open(
-          'Review submitted successfully!',
-          'Close',
-          { duration: 3000, horizontalPosition: 'center', verticalPosition: 'bottom' }
-        );
-      },
-      error: () => {
-        this.isSubmittingReview = false;
-        this.snackBar.open('Failed to submit review', 'Close', { duration: 3000 });
-      }
-    });
-}
-loadReviews(productId: string) {
-  this.apiService.getAllProductReviews(productId).subscribe({
-    next: async (res: any) => {
-      const approved = res.result.items.filter((r: any) => r.isApproved);
-
-      const reviewStreams = approved.map(async (rev: any) => {
-        const cust = await this.apiService.getCustomerById(rev.customerId).toPromise();
-        const fullName = cust.result.fullName;
-        return {
-          id: rev.id,
-          user: fullName,
-          rating: rev.rating,
-          comment: rev.reviewText,
-          date: new Date().toLocaleDateString(),
-          avatar: this.generateAvatar(fullName)
-        };
-      });
-
-      const list = await Promise.all(reviewStreams);
-      this.reviews = list;
-      this.updateProductRating();
-      this.page = 1;
-      this.displayedReviews = this.reviews.slice(0, this.page * this.pageSize);
-    },
-    error: err => console.error('Failed to load reviews', err)
-  });
-}
-generateAvatar(fullName: string): string {
-  return fullName?.charAt(0).toUpperCase() || '?';
-}
-
-onLoadMoreReviews() {
-  this.page++;
-  const nextSlice = this.reviews.slice(0, this.page * this.pageSize);
-  this.displayedReviews = nextSlice;
-}
+  onLoadMoreReviews() {
+    this.page++;
+    const nextSlice = this.reviews.slice(0, this.page * this.pageSize);
+    this.displayedReviews = nextSlice;
+  }
 
 
   onCancelReview() {
@@ -1182,10 +1182,10 @@ onLoadMoreReviews() {
       user: reviewData.user,
       rating: reviewData.rating,
       comment: reviewData.comment,
-      date: new Date().toLocaleDateString('en-US', { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
+      date: new Date().toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
       }),
       avatar: this.getInitials(reviewData.user)
     };

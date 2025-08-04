@@ -199,7 +199,7 @@
 </mat-toolbar>
 
 <!-- FIXED: Enhanced Subheader with Dynamic Categories -->
-<mat-toolbar class="subheader bg-light" style="min-height: 48px;">
+<mat-toolbar class="subheader bg-light" style="min-height: 48px;" *ngIf="shouldShowSubheader()">
   <div class="d-flex align-items-center w-100">
 
     <!-- FIXED: Click-based Category Dropdown with proper structure -->
@@ -367,6 +367,8 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
 
+  
+
   .subsubmenu-item {
     padding: 10px 16px;
     cursor: pointer;
@@ -413,36 +415,32 @@
   /* QUICK CATEGORY BUTTONS                */
   /* ------------------------------------- */
 
-  .quick-categories {
+.quick-categories {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 8px;
-  overflow-x: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  flex: 1; /* Take remaining space */
-  min-width: 0; /* Allow shrinking */
+  width: 100%;
 }
+
 
 .quick-categories::-webkit-scrollbar {
   display: none;
 }
 
 .category-quick-btn {
-  flex: 1; /* Distribute available space equally */
-  min-width: 80px; /* Minimum width to prevent too narrow buttons */
-  max-width: 120px; /* Maximum width to prevent too wide buttons */
+  flex: 0 1 auto; /* Allow button to grow based on content */
+  min-width: auto;
+  max-width: none;
   padding: 6px 12px;
   height: 32px;
-  border-radius: 16px;
   font-size: 13px;
   font-weight: 500;
   white-space: nowrap;
-  transition: all 0.2s ease;
+  border-radius: 16px;
   border: 1px solid #e0e0e0;
   background: white;
   color: #666;
-  text-align: center;
   display: flex;
   align-items: center;
   justify-content: center;
