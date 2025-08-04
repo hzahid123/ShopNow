@@ -1,0 +1,18 @@
+.dispute-card {
+  flex: 1 1 45%;
+  min-width: 300px;
+}
+
+.equal-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 16px;
+}
+
+.action-btn {
+  padding: 0.5rem 1rem;
+  width: fit-content;
+  margin: 0 auto;
+  font-size: 16px;
+}

@@ -1,0 +1,31 @@
+<div class="bg-light-primary rounded p-y-20 p-x-24 m-b-24 overflow-hidden">
+  <div class="d-flex">
+    <div class="m-t-6">
+      <h4 class="page-title m-0 f-s-20 f-w-600">Disputes & Reports</h4>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex flex-wrap gap-24 justify-content-center">
+  <mat-card class="dispute-card equal-card">
+    <mat-card-content class="text-center">
+      <p class="f-s-15 m-b-24">
+        If you encounter any issues, we encourage you to contact the seller (or the buyer) first. If you can't reach an agreement, you can apply for a refund by opening a dispute.
+      </p>
+      <button mat-flat-button color="primary"class="action-btn" (click)="goToDispute()">
+        Open Dispute
+      </button>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="dispute-card equal-card">
+    <mat-card-content class="text-center">
+      <p class="f-s-15 m-b-24">
+        If you think that a seller (or a buyer) has violated AliExpress trading rules, you have the ability to send a report to our team for review. This helps us provide a safer shopping experience.
+      </p>
+      <button mat-flat-button color="primary" class="action-btn" (click)="goToReport()">
+        Submit a Report
+      </button>
+    </mat-card-content>
+  </mat-card>
+</div>

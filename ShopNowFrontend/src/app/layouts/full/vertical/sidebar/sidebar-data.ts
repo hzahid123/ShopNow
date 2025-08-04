@@ -173,6 +173,11 @@ export const navItems: NavItem[] = [
   iconName: 'lock', // You can change this icon to something appropriate
   route: 'apps/support/policy',
   },
+  {
+    displayName: 'Disputes & Reports',
+    iconName: 'gavel', // Icon indicating a report or alert
+    route: 'apps/support/dispute-report',
+  },
 
   {
     navCap: 'Sign In',
