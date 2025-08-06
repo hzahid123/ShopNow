@@ -20,9 +20,9 @@ using System.IO;
 
 
 using ShopNowAngular.Configuration.EmailConfigurations;
-using ShopNowAngular.BlobStorageManagement;
 using ShopNowAngular;
 using ShopNowAngular.MyFatoorahPayment;
+using ShopNowAngular.AzureBlobStorage;
 
 namespace ShopNowAngular.Web.Host.Startup
 {
@@ -54,8 +54,8 @@ namespace ShopNowAngular.Web.Host.Startup
             EmailConfigurationResolver.Configure(_appConfiguration);
 
             services.AddSignalR();
-            services.AddSingleton<BlobStorageAppService>();
             services.AddSingleton<MyFatoorahAppService>();
+            services.AddTransient<IAzureBlobStorageAppService, AzureBlobStorageAppService>();
 
             // Configure CORS for angular2 UI
             services.AddCors(
