@@ -253,7 +253,7 @@ namespace ShopNowAngular.Controllers
             return claims;
         }
         [HttpPost]
-        public async Task<IActionResult> SendOtpForForgetPasswordVerification(SendOtpForForgetPasswordModel sendOtpForForgetPassword)
+        public async Task<IActionResult> SendOtpForForgetPasswordVerification([FromBody] SendOtpForForgetPasswordModel sendOtpForForgetPassword)
         {
             var user = await _userAppService.GetUserEntityByNameAndEmail(sendOtpForForgetPassword.EmailAddress);
             if (user == null)
