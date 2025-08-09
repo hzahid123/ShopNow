@@ -1,4 +1,5 @@
 ﻿using Abp.Domain.Entities.Auditing;
+using ShopNowAngular.Enums;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -13,6 +14,8 @@ namespace ShopNowAngular.Files
         public string FileName { get; set; }
         public string FileKey { get; set; }
         public string Url { get; set; }
+        public FileCategory Category { get; set; }
+
         public Guid? ProductId { get; set; }
     }
 }

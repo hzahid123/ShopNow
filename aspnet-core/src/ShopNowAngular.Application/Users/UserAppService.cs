@@ -149,6 +149,16 @@ namespace ShopNowAngular.Users
             var data = await _userRepository.GetAllUsersSP(input);
             return data;
         }
+        public async Task<bool> ForgetPassword(ForgetPasswordDto input)
+        {
+            var userData = await Repository.FirstOrDefaultAsync(u =>
+                !string.IsNullOrWhiteSpace(input.EmailAddress) &&
+                (u.UserName.Equals(input.EmailAddress) ||
+                 u.EmailAddress.Equals(input.EmailAddress)) &&
+                u.IsActive);
+            var result = await _userManager.ChangePasswordAsync(userData, input.NewPassword);
+            return result.Succeeded;
+        }
         public async Task<GetStoreDto> ApproveStoreRequest(Guid storeRequestId)
         {
             if (storeRequestId == Guid.Empty)
