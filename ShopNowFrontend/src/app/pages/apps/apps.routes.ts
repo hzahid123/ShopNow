@@ -31,7 +31,10 @@ import { EditProfileComponent } from './settings/edit-profile/edit-profile.compo
 import { OverviewComponent } from './apps/overview/overview.component';
 import { ContactComponent } from './support/contact/contact.component';
 import { PolicyComponent } from './support/policy/policy.component';
-
+import { ShippingAddressComponent } from './shipping-address/shipping-address.component';
+import { OrderCustomerComponent } from './order-customer/order-customer.component';
+import { ReportCenterComponent } from './dispute-report/report-center/report-center.component';
+import { DisputeReportComponent } from './dispute-report/dispute-report.component';
 export const AppsRoutes: Routes = [
   {
     path: '',
@@ -62,6 +65,19 @@ export const AppsRoutes: Routes = [
         },
       },
 
+{
+  path: 'shipping-address',
+  component: ShippingAddressComponent,
+  data: {
+    title: 'Shipping Address',
+    urls: [
+      { title: 'Dashboard', url: '/dashboards/dashboard1' },
+      { title: 'Shipping Address' },
+    ],
+  },
+},
+
+
 
       // manage-users-roles
       {
@@ -75,6 +91,7 @@ export const AppsRoutes: Routes = [
           ],
         },
       },
+
 
       // home page pages
       {
@@ -509,8 +526,41 @@ export const AppsRoutes: Routes = [
           ],
         },
       },
+      {
+        path: 'support/dispute-report',
+        component: DisputeReportComponent,  
+        data: {
+          title: 'Disputes & Reports',
+          urls: [
+            { title: 'Dashboard', url: '/dashboards/dashboard1' },
+            { title: 'Disputes & Reports' },
+          ],
+        },
+      },
+      {
+        path: 'support/dispute-report/report-center',
+        component: ReportCenterComponent, 
+        data: {
+          title: 'Report Center',
+          urls: [
+            { title: 'Dashboard', url: '/dashboards/dashboard1' },
+            { title: 'Report Center' },
+          ],
+        },
 
-      
+      },
+
+      {
+        path: 'order-customer',
+        component: OrderCustomerComponent,
+        data: {
+          title: 'Order Customer',
+          urls: [
+            { title: 'Dashboard', url: '/dashboards/dashboard1' },
+            { title: 'Order Customer' },
+          ],
+        },
+      },
 
       // ========== OTHER ROUTES ==========
       {

@@ -1,0 +1,169 @@
+<div class="shipping-address-container">
+  <h2>Shipping address</h2>
+
+  <form (ngSubmit)="onSubmit()" #shippingForm="ngForm">
+    <!-- Country/Region -->
+    <div class="form-group">
+      <label for="country">Country/region</label>
+      <p-dropdown 
+        id="country"
+        [options]="countries" 
+        [(ngModel)]="shippingAddress.country"
+        (onChange)="onCountryChange($event)"
+        name="country"
+        optionLabel="name"
+        optionValue="code"
+        placeholder="Select Country"
+        [style]="{'width': '100%'}"
+        required>
+      </p-dropdown>
+    </div>
+
+    <!-- Contact Information -->
+    <h3>Contact information</h3>
+
+    <div class="contact-row">
+      <div class="form-group contact-name">
+        <label for="contactName">Contact name*</label>
+        <input 
+          pInputText 
+          id="contactName"
+          [(ngModel)]="shippingAddress.contactName"
+          name="contactName"
+          placeholder="Contact name*"
+          required
+          #contactName="ngModel">
+        <small class="error-message" *ngIf="contactName.invalid && contactName.touched">
+          Please enter a contact name.
+        </small>
+      </div>
+
+      <div class="form-group mobile-number">
+        <label for="mobile">Mobile number*</label>
+        <div class="mobile-input">
+          <span class="country-code">{{ selectedCountryCode }}</span>
+          <input 
+            pInputText 
+            id="mobile"
+            [(ngModel)]="shippingAddress.mobileNumber"
+            name="mobileNumber"
+            placeholder="Mobile number*"
+            required>
+        </div>
+      </div>
+    </div>
+
+    <!-- Address -->
+    <h3>Address</h3>
+
+    <div class="address-row">
+      <div class="form-group street-address">
+        <label for="streetAddress">Street address*</label>
+        <input 
+          pInputText 
+          id="streetAddress"
+          [(ngModel)]="shippingAddress.streetAddress"
+          name="streetAddress"
+          placeholder="Street address*"
+          required>
+      </div>
+
+      <div class="form-group apt-suite">
+        <label for="aptSuite">Apt, suite, unit, etc (optional)</label>
+        <input 
+          pInputText 
+          id="aptSuite"
+          [(ngModel)]="shippingAddress.aptSuite"
+          name="aptSuite"
+          placeholder="Apt, suite, unit, etc (optional)">
+      </div>
+    </div>
+
+    <div class="location-row">
+      <div class="form-group">
+        <label for="state">State</label>
+        <p-dropdown 
+          id="state"
+          [options]="states" 
+          [(ngModel)]="shippingAddress.state"
+          name="state"
+          optionLabel="name"
+          optionValue="code"
+          placeholder="Select State"
+          [style]="{'width': '100%'}"
+          required>
+        </p-dropdown>
+      </div>
+
+      <div class="form-group">
+        <label for="district">District</label>
+        <p-dropdown 
+          id="district"
+          [options]="districts" 
+          [(ngModel)]="shippingAddress.district"
+          name="district"
+          optionLabel="name"
+          optionValue="code"
+          placeholder="Select District"
+          [style]="{'width': '100%'}"
+          required>
+        </p-dropdown>
+      </div>
+
+      <div class="form-group">
+        <label for="city">City</label>
+        <p-dropdown 
+          id="city"
+          [options]="cities" 
+          [(ngModel)]="shippingAddress.city"
+          name="city"
+          optionLabel="name"
+          optionValue="code"
+          placeholder="Select City"
+          [style]="{'width': '100%'}"
+          required>
+        </p-dropdown>
+      </div>
+
+      <div class="form-group">
+        <label for="zipCode">ZIP code*</label>
+        <input 
+          pInputText 
+          id="zipCode"
+          [(ngModel)]="shippingAddress.zipCode"
+          name="zipCode"
+          placeholder="ZIP code*"
+          required>
+      </div>
+    </div>
+
+    <!-- Default Address Checkbox -->
+    <div class="form-group checkbox-group">
+      <input 
+        type="checkbox"
+        id="setAsDefault"
+        [(ngModel)]="shippingAddress.setAsDefault"
+        name="setAsDefault"
+        class="custom-checkbox">
+      <label for="setAsDefault">Set as default shipping address</label>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="button-group">
+      <button 
+        type="submit"
+        class="confirm-btn"
+        [disabled]="!shippingForm.form.valid">
+        Confirm
+      </button>
+
+      <button 
+        type="button"
+        class="cancel-btn"
+        (click)="onCancel()">
+        Cancel
+      </button>
+    </div>
+  </form>
+</div>
+

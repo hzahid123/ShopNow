@@ -23,11 +23,16 @@ export const navItems: NavItem[] = [
     route: '/apps/home',
   },
   //overview
-    {
+ {
   displayName: 'Overview',
   iconName: 'category',
   route: '/apps/overview'
-},
+ },
+ {
+  displayName: 'Shipping Address',
+  iconName: 'building',
+  route: '/apps/shipping-address'
+ },
   {
     displayName: 'Wish List',
     iconName: 'heart',
@@ -172,6 +177,11 @@ export const navItems: NavItem[] = [
   displayName: 'Privacy Policy',
   iconName: 'lock', // You can change this icon to something appropriate
   route: 'apps/support/policy',
+  },
+  {
+    displayName: 'Disputes & Reports',
+    iconName: 'gavel', // Icon indicating a report or alert
+    route: 'apps/support/dispute-report',
   },
 
   {

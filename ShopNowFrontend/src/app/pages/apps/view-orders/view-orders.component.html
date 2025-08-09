@@ -14,50 +14,102 @@
 <mat-card class="cardWithShadow">
     <mat-card-content class="p-24">
         <div class="table-responsive">
-            <div class="d-flex align-items-center justify-content-between w-100">
-                <mat-form-field appearance="outline" class="search-input w-100">
+            <!-- Top Bar: Search + Filter -->
+            <div class="d-flex align-items-center justify-content-between">
+                <!-- Search Field -->
+                <mat-form-field appearance="outline" class="search-input">
                     <mat-label>Search Orders</mat-label>
-                    <input matInput placeholder="Search Orders" autocomplete="off" [(ngModel)]="searchText"
-                        (keyup.enter)="loadRoles(searchText)">
-                    <button mat-icon-button matSuffix class="suffix-circle-icon" aria-label="Search"
-                        (click)="loadRoles(searchText)">
+                    <input matInput [(ngModel)]="searchText" name="searchText" (keyup.enter)="onSearch()" placeholder="Search Orders" />
+                    <button mat-icon-button matSuffix class="suffix-circle-icon" (click)="onSearch()">
                         <mat-icon>search</mat-icon>
                     </button>
-
                 </mat-form-field>
 
-
+                <!-- Filter Button -->
+                <button mat-flat-button color="primary" class="search-btn" (click)="filterVisible = true">
+                    <mat-icon class="me-1">filter_list</mat-icon> Filter
+                </button>
             </div>
 
-          <p-table [value]="dataSource" styleClass="p-datatable-striped w-100 m-t-24" [tableStyle]="{'box-shadow': '0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12)'}">
-    <ng-template pTemplate="header">
-        <tr>
-            <th>Select</th>
-            <th>Name</th>
-            <th>Customer ID</th>
-            <th>Amount</th>
-            <th>Order ID</th>
-            <th>Status</th>
-        </tr>
-    </ng-template>
-    
-    <ng-template pTemplate="body" let-element>
-        <tr>
-            <td>
-                <p-checkbox 
-                    [(ngModel)]="element.checked" 
-                    (onChange)="onCheckboxChange(element)">
-                </p-checkbox>
-            </td>
-            <td>{{ element.name }}</td>
-            <td>{{ element.customerId }}</td>
-            <td>{{ element.amount }}</td>
-            <td>{{ element.orderId }}</td>
-            <td>{{ element.status }}</td>
-        </tr>
-    </ng-template>
-</p-table>
+            <!-- Filter Dialog -->
+            <p-dialog
+                header="Filter Orders"
+                [(visible)]="filterVisible"
+                position="right"
+                [modal]="true"
+                [dismissableMask]="true"
+                [style]="{ width: '320px', height: '100vh' }"
+                [contentStyle]="{ height: 'calc(100vh - 56px)', overflow: 'auto', padding: '16px' }"
+                [draggable]="false"
+                [resizable]="false"
+            >
+                <form [formGroup]="filterForm" class="d-flex flex-column gap-16">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Select Range</mat-label>
+                        <mat-select formControlName="range" (selectionChange)="onRangeChange($event.value)">
+                            <mat-option *ngFor="let range of predefinedRanges" [value]="range.value">
+                                {{ range.label }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <div *ngIf="showCustomRange" class="m-t-12">
+                        <mat-form-field appearance="fill" class="w-100">
+                            <mat-label>Start Date</mat-label>
+                            <input matInput [matDatepicker]="picker1" formControlName="start">
+                            <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                            <mat-datepicker #picker1></mat-datepicker>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="fill" class="w-100">
+                            <mat-label>End Date</mat-label>
+                            <input matInput [matDatepicker]="picker2" formControlName="end">
+                            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                            <mat-datepicker #picker2></mat-datepicker>
+                        </mat-form-field>
+                    </div>
+
+                    <div *ngIf="calculatedRange" class="text-muted m-t-12 f-s-13">
+                        Selected Range: <strong>{{ calculatedRange }}</strong>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-8 m-t-16">
+                        <button mat-stroked-button type="button" (click)="cancelFilter()">Cancel</button>
+                        <button mat-flat-button color="primary" type="button" (click)="applyFilter()">Apply</button>
+                    </div>
+                </form>
+            </p-dialog>
+
+            <!-- Orders Table -->
+            <p-table [value]="dataSource" styleClass="p-datatable-striped w-100 m-t-24"
+                [tableStyle]="{'box-shadow': '0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12)'}">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Select</th>
+                        <th>Name</th>
+                        <th>Customer ID</th>
+                        <th>Amount</th>
+                        <th>Order ID</th>
+                        <th>Status</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-element>
+                    <tr>
+                        <td>
+                            <p-checkbox 
+                                [(ngModel)]="element.checked" 
+                                (onChange)="onCheckboxChange(element)">
+                            </p-checkbox>
+                        </td>
+                        <td>{{ element.name }}</td>
+                        <td>{{ element.customerId }}</td>
+                        <td>{{ element.amount }}</td>
+                        <td>{{ element.orderId }}</td>
+                        <td>{{ element.status }}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
         </div>
     </mat-card-content>
 </mat-card>
-<!-- 🔼 END: View Orders Filters Section -->
+<!-- 🔼 END: View Orders Filters Section-->
