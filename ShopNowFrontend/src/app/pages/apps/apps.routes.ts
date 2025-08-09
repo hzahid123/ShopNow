@@ -32,6 +32,9 @@ import { OverviewComponent } from './apps/overview/overview.component';
 import { ContactComponent } from './support/contact/contact.component';
 import { PolicyComponent } from './support/policy/policy.component';
 import { ShippingAddressComponent } from './shipping-address/shipping-address.component';
+import { OrderCustomerComponent } from './order-customer/order-customer.component';
+import { ReportCenterComponent } from './dispute-report/report-center/report-center.component';
+import { DisputeReportComponent } from './dispute-report/dispute-report.component';
 export const AppsRoutes: Routes = [
   {
     path: '',
