@@ -1,0 +1,38 @@
+<!-- Alert Box -->
+<div class="alert-box d-flex align-items-start gap-8 p-16 m-b-24" style="background-color: #ffeaea; border-radius: 8px;">
+  <!-- <mat-icon color="warn" style="font-size: 28px; margin-top: 2px;">info</mat-icon> -->
+  <span class="alert-text f-s-14">
+    Please describe the situation as clearly and objectively as possible.  
+    All reports will remain anonymous and will be processed by AliExpress as soon as possible.  
+    <strong>Please do not re-submit your report(s).</strong>
+  </span>
+</div>
+
+
+<!-- Report Options -->
+<div class="option d-flex justify-content-between align-items-center p-y-16 p-x-12 border-bottom pointer" 
+     (click)="goTo('/apps/support/ip-rights')">
+  <div class="option-content">
+    <h3 class="m-b-4 f-s-16 f-w-600">Intellectual Property Complaint (For Rights Holders)</h3>
+    <p class="m-0 text-muted">If you are intellectual property rights holders (like copyright, trademark etc.), submit complaints on IPP Platform.</p>
+  </div>
+  <mat-icon>chevron_right</mat-icon>
+</div>
+
+<div class="option d-flex justify-content-between align-items-center p-y-16 p-x-12 border-bottom pointer" 
+     (click)="goTo('/apps/support/non-rights-report')">
+  <div class="option-content">
+    <h3 class="m-b-4 f-s-16 f-w-600">Report (For Non-Rights Holders)</h3>
+    <p class="m-0 text-muted">If you don’t own the rights but wanna report an infringement, click here to file it.</p>
+  </div>
+  <mat-icon>chevron_right</mat-icon>
+</div>
+
+<div class="option d-flex justify-content-between align-items-center p-y-16 p-x-12 pointer" 
+     (click)="goTo('/apps/support/restricted-products')">
+  <div class="option-content">
+    <h3 class="m-b-4 f-s-16 f-w-600">Restricted or Prohibited Products</h3>
+    <p class="m-0 text-muted">Seller has listed stuff that’s either restricted, prohibited, or not fit for delivery.</p>
+  </div>
+  <mat-icon>chevron_right</mat-icon>
+</div>

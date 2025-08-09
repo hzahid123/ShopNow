@@ -523,8 +523,41 @@ export const AppsRoutes: Routes = [
           ],
         },
       },
+      {
+        path: 'support/dispute-report',
+        component: DisputeReportComponent,  
+        data: {
+          title: 'Disputes & Reports',
+          urls: [
+            { title: 'Dashboard', url: '/dashboards/dashboard1' },
+            { title: 'Disputes & Reports' },
+          ],
+        },
+      },
+      {
+        path: 'support/dispute-report/report-center',
+        component: ReportCenterComponent, 
+        data: {
+          title: 'Report Center',
+          urls: [
+            { title: 'Dashboard', url: '/dashboards/dashboard1' },
+            { title: 'Report Center' },
+          ],
+        },
 
-      
+      },
+
+      {
+        path: 'order-customer',
+        component: OrderCustomerComponent,
+        data: {
+          title: 'Order Customer',
+          urls: [
+            { title: 'Dashboard', url: '/dashboards/dashboard1' },
+            { title: 'Order Customer' },
+          ],
+        },
+      },
 
       // ========== OTHER ROUTES ==========
       {
