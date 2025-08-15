@@ -13,6 +13,9 @@ import { MatDialog } from '@angular/material/dialog';  // Service for constructo
 import { MatDialogModule } from '@angular/material/dialog';  // Module for imports array
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { Subject, takeUntil } from 'rxjs';
+import { WishlistService } from 'src/app/services/wishlist.service';
+
 interface CarouselSlide {
   id: number;
   title: string;
@@ -100,7 +103,9 @@ cartDialogQuantity: number = 1;
 
   // Wishlist
   wishlistItems: any[] = [];
-  wishlistProductIds: Set<string> = new Set();
+  private destroy$ = new Subject<void>();
+wishlistProductIds: Set<string> = new Set();
+
 
   // Utils
   private subscriptions: Subscription[] = [];
@@ -146,6 +151,7 @@ private customerId: number = Number(sessionStorage.getItem('customer_id'));
   // Dynamic categories from API
   category: Category[] = [];
 
+
   // ============= CONSTRUCTOR =============
 
   constructor(
@@ -154,7 +160,8 @@ private customerId: number = Number(sessionStorage.getItem('customer_id'));
     private cartService: CartService,
     private messageService: MessageService,
     private apiService: ApiService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+      private wishlistService: WishlistService
   ) {
     this.cartItems$ = this.cartService.cartItems$;
     this.cartSummary$ = this.cartService.cartSummary$;
@@ -168,15 +175,18 @@ private customerId: number = Number(sessionStorage.getItem('customer_id'));
     this.startAutoPlay();
     this.initializeMenuItems();
     this.subscribeToCartUpdates();
-    this.loadWishlist();
+     this.setupWishlistSubscription(); 
   }
 
-  ngOnDestroy(): void {
-    if (this.carouselInterval) {
-      clearInterval(this.carouselInterval);
-    }
-    this.subscriptions.forEach(sub => sub.unsubscribe());
+ ngOnDestroy(): void {
+  if (this.carouselInterval) {
+    clearInterval(this.carouselInterval);
   }
+  this.subscriptions.forEach(sub => sub.unsubscribe());
+  this.destroy$.next();
+  this.destroy$.complete();
+}
+
 
   // ============= CATEGORY METHODS =============
   private loadCategories(): void {
@@ -761,23 +771,108 @@ confirmAddToCart(): void {
 
     this.subscriptions.push(wishlistSubscription);
   }
+private setupWishlistSubscription(): void {
+  // Listen to global wishlist ID changes and update all product lists
+  this.wishlistService.wishlistIds$
+    .pipe(takeUntil(this.destroy$))
+    .subscribe((ids: string[] | Set<string>) => {
+      // ids might be an array or a Set depending on your service; normalize to Set
+      const idSet = ids instanceof Set ? ids : new Set((ids || []).map(String));
+      // update all product pools
+      const allProducts = [
+        ...this.homeService.products,
+        ...this.featuredProducts,
+        ...this.saleProducts,
+        ...this.newArrivals
+      ];
+      allProducts.forEach(prod => {
+        const prodId = (prod?.id || prod?.productId)?.toString();
+        prod.isWishlisted = prodId ? idSet.has(prodId) : false;
+      });
+
+      // also keep local set in sync if you still use it elsewhere
+      this.wishlistProductIds = idSet;
+      // update menu badges if needed
+      this.updateMenuBadges();
+    });
+}
 
   private updateProductWishlistStatus(): void {
-    const allProducts = [
-      ...this.homeService.products,
-      ...this.featuredProducts,
-      ...this.saleProducts,
-      ...this.newArrivals
-    ];
+  const allProducts = [
+    ...this.homeService.products,
+    ...this.featuredProducts,
+    ...this.saleProducts,
+    ...this.newArrivals
+  ];
 
-    allProducts.forEach(product => {
-      const productId = product.id?.toString() || product.productId?.toString();
-      if (productId) {
-        product.wishLis = this.wishlistProductIds.has(productId);
-        product.wishList = product.wishLis;
+  allProducts.forEach(product => {
+    const productId = (product.id || product.productId)?.toString();
+    if (productId) {
+      // Prefer the wishlistService check if available
+      product.isWishlisted = this.wishlistService?.isInWishlist
+        ? this.wishlistService.isInWishlist(productId)
+        : this.wishlistProductIds.has(productId);
+      // keep backwards-compatible props if other code relies on them
+      product.wishLis = product.isWishlisted;
+      product.wishList = product.isWishlisted;
+    } else {
+      product.isWishlisted = false;
+    }
+  });
+}
+toggleWishlistFromList(product: any): void {
+  if (!this.validateWishlistOperation(product)) return;
+
+  const productId = (product.id || product.productId).toString();
+  const currently = !!product.isWishlisted;
+
+  // Optimistic UI flip
+  product.isWishlisted = !currently;
+  product.wishLis = product.isWishlisted;
+  product.wishList = product.isWishlisted;
+
+  const apiCall = currently
+    ? this.apiService.removeFromWishlist(this.customerId, productId)
+    : this.apiService.addToWishlist(this.customerId, productId);
+
+  const sub = apiCall.subscribe({
+    next: () => {
+      // Ask wishlist service to refresh global state (so other components sync)
+      if (this.wishlistService && typeof this.wishlistService.loadWishlist === 'function') {
+        this.wishlistService.loadWishlist();
+      } else {
+        // fallback: update local state
+        this.updateWishlistState(productId, product, currently);
       }
-    });
-  }
+
+      this.messageService.add({
+        severity: 'success',
+        summary: currently ? 'Removed from Wishlist' : 'Added to Wishlist',
+        detail: `${product.title || product.name} ${currently ? 'removed from' : 'added to'} your wishlist`,
+        life: 2500
+      });
+
+      this.updateMenuBadges();
+    },
+    error: (err) => {
+      // revert optimistic change
+      product.isWishlisted = currently;
+      product.wishLis = currently;
+      product.wishList = currently;
+
+      console.error('Wishlist toggle failed', err);
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Wishlist Error',
+        detail: 'Failed to update wishlist. Please try again.',
+        life: 3000
+      });
+    }
+  });
+
+  this.subscriptions.push(sub);
+}
+
 
   toggleWishlist(product: any): void {
     if (!this.validateWishlistOperation(product)) return;
