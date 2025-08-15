@@ -1,3 +1,4 @@
+
 <div class="store-container">
   <h2>All Stores</h2>
   <!-- Search input -->
@@ -6,7 +7,8 @@
       <mat-form-field appearance="outline" class="w-100">
         <mat-label>Search</mat-label>
         <input matInput [(ngModel)]="searchTerm" (input)="onSearchChange()" placeholder="Search by store name...">
-        <mat-icon matSuffix>search</mat-icon>
+        <mat-icon mat-icon-button matSuffix class="suffix-circle-icon"
+        >search</mat-icon>
       </mat-form-field>
     </div>
   </div>
@@ -21,13 +23,13 @@
   </div> -->
 
   <!-- No Stores Found (after API) -->
-  <div *ngIf="!loading && !error && filteredStores.length === 0">
+  <div *ngIf="!loading && !error && shops.length === 0">
     No stores available.
   </div>
 
   <!-- Render Stores -->
   <div class="store-grid">
-    <div class="store-card" *ngFor="let store of filteredStores"
+    <div class="store-card" *ngFor="let store of shops"
       [ngStyle]="{ 'background-image': 'url(' + (store.imageUrl || defaultImg) + ')' }">
       <div class="store-info">
         <h3>{{ store.storeName }}</h3>

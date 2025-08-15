@@ -453,4 +453,10 @@ getCustomerById(customerId: number): Observable<any> {
   });
 }
 
+getFollowedStoreIds(): Observable<string[]> {
+  return this.http.get<string[]>(`${this.apiUrl}/StoreFollowerAppservice/GetFollowedStoreIds`);
+}
+
+
+
 }
