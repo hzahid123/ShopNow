@@ -294,7 +294,10 @@ export class ApiService {
     const url = `${this.apiUrl}/WishlistItem/GetAll?customerId=${customerId}`;
     return this.http.get(url);
   }
-
+getMyWishlist(): Observable<any> {
+  const url = `${this.apiUrl}/WishlistItem/GetMyWishlist`;
+  return this.http.get(url);
+}
 checkWishlistItem(productId: string): Observable<any> {
   const url = `${this.apiUrl}/WishlistItem/Get?Id=${productId}`;
   return this.http.get(url);

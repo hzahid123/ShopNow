@@ -8,6 +8,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { Subject, takeUntil } from 'rxjs';
 import { PrimeSharedModule } from 'src/app/shared/PrimeShared.module';
 import { ChipModule } from 'primeng/chip';
+import { WishlistService } from 'src/app/services/wishlist.service';
 
 // Angular Material Imports
 import { SharedModule } from 'src/app/shared/shared.module';
@@ -68,7 +69,8 @@ wishlistProductIds: string[] = [];
     private apiService: ApiService,
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
-     private productService: ProductService
+     private productService: ProductService,
+       private wishlistService: WishlistService
   ) {
     this.initializeCouponForm();
   }
@@ -76,9 +78,35 @@ wishlistProductIds: string[] = [];
 ngOnInit(): void {
   this.isLoading = true;
   this.cartService.setCustomerId(this.customerId);
-      this.loadRecommendations();  
+  
+  // Set up subscription FIRST
+  this.setupWishlistSubscription();
+  
+  // Load products
+  this.loadRecommendations();
+  
   this.loadCartDataDirectly(); 
 }
+
+private setupWishlistSubscription(): void {
+  this.wishlistService.wishlistIds$
+    .pipe(takeUntil(this.destroy$))
+    .subscribe(ids => {
+      // keep logs if you want
+      console.log('🔍 Wishlist IDs received:', ids);
+
+      // update recommended products
+      this.recommendedProducts.forEach(product => {
+        product.isWishlisted = ids.includes(String(product.id));
+      });
+
+      // update cart items
+      this.cartItems.forEach(item => {
+        item.isWishlisted = ids.includes(String(item.productId || item.id));
+      });
+    });
+}
+
 
 private loadRecommendations(): Promise<void> {
   return new Promise((resolve) => {
@@ -87,20 +115,23 @@ private loadRecommendations(): Promise<void> {
         const items = response?.result?.items || [];
         
         if (items.length > 0) {
-          this.recommendedProducts = items.map((p: any) => ({
-            ...p,
-            id: p.id,
-            name: p.name,
-            price: p.price,
-            originalPrice: p.price * 1.2,
-            image: this.getProductImage(p.id),
-            brand: this.getProductBrand(p.id),
-            rating: Math.floor(Math.random() * 2) + 3.5,
-            isWishlisted: false, // Start with false, check individually
-            inStock: p.inStock !== false
-          }));
-          
-           this.checkAllWishlistStatus();
+         // after mapping
+this.recommendedProducts = items.map((p: any) => ({
+  ...p,
+  id: p.id,
+  name: p.name,
+  price: p.price,
+  originalPrice: p.price * 1.2,
+  image: this.getProductImage(p.id),
+  brand: this.getProductBrand(p.id),
+  rating: Math.floor(Math.random() * 2) + 3.5,
+  isWishlisted: false,
+  inStock: p.inStock !== false
+}));
+
+// immediately sync wishlist status once recommendations are loaded
+this.checkAllWishlistStatus();
+
         }
         
         this.isLoading = false;
@@ -118,22 +149,9 @@ private loadRecommendations(): Promise<void> {
 
 private checkAllWishlistStatus(): void {
   this.recommendedProducts.forEach((product, index) => {
-    this.apiService.checkWishlistItem(product.id).subscribe({
-      next: (response) => {
-
-        this.recommendedProducts[index].isWishlisted = true;
-        console.log(`${product.name} is wishlisted`);
-      },
-      error: (error) => {
-     console.log(error)
-        this.recommendedProducts[index].isWishlisted = false;
-        console.log(`${product.name} is not wishlisted`);
-      }
-    });
+    this.recommendedProducts[index].isWishlisted = this.wishlistService.isInWishlist(product.id);
   });
 }
-
-
 RecommendedWishlist(item: any): void {
   const id = item.id;
   item.isWishlisted = !item.isWishlisted;
@@ -144,13 +162,13 @@ RecommendedWishlist(item: any): void {
     
   fn.call(this.apiService, this.customerId, id).subscribe({
     next: () => {
-      // Success - UI already updated
+     
+      this.wishlistService.loadWishlist();
       console.log(`✅ Wishlist updated for ${item.name}`);
     },
     error: err => {
       console.error(err);
-      // Revert UI on failure
-      item.isWishlisted = !item.isWishlisted;
+      item.isWishlisted = !item.isWishlisted; // Revert on error
     }
   });
 }
@@ -205,8 +223,9 @@ RecommendedWishlist(item: any): void {
           brand: this.getProductBrand(apiItem.productId), // You'll need to implement this
           model: '',
           inStock: true,
-          isWishlisted: false,
-          addedAt: new Date()
+          
+          addedAt: new Date(),
+          isWishlisted: this.wishlistService.isInWishlist(apiItem.productId),
         };
         return mappedItem;
       });
