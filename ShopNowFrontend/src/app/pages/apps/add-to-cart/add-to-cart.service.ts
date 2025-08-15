@@ -3,8 +3,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, catchError, of, tap } from 'rxjs';
 import { ApiService } from '../../../services/api.service'; // Adjust path as needed
-import { CartBadgeService } from '../../../services/cart-badge.service';
-
+import { CartBadgeService } from '../../../services/cart-badge.service'; 
 export interface CartItem {
   cartItemId?: string;
   id?: number;
@@ -170,8 +169,8 @@ export class CartService {
     return this.apiService.addItemToCart(addToCartRequest).pipe(
       tap((response) => {
         console.log('✅ Server confirmed item added to cart:', response);
-        this.loadCartFromDatabase();
-        this.cartBadgeService.fetchAndUpdateCartCount();
+        this.loadCartFromDatabase(); 
+         this.cartBadgeService.fetchAndUpdateCartCount();
       }),
       catchError((error) => {
         console.error('❌ Error adding to cart:', error);
@@ -180,18 +179,18 @@ export class CartService {
       tap(() => true)
     );
   }
-  removeFromCart(cartItemId: string): Observable<boolean> {
-    return this.apiService.removeItemFromCart(cartItemId).pipe(
-      tap((response) => {
-        this.loadCartFromDatabase();
-        this.cartBadgeService.fetchAndUpdateCartCount();
-      }),
-      catchError((error) => {
-        return of(false);
-      }),
-      tap(() => true)
-    );
-  }
+ removeFromCart(cartItemId: string): Observable<boolean> {
+  return this.apiService.removeItemFromCart(cartItemId).pipe(
+    tap((response) => {
+      this.loadCartFromDatabase();
+      this.cartBadgeService.fetchAndUpdateCartCount();
+    }),
+    catchError((error) => {
+      return of(false);
+    }),
+    tap(() => true)
+  );
+}
 
   updateQuantity(cartItemId: string, quantity: number): Observable<boolean> {
     if (quantity < 1) {
@@ -208,7 +207,7 @@ export class CartService {
         console.log('Cart item quantity updated:', response);
         // Reload cart to get updated data
         this.loadCartFromDatabase();
-        this.cartBadgeService.fetchAndUpdateCartCount();
+         this.cartBadgeService.fetchAndUpdateCartCount();
       }),
       catchError((error) => {
         console.error('Error updating quantity:', error);
@@ -237,7 +236,7 @@ export class CartService {
           total: 0,
           itemCount: 0
         });
-        this.cartBadgeService.fetchAndUpdateCartCount();
+         this.cartBadgeService.fetchAndUpdateCartCount();
       }),
       catchError((error) => {
         console.error('Error clearing cart:', error);

@@ -209,10 +209,92 @@
             <img [src]="getProductImage(p)" [alt]="p.title || p.name" class="product-image"
               (error)="onImageError($event, p)">
 
-            <!-- Discount Badge -->
-            @if (hasDiscount(p)) {
-            <div class="product-badge discount-badge">
-              -{{ getDiscountPercentage(p.originalPrice || p.regularPrice, p.price) }}%
+                <!-- Discount Badge -->
+                @if (hasDiscount(p)) {
+                  <div class="product-badge discount-badge">
+                    -{{ getDiscountPercentage(p.originalPrice || p.regularPrice, p.price) }}%
+                  </div>
+                }
+
+                <!-- Brand Badge -->
+                @if (p.badge) {
+                  <div class="product-badge featured-badge">{{ p.badge }}</div>
+                }
+
+                <!-- Stock Status Badge -->
+                @if (!p.inStock || (p.stockQuantity && p.stockQuantity < 1)) {
+                  <div class="product-badge stock-badge out-of-stock">Out of Stock</div>
+                } @else if (p.stockQuantity && p.stockQuantity < 5) {
+                  <div class="product-badge stock-badge low-stock">Limited Stock</div>
+                }
+
+                @if (p.inStock && (!p.stockQuantity || p.stockQuantity >= 1)) {
+  @if (isProductInCart(p.id || p.productId)) {
+    <!-- Remove from Cart -->
+   <button class="add-to-cart-icon"
+        (click)="onRemoveClicked(p.productId); $event.stopPropagation()"
+        [attr.aria-label]="'Remove ' + (p.title || p.name) + ' from cart'">
+  <mat-icon>remove_shopping_cart</mat-icon>
+</button>
+
+
+  } @else {
+    <!-- Add to Cart -->
+    <button class="add-to-cart-icon" 
+            (click)="addToCart(p); $event.stopPropagation()"
+            [attr.aria-label]="'Add ' + (p.title || p.name) + ' to cart'">
+      <mat-icon>add_shopping_cart</mat-icon>
+    </button>
+  }
+}
+
+                
+              </div>
+
+              <!-- Product Info -->
+              <div class="product-info">
+                <div class="price-section">
+                  <div class="price-details">
+                    <span class="current-price">{{ formatPrice(p.price) }}</span>
+                    @if (hasDiscount(p)) {
+                      <span class="original-price">{{ formatPrice(p.originalPrice || p.regularPrice) }}</span>
+                    }
+                  </div>
+                  <div class="wishlist-icon" 
+                     (click)="$event.stopPropagation(); toggleWishlist(p)"
+                     [class.favorited]="p.wishLis || p.wishList">
+                    <mat-icon [class.favorited]="p.wishLis || p.wishList">
+                      {{ (p.wishLis || p.wishList) ? 'favorite' : 'favorite_border' }}
+                    </mat-icon>
+                  </div>
+                </div>
+
+                <!-- Product Title -->
+                <h1 class="product-title">{{ p.title|| p.name}}</h1>
+
+                <!-- Brand and Category -->
+                <div class="product-meta">
+                  @if (p.brand) {
+                    <span class="product-brand">{{ p.brand }}</span>
+                  }
+                </div>
+
+                <!-- Rating and Stats -->
+                <div class="product-stats">
+                  <div class="rating-section">
+                    <div class="stars">
+                      @for (star of getStarArray(p.rating || 0); track $index) {
+                        <mat-icon class="star filled">star</mat-icon>
+                      }
+                      @for (star of getEmptyStarArray(p.rating || 0); track $index) {
+                        <mat-icon class="star empty">star_border</mat-icon>
+                      }
+                    </div>
+                    <span class="rating-text">{{ (p.rating || 0).toFixed(1) }}</span>
+                    <span></span>
+                  </div>
+                </div>
+              </div>
             </div>
             }
 
@@ -407,3 +489,61 @@
   </div>
 </div>
 -->
+<!-- Add to Cart Dialog Template -->
+<ng-template #addToCartDialog>
+  <div class="add-to-cart-dialog">
+    <h2 mat-dialog-title>Add to Cart</h2>
+    
+    <div mat-dialog-content class="dialog-content">
+      <div class="product-info-section">
+        <img [src]="getProductImage(selectedProductForCart)" 
+             [alt]="selectedProductForCart?.title || selectedProductForCart?.name" 
+             class="dialog-product-image"
+             (error)="onImageError($event, selectedProductForCart)">
+        
+        <div class="product-details">
+          <h3 class="dialog-product-name">{{ selectedProductForCart?.title || selectedProductForCart?.name }}</h3>
+          
+          <div class="dialog-price-section">
+            <span class="dialog-current-price">{{ formatPrice(selectedProductForCart?.price) }}</span>
+            <ng-container *ngIf="hasDiscount(selectedProductForCart)">
+              <span class="dialog-original-price">{{ formatPrice(selectedProductForCart?.originalPrice || selectedProductForCart?.regularPrice) }}</span>
+              <span class="dialog-discount">-{{ getDiscountPercentage(selectedProductForCart?.originalPrice || selectedProductForCart?.regularPrice, selectedProductForCart?.price) }}%</span>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+      
+      <div class="quantity-section">
+        <label class="quantity-label">Quantity:</label>
+        <div class="quantity-controls">
+          <button mat-icon-button 
+                  (click)="decreaseDialogQuantity()" 
+                  [disabled]="cartDialogQuantity <= 1">
+            <mat-icon>remove</mat-icon>
+          </button>
+          <span class="quantity-display">{{ cartDialogQuantity }}</span>
+          <button mat-icon-button 
+                  (click)="increaseDialogQuantity()" 
+                  [disabled]="cartDialogQuantity >= (selectedProductForCart?.maxQuantity || selectedProductForCart?.stockQuantity || 10)">
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <div mat-dialog-actions class="dialog-actions" style="flex-direction: column; align-items: stretch;">
+      <button mat-raised-button 
+              color="primary" 
+              (click)="confirmAddToCart()"
+              [disabled]="addingToCart"
+              style="width: 100%; margin-bottom: 8px;">
+        {{ addingToCart ? 'Adding...' : 'Add to Cart' }}
+      </button>
+      
+      <button mat-button mat-dialog-close style="width: 100%;">
+        Cancel
+      </button>
+    </div>
+  </div>
+</ng-template>

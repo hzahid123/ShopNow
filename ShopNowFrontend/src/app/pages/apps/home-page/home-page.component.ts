@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy,ViewChild } from '@angular/core';
 import { PrimeSharedModule } from 'src/app/shared/PrimeShared.module';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { HomeService } from './home-page.service';
@@ -9,10 +9,10 @@ import { MessageService } from 'primeng/api';
 import { CartService, CartItem, CartSummary } from '../add-to-cart/add-to-cart.service';
 import { ApiService } from 'src/app/services/api.service';
 import { Subscription, Observable, forkJoin } from 'rxjs';
-import { MatDialog, MatDialogModule  } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';  // Service for constructor
+import { MatDialogModule } from '@angular/material/dialog';  // Module for imports array
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-
 interface CarouselSlide {
   id: number;
   title: string;
@@ -59,7 +59,7 @@ export interface SubSubCategory {
 @Component({
   selector: 'app-home-page',
   standalone: true,
-  imports: [SharedModule, PrimeSharedModule, CommonModule, MatDialogModule, MatButtonModule, MatIconModule],
+imports: [SharedModule, PrimeSharedModule, CommonModule, MatDialogModule, MatButtonModule, MatIconModule],
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.scss',
   providers: [MessageService]
@@ -95,8 +95,8 @@ export class HomePageComponent implements OnInit, OnDestroy {
   cartSummary$: Observable<CartSummary>;
   showCartSidebar = false;
   //  properties section
-  selectedProductForCart: any = null;
-  cartDialogQuantity: number = 1;
+selectedProductForCart: any = null;
+cartDialogQuantity: number = 1;
 
   // Wishlist
   wishlistItems: any[] = [];
@@ -104,7 +104,8 @@ export class HomePageComponent implements OnInit, OnDestroy {
 
   // Utils
   private subscriptions: Subscription[] = [];
-  private customerId: number = Number(sessionStorage.getItem('customer_id'));
+private customerId: number = Number(sessionStorage.getItem('customer_id'));
+
   Math = Math;
 
   carouselSlides: CarouselSlide[] = [
@@ -556,72 +557,73 @@ export class HomePageComponent implements OnInit, OnDestroy {
     this.subscriptions.push(cartSubscription);
   }
 
-  addToCart(product: any, quantity: number = 1): void {
-    if (!this.validateCartOperation(product, quantity)) return;
 
+addToCart(product: any, quantity: number = 1): void {
+  if (!this.validateCartOperation(product, quantity)) return;
+  
 
-    this.selectedProductForCart = product;
-    this.cartDialogQuantity = 1;
+  this.selectedProductForCart = product;
+  this.cartDialogQuantity = 1;
+ 
+  this.dialog.open(this.addToCartDialog, {
+    width: '450px',
+    disableClose: false,
+    autoFocus: true
+  });
+}
 
-    this.dialog.open(this.addToCartDialog, {
-      width: '450px',
-      disableClose: false,
-      autoFocus: true
-    });
+@ViewChild('addToCartDialog') addToCartDialog!: any;
+
+increaseDialogQuantity(): void {
+  const maxQuantity = this.selectedProductForCart?.maxQuantity || 
+                     this.selectedProductForCart?.stockQuantity || 10;
+  if (this.cartDialogQuantity < maxQuantity) {
+    this.cartDialogQuantity++;
   }
+}
 
-  @ViewChild('addToCartDialog') addToCartDialog!: any;
-
-  increaseDialogQuantity(): void {
-    const maxQuantity = this.selectedProductForCart?.maxQuantity ||
-      this.selectedProductForCart?.stockQuantity || 10;
-    if (this.cartDialogQuantity < maxQuantity) {
-      this.cartDialogQuantity++;
-    }
+decreaseDialogQuantity(): void {
+  if (this.cartDialogQuantity > 1) {
+    this.cartDialogQuantity--;
   }
+}
 
-  decreaseDialogQuantity(): void {
-    if (this.cartDialogQuantity > 1) {
-      this.cartDialogQuantity--;
-    }
-  }
-
-  confirmAddToCart(): void {
-    if (!this.selectedProductForCart) return;
-
-    this.addingToCart = true;
-
-    const addToCartSubscription = this.cartService.addToCart(
-      this.selectedProductForCart,
-      this.cartDialogQuantity
-    ).subscribe({
-      next: (success) => {
-        this.addingToCart = false;
-
-        if (success) {
-          this.dialog.closeAll();
-        } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Failed to Add',
-            detail: 'Could not add item to cart. Please try again.',
-            life: 3000
-          });
-        }
-      },
-      error: (error) => {
-        this.addingToCart = false;
+confirmAddToCart(): void {
+  if (!this.selectedProductForCart) return;
+  
+  this.addingToCart = true;
+  
+  const addToCartSubscription = this.cartService.addToCart(
+    this.selectedProductForCart, 
+    this.cartDialogQuantity
+  ).subscribe({
+    next: (success) => {
+      this.addingToCart = false;
+      
+      if (success) {
+        this.dialog.closeAll();
+      } else {
         this.messageService.add({
           severity: 'error',
-          summary: 'Error',
-          detail: 'An error occurred while adding item to cart',
+          summary: 'Failed to Add',
+          detail: 'Could not add item to cart. Please try again.',
           life: 3000
         });
       }
-    });
+    },
+    error: (error) => {
+      this.addingToCart = false;
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'An error occurred while adding item to cart',
+        life: 3000
+      });
+    }
+  });
 
-    this.subscriptions.push(addToCartSubscription);
-  }
+  this.subscriptions.push(addToCartSubscription);
+}
 
   private validateCartOperation(product: any, quantity: number): boolean {
     if (!product || !product.id) {
@@ -1049,35 +1051,35 @@ export class HomePageComponent implements OnInit, OnDestroy {
     return category.charAt(0).toUpperCase() + category.slice(1);
   }
 
-  updateMenuBadges(): void {
-    this.apiService.getCartSummary(this.customerId).subscribe({
-      next: (response) => {
-        const cartItems = response.result.cartItems;
-        cartItems.forEach((item: any, index: number) => {
-        });
-        const totalQuantity = cartItems.reduce((sum: number, item: any) => sum + item.quantity, 0);
+updateMenuBadges(): void {
+  this.apiService.getCartSummary(this.customerId).subscribe({
+    next: (response) => {
+      const cartItems = response.result.cartItems;
+      cartItems.forEach((item: any, index: number) => {
+      });
+      const totalQuantity = cartItems.reduce((sum: number, item: any) => sum + item.quantity, 0);
 
-        if (this.items) {
-          const cartItem = this.items.find(item => item.label === 'Cart');
-          if (cartItem) {
-            cartItem.badge = totalQuantity.toString();
-          }
-        }
-      },
-      error: (error) => {
-        if (this.items) {
-          const cartItem = this.items.find(item => item.label === 'Cart');
-          if (cartItem) {
-            cartItem.badge = '0';
-          }
-          const wishlistItem = this.items.find(item => item.label === 'Wishlist');
-          if (wishlistItem) {
-            wishlistItem.badge = this.getWishlistCount().toString();
-          }
+      if (this.items) {
+        const cartItem = this.items.find(item => item.label === 'Cart');
+        if (cartItem) {
+          cartItem.badge = totalQuantity.toString();
         }
       }
-    });
-  }
+    },
+    error: (error) => {
+      if (this.items) {
+        const cartItem = this.items.find(item => item.label === 'Cart');
+        if (cartItem) {
+          cartItem.badge = '0';
+        }
+        const wishlistItem = this.items.find(item => item.label === 'Wishlist');
+        if (wishlistItem) {
+          wishlistItem.badge = this.getWishlistCount().toString();
+        }
+      }
+    }
+  });
+}
   // ============= UTILITY METHODS =============
 
   getProductImage(product: any): string {
