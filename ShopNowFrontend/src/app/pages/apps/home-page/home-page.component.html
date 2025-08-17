@@ -259,12 +259,12 @@
             <span class="original-price">{{ formatPrice(p.originalPrice || p.regularPrice) }}</span>
             }
           </div>
-          <div class="wishlist-icon" (click)="$event.stopPropagation(); toggleWishlist(p)"
-            [class.favorited]="p.wishLis || p.wishList">
-            <mat-icon [class.favorited]="p.wishLis || p.wishList">
-              {{ (p.wishLis || p.wishList) ? 'favorite' : 'favorite_border' }}
-            </mat-icon>
-          </div>
+                <div class="wishlist-icon" (click)="$event.stopPropagation(); toggleWishlistFromList(p)"
+     [class.favorited]="p.isWishlisted">
+  <mat-icon [class.favorited]="p.isWishlisted">
+    {{ p.isWishlisted ? 'favorite' : 'favorite_border' }}
+  </mat-icon>
+</div>
         </div>
 
         <!-- Product Title -->

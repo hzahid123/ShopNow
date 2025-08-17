@@ -1232,3 +1232,92 @@ $shadow-hover: rgba(0, 0, 0, 0.15);
     border-color: $error-border;
   }
 }
+.add-to-cart-dialog {
+  .dialog-content {
+    padding: 20px;
+    text-align: center;
+    min-width: 350px;
+  }
+  
+  .product-info-section {
+    margin-bottom: 24px;
+  }
+  
+  .dialog-product-image {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 16px;
+  }
+  
+  .dialog-product-name {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 12px;
+    color: #333;
+  }
+  
+  .dialog-price-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  
+  .dialog-current-price {
+    font-size: 20px;
+    font-weight: bold;
+    color: #e91e63;
+  }
+  
+  .dialog-original-price {
+    font-size: 16px;
+    text-decoration: line-through;
+    color: #999;
+  }
+  
+  .dialog-discount {
+    background: #4caf50;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  
+  .quantity-section {
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .quantity-label {
+    display: block;
+    margin-bottom: 12px;
+    font-weight: 500;
+    color: #666;
+  }
+  
+  .quantity-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+  
+  .quantity-display {
+    font-size: 18px;
+    font-weight: bold;
+    min-width: 30px;
+    padding: 8px 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .dialog-actions {
+    justify-content: space-between;
+    padding: 16px 0 0 0;
+  }
+}

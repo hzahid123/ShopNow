@@ -33,7 +33,7 @@ export class WishlistComponent implements OnInit {
   loading = false;
 
  
-  customerId = 6;
+  customerId = Number(sessionStorage.getItem('customer_id')) || 0;
 
   constructor(private apiService: ApiService) {}
 

@@ -8,6 +8,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { Subject, takeUntil } from 'rxjs';
 import { PrimeSharedModule } from 'src/app/shared/PrimeShared.module';
 import { ChipModule } from 'primeng/chip';
+import { WishlistService } from 'src/app/services/wishlist.service';
 
 // Angular Material Imports
 import { SharedModule } from 'src/app/shared/shared.module';
@@ -15,6 +16,7 @@ import { MessageService } from 'primeng/api';
 import { CartService, CartItem, CartSummary } from './add-to-cart.service';
 import { ConfirmationService } from 'primeng/api';
 import { ApiService } from '../../../services/api.service';
+import { ProductService } from '../manage-prodcuts/manage-products.service';
 
 @Component({
   selector: 'app-add-to-cart',
@@ -50,9 +52,11 @@ export class AddToCartComponent implements OnInit, OnDestroy {
   isLoading: boolean = false;
   dataLoaded: boolean = false;
   addingToCart: boolean = false;
-  
+wishlistProductIds: string[] = [];
+
   // Database-specific properties
-  customerId: number = 2;
+ private customerId: number = Number(sessionStorage.getItem('customer_id'));
+
   cartId: string = '';
   currentCartSummary: any = null;
 
@@ -64,51 +68,136 @@ export class AddToCartComponent implements OnInit, OnDestroy {
     private cartService: CartService,
     private apiService: ApiService,
     private messageService: MessageService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+     private productService: ProductService,
+       private wishlistService: WishlistService
   ) {
     this.initializeCouponForm();
   }
 
-  ngOnInit(): void {
-    console.log('Component initializing...');
-    this.isLoading = true;
-    
-    // Set customer ID in service
-    this.cartService.setCustomerId(this.customerId);
-    
-    // Load data directly from API first
-    this.loadCartDataDirectly();
-  }
+ngOnInit(): void {
+  this.isLoading = true;
+  this.cartService.setCustomerId(this.customerId);
+  
+  // Set up subscription FIRST
+  this.setupWishlistSubscription();
+  
+  // Load products
+  this.loadRecommendations();
+  
+  this.loadCartDataDirectly(); 
+}
 
-  // NEW: Load cart data directly from API and map to component properties
-  private loadCartDataDirectly(): void {
-    console.log('Loading cart data directly from API...');
-    
-    this.apiService.getCartSummary(this.customerId).subscribe({
-      next: (apiResponse) => {
-        console.log('API Response received:', apiResponse);
+private setupWishlistSubscription(): void {
+  this.wishlistService.wishlistIds$
+    .pipe(takeUntil(this.destroy$))
+    .subscribe(ids => {
+      // keep logs if you want
+      console.log('🔍 Wishlist IDs received:', ids);
+
+      // update recommended products
+      this.recommendedProducts.forEach(product => {
+        product.isWishlisted = ids.includes(String(product.id));
+      });
+
+      // update cart items
+      this.cartItems.forEach(item => {
+        item.isWishlisted = ids.includes(String(item.productId || item.id));
+      });
+    });
+}
+
+
+private loadRecommendations(): Promise<void> {
+  return new Promise((resolve) => {
+    this.productService.getAllProducts().subscribe({
+      next: (response) => {
+        const items = response?.result?.items || [];
         
-        if (apiResponse && apiResponse.result) {
-          this.processApiResponse(apiResponse.result);
-        } else {
-          console.warn('No result in API response');
-          this.handleEmptyCart();
+        if (items.length > 0) {
+         // after mapping
+this.recommendedProducts = items.map((p: any) => ({
+  ...p,
+  id: p.id,
+  name: p.name,
+  price: p.price,
+  originalPrice: p.price * 1.2,
+  image: this.getProductImage(p.id),
+  brand: this.getProductBrand(p.id),
+  rating: Math.floor(Math.random() * 2) + 3.5,
+  isWishlisted: false,
+  inStock: p.inStock !== false
+}));
+
+// immediately sync wishlist status once recommendations are loaded
+this.checkAllWishlistStatus();
+
         }
         
         this.isLoading = false;
-        this.dataLoaded = true;
+        resolve();
       },
-      error: (error) => {
-        console.error('Error loading cart data:', error);
-        this.handleCartLoadError(error);
+      error: () => {
+        this.recommendedProducts = [];
         this.isLoading = false;
-        this.dataLoaded = true;
+        resolve();
       }
     });
+  });
+}
 
-    // Also load recommendations
-    this.loadRecommendations();
-  }
+
+private checkAllWishlistStatus(): void {
+  this.recommendedProducts.forEach((product, index) => {
+    this.recommendedProducts[index].isWishlisted = this.wishlistService.isInWishlist(product.id);
+  });
+}
+RecommendedWishlist(item: any): void {
+  const id = item.id;
+  item.isWishlisted = !item.isWishlisted;
+  
+  const fn = item.isWishlisted ? 
+    this.apiService.addToWishlist : 
+    this.apiService.removeFromWishlist;
+    
+  fn.call(this.apiService, this.customerId, id).subscribe({
+    next: () => {
+     
+      this.wishlistService.loadWishlist();
+      console.log(`✅ Wishlist updated for ${item.name}`);
+    },
+    error: err => {
+      console.error(err);
+      item.isWishlisted = !item.isWishlisted; // Revert on error
+    }
+  });
+}
+
+  private loadCartDataDirectly(): void {
+  console.log('Loading cart data directly from API...');
+
+  this.apiService.getCartSummary(this.customerId).subscribe({
+    next: (apiResponse) => {
+      console.log('API Response received:', apiResponse);
+      
+      if (apiResponse && apiResponse.result) {
+        this.processApiResponse(apiResponse.result);
+      } else {
+        console.warn('No result in API response');
+        this.handleEmptyCart();
+      }
+      
+      this.isLoading = false;
+      this.dataLoaded = true;
+    },
+    error: (error) => {
+      console.error('Error loading cart data:', error);
+      this.handleCartLoadError(error);
+      this.isLoading = false;
+      this.dataLoaded = true;
+    },
+  });
+}
 
   // NEW: Process the API response and map to component properties
   private processApiResponse(result: any): void {
@@ -134,8 +223,9 @@ export class AddToCartComponent implements OnInit, OnDestroy {
           brand: this.getProductBrand(apiItem.productId), // You'll need to implement this
           model: '',
           inStock: true,
-          isWishlisted: false,
-          addedAt: new Date()
+          
+          addedAt: new Date(),
+          isWishlisted: this.wishlistService.isInWishlist(apiItem.productId),
         };
         return mappedItem;
       });
@@ -258,56 +348,8 @@ export class AddToCartComponent implements OnInit, OnDestroy {
     });
     
     this.handleEmptyCart();
-  }
+    }
 
-  private loadRecommendations(): Promise<void> {
-    return new Promise((resolve) => {
-      // Load recommended products
-      this.recommendedProducts = [
-        {
-          id: '2001',
-          name: 'Wireless Headphones Pro',
-          price: 15000,
-          originalPrice: 18000,
-          image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop',
-          brand: 'AudioTech',
-          rating: 4.5,
-          isWishlisted: false
-        },
-        {
-          id: '2002',
-          name: 'Smart Watch Ultra',
-          price: 25000,
-          originalPrice: 30000,
-          image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=400&fit=crop',
-          brand: 'TechTime',
-          rating: 4.2,
-          isWishlisted: false
-        },
-        {
-          id: '2003',
-          name: 'Bluetooth Speaker Pro',
-          price: 8000,
-          originalPrice: 10000,
-          image: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400&h=400&fit=crop',
-          brand: 'SoundMax',
-          rating: 4.0,
-          isWishlisted: false
-        },
-        {
-          id: '2004',
-          name: 'Smartphone Pro Max',
-          price: 45000,
-          originalPrice: 50000,
-          image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=400&fit=crop',
-          brand: 'TechPro',
-          rating: 4.3,
-          isWishlisted: false
-        }
-      ];
-      resolve();
-    });
-  }
 
   // Debug method to check data state
   debugCartData(): void {
@@ -609,16 +651,6 @@ private doClearEntireCart(): void {
     });
   }
 
-  toggleRecommendedWishlist(item: any): void {
-    item.isWishlisted = !item.isWishlisted;
-
-    this.messageService.add({
-      severity: 'success',
-      summary: item.isWishlisted ? 'Added to Wishlist' : 'Removed from Wishlist',
-      detail: `${item.name} ${item.isWishlisted ? 'added to' : 'removed from'} your wishlist`,
-      life: 3000
-    });
-  }
 
   moveAllToWishlist(): void {
     this.confirmationService.confirm({

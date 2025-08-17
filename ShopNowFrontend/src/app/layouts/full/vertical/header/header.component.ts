@@ -187,7 +187,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private cartService: CartService,
     private apiService: ApiService,
     private elementRef: ElementRef,
-    private cartBadgeService: CartBadgeService
+    private cartBadgeService: CartBadgeService 
   ) {
     translate.setDefaultLang('en');
   }
@@ -373,7 +373,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     console.log('Cart clicked - Items:', this.cartItemsCount); // Debug log
     this.router.navigate(['/apps/cart']);
   }
-  
+
+
   trackByCategoryId(index: number, category: any): string {
     return category.id;
   }
