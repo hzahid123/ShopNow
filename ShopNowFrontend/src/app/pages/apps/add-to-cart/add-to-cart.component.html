@@ -58,7 +58,7 @@
             <div class="item-header">
               <h3 class="product-title">{{ item.name }}</h3>
               <div class="item-brand" *ngIf="item.brand">
-                <span class="brand-text">{{ item.brand }}</span>
+                <span class="brand-text">{{ item.category }}</span>
                 <span *ngIf="item.model" class="model-text">{{ item.model }}</span>
               </div>
             </div>
@@ -313,10 +313,11 @@
                   }
                 </div>
                 <!-- Heart Icon for Wishlist -->
-                <div class="wishlist-icon" (click)="$event.stopPropagation(); toggleRecommendedWishlist(product)">
-                  <mat-icon [class.favorited]="product.isWishlisted">
-                    {{ product.isWishlisted ? 'favorite' : 'favorite_border' }}
-                  </mat-icon>
+                <div class="wishlist-icon" (click)="$event.stopPropagation(); RecommendedWishlist(product)">
+                 <mat-icon [class.favorited]="product.isWishlisted">
+  {{ product.isWishlisted ? 'favorite' : 'favorite_border' }}
+</mat-icon>
+
                 </div>
               </div>
 

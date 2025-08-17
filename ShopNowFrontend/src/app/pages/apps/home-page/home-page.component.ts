@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy,ViewChild } from '@angular/core';
 import { PrimeSharedModule } from 'src/app/shared/PrimeShared.module';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { HomeService } from './home-page.service';
@@ -9,7 +9,12 @@ import { MessageService } from 'primeng/api';
 import { CartService, CartItem, CartSummary } from '../add-to-cart/add-to-cart.service';
 import { ApiService } from 'src/app/services/api.service';
 import { Subscription, Observable, forkJoin } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { MatDialog } from '@angular/material/dialog';  // Service for constructor
+import { MatDialogModule } from '@angular/material/dialog';  // Module for imports array
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { Subject, takeUntil } from 'rxjs';
+import { WishlistService } from 'src/app/services/wishlist.service';
 
 interface CarouselSlide {
   id: number;
@@ -57,7 +62,7 @@ export interface SubSubCategory {
 @Component({
   selector: 'app-home-page',
   standalone: true,
-  imports: [SharedModule, PrimeSharedModule, CommonModule],
+imports: [SharedModule, PrimeSharedModule, CommonModule, MatDialogModule, MatButtonModule, MatIconModule],
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.scss',
   providers: [MessageService]
@@ -92,14 +97,20 @@ export class HomePageComponent implements OnInit, OnDestroy {
   cartItems$: Observable<CartItem[]>;
   cartSummary$: Observable<CartSummary>;
   showCartSidebar = false;
+  //  properties section
+selectedProductForCart: any = null;
+cartDialogQuantity: number = 1;
 
   // Wishlist
   wishlistItems: any[] = [];
-  wishlistProductIds: Set<string> = new Set();
+  private destroy$ = new Subject<void>();
+wishlistProductIds: Set<string> = new Set();
+
 
   // Utils
   private subscriptions: Subscription[] = [];
-  private customerId: number = 4; // Replace with actual customer ID from auth
+private customerId: number = Number(sessionStorage.getItem('customer_id'));
+
   Math = Math;
 
   carouselSlides: CarouselSlide[] = [
@@ -140,6 +151,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
   // Dynamic categories from API
   category: Category[] = [];
 
+
   // ============= CONSTRUCTOR =============
 
   constructor(
@@ -147,7 +159,9 @@ export class HomePageComponent implements OnInit, OnDestroy {
     public homeService: HomeService,
     private cartService: CartService,
     private messageService: MessageService,
-    private apiService: ApiService
+    private apiService: ApiService,
+    private dialog: MatDialog,
+      private wishlistService: WishlistService
   ) {
     this.cartItems$ = this.cartService.cartItems$;
     this.cartSummary$ = this.cartService.cartSummary$;
@@ -161,15 +175,18 @@ export class HomePageComponent implements OnInit, OnDestroy {
     this.startAutoPlay();
     this.initializeMenuItems();
     this.subscribeToCartUpdates();
-    this.loadWishlist();
+     this.setupWishlistSubscription(); 
   }
 
-  ngOnDestroy(): void {
-    if (this.carouselInterval) {
-      clearInterval(this.carouselInterval);
-    }
-    this.subscriptions.forEach(sub => sub.unsubscribe());
+ ngOnDestroy(): void {
+  if (this.carouselInterval) {
+    clearInterval(this.carouselInterval);
   }
+  this.subscriptions.forEach(sub => sub.unsubscribe());
+  this.destroy$.next();
+  this.destroy$.complete();
+}
+
 
   // ============= CATEGORY METHODS =============
   private loadCategories(): void {
@@ -523,6 +540,24 @@ export class HomePageComponent implements OnInit, OnDestroy {
     this.loadWishlist();
   }
 
+  onRemoveClicked(productId: string): void {
+    const item = this.cartService.getCartItemById(productId);
+
+    if (!item || !item.cartItemId) {
+      return;
+    }
+    this.cartService.removeFromCart(item.cartItemId).subscribe({
+      next: () => { },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Failed to Remove',
+          detail: 'Could not remove item from cart. Please try again.',
+          life: 3000
+        });
+      }
+    });
+  }
   // ============= CART METHODS =============
 
   private subscribeToCartUpdates(): void {
@@ -532,46 +567,73 @@ export class HomePageComponent implements OnInit, OnDestroy {
     this.subscriptions.push(cartSubscription);
   }
 
-  addToCart(product: any, quantity: number = 1): void {
-    if (!this.validateCartOperation(product, quantity)) return;
 
-    this.addingToCart = true;
+addToCart(product: any, quantity: number = 1): void {
+  if (!this.validateCartOperation(product, quantity)) return;
+  
 
-    const addToCartSubscription = this.cartService.addToCart(product, quantity).subscribe({
-      next: (success) => {
-        this.addingToCart = false;
+  this.selectedProductForCart = product;
+  this.cartDialogQuantity = 1;
+ 
+  this.dialog.open(this.addToCartDialog, {
+    width: '450px',
+    disableClose: false,
+    autoFocus: true
+  });
+}
 
-        if (success) {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Added to Cart',
-            detail: `${product.title || product.name} has been added to your cart`,
-            life: 3000
-          });
-          this.updateMenuBadges();
-        } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Failed to Add',
-            detail: 'Could not add item to cart. Please try again.',
-            life: 3000
-          });
-        }
-      },
-      error: (error) => {
-        this.addingToCart = false;
-        console.error('Error adding to cart:', error);
+@ViewChild('addToCartDialog') addToCartDialog!: any;
+
+increaseDialogQuantity(): void {
+  const maxQuantity = this.selectedProductForCart?.maxQuantity || 
+                     this.selectedProductForCart?.stockQuantity || 10;
+  if (this.cartDialogQuantity < maxQuantity) {
+    this.cartDialogQuantity++;
+  }
+}
+
+decreaseDialogQuantity(): void {
+  if (this.cartDialogQuantity > 1) {
+    this.cartDialogQuantity--;
+  }
+}
+
+confirmAddToCart(): void {
+  if (!this.selectedProductForCart) return;
+  
+  this.addingToCart = true;
+  
+  const addToCartSubscription = this.cartService.addToCart(
+    this.selectedProductForCart, 
+    this.cartDialogQuantity
+  ).subscribe({
+    next: (success) => {
+      this.addingToCart = false;
+      
+      if (success) {
+        this.dialog.closeAll();
+      } else {
         this.messageService.add({
           severity: 'error',
-          summary: 'Error',
-          detail: 'An error occurred while adding item to cart',
+          summary: 'Failed to Add',
+          detail: 'Could not add item to cart. Please try again.',
           life: 3000
         });
       }
-    });
+    },
+    error: (error) => {
+      this.addingToCart = false;
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'An error occurred while adding item to cart',
+        life: 3000
+      });
+    }
+  });
 
-    this.subscriptions.push(addToCartSubscription);
-  }
+  this.subscriptions.push(addToCartSubscription);
+}
 
   private validateCartOperation(product: any, quantity: number): boolean {
     if (!product || !product.id) {
@@ -605,14 +667,6 @@ export class HomePageComponent implements OnInit, OnDestroy {
     }
 
     return true;
-  }
-
-  increaseQuantity(product: any): void {
-    this.updateCartQuantity(product, 1);
-  }
-
-  decreaseQuantity(product: any): void {
-    this.updateCartQuantity(product, -1);
   }
 
   private updateCartQuantity(product: any, change: number): void {
@@ -653,10 +707,6 @@ export class HomePageComponent implements OnInit, OnDestroy {
 
       this.subscriptions.push(updateSubscription);
     }
-  }
-
-  getCartItemsCount(): number {
-    return this.cartService.getCartItemCount();
   }
 
   getCartTotal(): number {
@@ -721,23 +771,108 @@ export class HomePageComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(wishlistSubscription);
   }
+private setupWishlistSubscription(): void {
+  // Listen to global wishlist ID changes and update all product lists
+  this.wishlistService.wishlistIds$
+    .pipe(takeUntil(this.destroy$))
+    .subscribe((ids: string[] | Set<string>) => {
+      // ids might be an array or a Set depending on your service; normalize to Set
+      const idSet = ids instanceof Set ? ids : new Set((ids || []).map(String));
+      // update all product pools
+      const allProducts = [
+        ...this.homeService.products,
+        ...this.featuredProducts,
+        ...this.saleProducts,
+        ...this.newArrivals
+      ];
+      allProducts.forEach(prod => {
+        const prodId = (prod?.id || prod?.productId)?.toString();
+        prod.isWishlisted = prodId ? idSet.has(prodId) : false;
+      });
+
+      // also keep local set in sync if you still use it elsewhere
+      this.wishlistProductIds = idSet;
+      // update menu badges if needed
+      this.updateMenuBadges();
+    });
+}
 
   private updateProductWishlistStatus(): void {
-    const allProducts = [
-      ...this.homeService.products,
-      ...this.featuredProducts,
-      ...this.saleProducts,
-      ...this.newArrivals
-    ];
+  const allProducts = [
+    ...this.homeService.products,
+    ...this.featuredProducts,
+    ...this.saleProducts,
+    ...this.newArrivals
+  ];
 
-    allProducts.forEach(product => {
-      const productId = product.id?.toString() || product.productId?.toString();
-      if (productId) {
-        product.wishLis = this.wishlistProductIds.has(productId);
-        product.wishList = product.wishLis;
+  allProducts.forEach(product => {
+    const productId = (product.id || product.productId)?.toString();
+    if (productId) {
+      // Prefer the wishlistService check if available
+      product.isWishlisted = this.wishlistService?.isInWishlist
+        ? this.wishlistService.isInWishlist(productId)
+        : this.wishlistProductIds.has(productId);
+      // keep backwards-compatible props if other code relies on them
+      product.wishLis = product.isWishlisted;
+      product.wishList = product.isWishlisted;
+    } else {
+      product.isWishlisted = false;
+    }
+  });
+}
+toggleWishlistFromList(product: any): void {
+  if (!this.validateWishlistOperation(product)) return;
+
+  const productId = (product.id || product.productId).toString();
+  const currently = !!product.isWishlisted;
+
+  // Optimistic UI flip
+  product.isWishlisted = !currently;
+  product.wishLis = product.isWishlisted;
+  product.wishList = product.isWishlisted;
+
+  const apiCall = currently
+    ? this.apiService.removeFromWishlist(this.customerId, productId)
+    : this.apiService.addToWishlist(this.customerId, productId);
+
+  const sub = apiCall.subscribe({
+    next: () => {
+      // Ask wishlist service to refresh global state (so other components sync)
+      if (this.wishlistService && typeof this.wishlistService.loadWishlist === 'function') {
+        this.wishlistService.loadWishlist();
+      } else {
+        // fallback: update local state
+        this.updateWishlistState(productId, product, currently);
       }
-    });
-  }
+
+      this.messageService.add({
+        severity: 'success',
+        summary: currently ? 'Removed from Wishlist' : 'Added to Wishlist',
+        detail: `${product.title || product.name} ${currently ? 'removed from' : 'added to'} your wishlist`,
+        life: 2500
+      });
+
+      this.updateMenuBadges();
+    },
+    error: (err) => {
+      // revert optimistic change
+      product.isWishlisted = currently;
+      product.wishLis = currently;
+      product.wishList = currently;
+
+      console.error('Wishlist toggle failed', err);
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Wishlist Error',
+        detail: 'Failed to update wishlist. Please try again.',
+        life: 3000
+      });
+    }
+  });
+
+  this.subscriptions.push(sub);
+}
+
 
   toggleWishlist(product: any): void {
     if (!this.validateWishlistOperation(product)) return;
@@ -1011,20 +1146,35 @@ export class HomePageComponent implements OnInit, OnDestroy {
     return category.charAt(0).toUpperCase() + category.slice(1);
   }
 
-  private updateMenuBadges(): void {
-    if (this.items) {
-      const cartItem = this.items.find(item => item.label === 'Cart');
-      if (cartItem) {
-        cartItem.badge = this.getCartItemsCount().toString();
-      }
+updateMenuBadges(): void {
+  this.apiService.getCartSummary(this.customerId).subscribe({
+    next: (response) => {
+      const cartItems = response.result.cartItems;
+      cartItems.forEach((item: any, index: number) => {
+      });
+      const totalQuantity = cartItems.reduce((sum: number, item: any) => sum + item.quantity, 0);
 
-      const wishlistItem = this.items.find(item => item.label === 'Wishlist');
-      if (wishlistItem) {
-        wishlistItem.badge = this.getWishlistCount().toString();
+      if (this.items) {
+        const cartItem = this.items.find(item => item.label === 'Cart');
+        if (cartItem) {
+          cartItem.badge = totalQuantity.toString();
+        }
+      }
+    },
+    error: (error) => {
+      if (this.items) {
+        const cartItem = this.items.find(item => item.label === 'Cart');
+        if (cartItem) {
+          cartItem.badge = '0';
+        }
+        const wishlistItem = this.items.find(item => item.label === 'Wishlist');
+        if (wishlistItem) {
+          wishlistItem.badge = this.getWishlistCount().toString();
+        }
       }
     }
-  }
-
+  });
+}
   // ============= UTILITY METHODS =============
 
   getProductImage(product: any): string {

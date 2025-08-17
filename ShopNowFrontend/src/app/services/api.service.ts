@@ -42,6 +42,9 @@ export interface CartItem {
   providedIn: 'root'
 })
 export class ApiService {
+  getProductDetails(productId: string) {
+    throw new Error('Method not implemented.');
+  }
   private apiUrl = `${environment.commonURLs.Api}`;
   private authUrl = `${environment.commonURLs.Auth}`;
 
@@ -291,7 +294,14 @@ export class ApiService {
     const url = `${this.apiUrl}/WishlistItem/GetAll?customerId=${customerId}`;
     return this.http.get(url);
   }
-
+getMyWishlist(): Observable<any> {
+  const url = `${this.apiUrl}/WishlistItem/GetMyWishlist`;
+  return this.http.get(url);
+}
+checkWishlistItem(productId: string): Observable<any> {
+  const url = `${this.apiUrl}/WishlistItem/Get?Id=${productId}`;
+  return this.http.get(url);
+}
   clearWishlist(customerId: number): Observable<any> {
     const url = `${this.apiUrl}/WishlistItem/ClearWishlist?customerId=${customerId}`;
     return this.http.post(url, { customerId });
@@ -453,9 +463,11 @@ getCustomerById(customerId: number): Observable<any> {
   });
 }
 
+
 getFollowedStoreIds(): Observable<string[]> {
   return this.http.get<string[]>(`${this.apiUrl}/StoreFollowerAppservice/GetFollowedStoreIds`);
 }
+
 
 
 

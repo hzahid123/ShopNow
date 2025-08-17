@@ -216,7 +216,7 @@
 </mat-toolbar>
 
 <!-- FIXED: Enhanced Subheader with Dynamic Categories -->
-<mat-toolbar class="subheader bg-light" style="min-height: 48px;">
+<mat-toolbar class="subheader bg-light" style="min-height: 48px;" *ngIf="showSubheader">
   <div class="d-flex align-items-center w-100">
 
     <!-- FIXED: Click-based Category Dropdown with proper structure -->
@@ -384,6 +384,8 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
 
+  
+
   .subsubmenu-item {
     padding: 10px 16px;
     cursor: pointer;
@@ -430,6 +432,7 @@
   /* QUICK CATEGORY BUTTONS                */
   /* ------------------------------------- */
 
+
   .quick-categories {
     display: flex;
     align-items: center;
@@ -441,6 +444,102 @@
     /* Take remaining space */
     min-width: 0;
     /* Allow shrinking */
+  }
+
+.quick-categories::-webkit-scrollbar {
+  display: none;
+}
+
+.category-quick-btn {
+  flex: 0 1 auto; /* Allow button to grow based on content */
+  min-width: auto;
+  max-width: none;
+  padding: 6px 12px;
+  height: 32px;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  border-radius: 16px;
+  border: 1px solid #e0e0e0;
+  background: white;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.category-quick-btn:hover {
+  background-color: #f5f8ff;
+  border-color: #1976d2;
+  color: #1976d2;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.15);
+}
+
+.category-quick-btn.active {
+  background-color: #1976d2;
+  border-color: #1976d2;
+  color: white;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.25);
+}
+
+.category-quick-btn.active:hover {
+  background-color: #1565c0;
+  border-color: #1565c0;
+}
+
+.more-categories-btn {
+  flex-shrink: 0; /* Don't shrink the more button */
+  min-width: auto;
+  padding: 6px 12px;
+  height: 32px;
+  border-radius: 16px;
+  font-size: 13px;
+  font-weight: 500;
+  border: 1px dashed #ccc;
+  background: transparent;
+  color: #666;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.more-categories-btn:hover {
+  background-color: #f0f0f0;
+  border-color: #999;
+  color: #333;
+}
+
+/* Alternative layout for better space utilization */
+.quick-categories-container {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  gap: 8px;
+}
+
+.quick-categories-wrapper {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Responsive behavior */
+@media (max-width: 768px) {
+  .category-quick-btn {
+    min-width: 60px;
+    max-width: 100px;
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+  
+  .quick-categories {
+    gap: 6px;
   }
 
   .quick-categories::-webkit-scrollbar {
