@@ -150,9 +150,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   // View mode
   viewMode: string = 'grid';
 
-  userFullName: string = '';
-  userEmail: string = '';
-
+  username: string = '';
+  email: string = '';
   // Subject for managing subscriptions
   private destroy$ = new Subject<void>();
   private searchSubject = new Subject<string>();
@@ -211,6 +210,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
       .subscribe(count => {
         this.cartItemsCount = count;
       });
+
+    // this.loadUserFromToken();
     this.cartBadgeService.fetchAndUpdateCartCount();
 
     this.loadCategories();
@@ -220,16 +221,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     console.log('User:', user);
 
-    // Set user display information
-    this.userFullName = user.fullName || `${user.name} ${user.surname}`;
-    this.userEmail = user.emailAddress || '';
 
-    // Check if user is authenticated
-    const token = sessionStorage.getItem('accessToken');
-    if (!token) {
-      this.router.navigate(['authentication/authentication/login']);
-    }
+    this.username = sessionStorage.getItem('user.fullName') || ''; // but note, u stored fullName here
+    this.email = sessionStorage.getItem('user.emailAddress') || '';
+
+   
   }
+
+
 
 
   ngOnDestroy(): void {
@@ -342,6 +341,17 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.cartTotal = 0;
     }
   }
+
+
+
+
+getInitials(fullName: string): string {
+  if (!fullName) return '';
+  const nameParts = fullName.trim().split(' ');
+  const first = nameParts[0]?.charAt(0).toUpperCase() || '';
+  const last = nameParts.length > 1 ? nameParts[nameParts.length - 1].charAt(0).toUpperCase() : '';
+  return first + last;
+}
 
   // FIXED: Cart getter methods
   getCartItemsCount(): number {

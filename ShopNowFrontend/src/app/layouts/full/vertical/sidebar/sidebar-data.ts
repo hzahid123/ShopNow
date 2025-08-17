@@ -197,6 +197,11 @@ export const navItems: NavItem[] = [
     iconName: 'user',
     route: '/authentication/authentication/loginSeller',
   },
+  {
+    displayName: 'Logout',
+    iconName: 'logout', 
+    route: 'authentication/authentication/login',
+  },
 
   {
     displayName: 'Settings',

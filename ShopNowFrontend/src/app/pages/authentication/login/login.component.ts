@@ -86,6 +86,8 @@ export class LoginComponent {
       sessionStorage.setItem('accessToken', response.result.accessToken);
       sessionStorage.setItem('user.storeId', user.storeId); 
       sessionStorage.setItem('customer_id', String(user.id)); 
+      sessionStorage.setItem('user.fullName', user.fullName);
+      sessionStorage.setItem('user.emailAddress', user.emailAddress);
       console.log(response.result.accessToken);
       this.router.navigate(['/dashboards/dashboard1']);
     }

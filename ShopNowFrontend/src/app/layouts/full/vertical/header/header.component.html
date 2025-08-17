@@ -136,22 +136,33 @@
     </div>
   </button>
 
-  <button mat-icon-button [matMenuTriggerFor]="profilemenu" aria-label="Profile">
-    <img src="/assets/images/profile/user-1.jpg" class="rounded-circle object-cover icon-35 profile-dd" width="35" />
-  </button>
+  <!-- <button mat-icon-button [matMenuTriggerFor]="profilemenu" aria-label="Profile"  class="rounded-circle object-cover icon-35 profile-dd"   class="rounded-circle"  width="15">
+
+     <span class="f-w-600">{{ getInitials(username) }}</span>
+  </button> -->
+       <button  mat-mini-fab [matMenuTriggerFor]="profilemenu" aria-label="Profile"  class="text-primary bg-light-primary shadow-none rounded-circle"  width="15">
+  <span class="f-w-600">{{ getInitials(username) }}</span>
+</button>
+
 
   <mat-menu #profilemenu="matMenu" class="topbar-dd cardWithShadow">
     <ng-scrollbar class="position-relative" style="height: 647px">
       <div class="p-x-32 p-y-16">
         <h6 class="f-s-16 f-w-600 m-0 mat-subtitle-1">User Profile</h6>
         <div class="d-flex align-items-center p-b-24 b-b-1 m-t-16">
-          <img src="/assets/images/profile/user-1.jpg" class="rounded-circle" width="95" />
+       
+          <!-- If username exists, show initials, else "GU" for Guest User -->
+         <button mat-mini-fab class="text-primary bg-light-primary shadow-none rounded-circle" width="95">
+  <span class="f-w-600">{{ getInitials(username) }}</span>
+</button>
+
+
           <div class="m-l-16">
-            <h6 class="f-s-14 f-w-600 m-0 mat-subtitle-1"><span>{{ userFullName }}</span></h6>
-            <!-- <span class="f-s-14 d-block m-b-4">Designer</span> -->
+            <h6 class="f-s-14 f-w-600 m-0 mat-subtitle-1"> <span>{{ username || 'Guest User' }}</span></h6>
+          
             <span class="d-flex align-items-center">
               <i-tabler name="mail" class="icon-15 m-r-4"></i-tabler>
-               <div >{{ userEmail }}</div>
+              <div>{{ email || 'No email available' }}</div>
             </span>
           </div>
         </div>
@@ -161,9 +172,15 @@
         @for(profile of profiledd; track profile.title) {
         <a class="p-y-16 text-decoration-none d-block text-hover-primary" [routerLink]="[profile.link]">
           <div class="d-flex align-items-center">
-            <button mat-mini-fab class="text-primary bg-light-primary shadow-none rounded">
-              <img [src]="profile.img" width="20" />
-            </button>
+            <!-- <button mat-mini-fab class="text-primary bg-light-primary shadow-none rounded">
+              <!-- If image exists -->
+            <!-- <img *ngIf="profile.img; else initialsTpl" [src]="profile.img" width="20" /> -->
+
+            <!-- If no image, show initials --
+              <ng-template #initialsTpl>
+                <span class="f-w-600">{{ getInitials(profile.title) }}</span>
+              </ng-template>
+            </button> -->
             <div class="m-l-16">
               <h5 class="f-s-14 f-w-600 m-0 textprimary mat-subtitle-1 hover-text">
                 {{ profile.title }}
@@ -175,7 +192,7 @@
         }
 
         <!-- upgrade -->
-        <div class="p-24 overflow-hidden bg-light-primary rounded position-relative m-y-16">
+        <!-- <div class="p-24 overflow-hidden bg-light-primary rounded position-relative m-y-16">
           <div class="d-flex align-items-center">
             <div>
               <h5 class="f-s-18 m-0 f-w-600 m-b-12 mat-subtitle-1">
@@ -188,8 +205,8 @@
               <img src="/assets/images/backgrounds/unlimited-bg.png" alt="upgrade-bg" class="upgrade-bg" />
             </div>
           </div>
-        </div>
-      </div> 
+        </div> -->
+      </div>
 
       <div class="p-y-12 p-x-32">
         <a (click)="logout()" mat-stroked-button color="primary" class="w-100">Logout</a>
@@ -415,14 +432,19 @@
   /* QUICK CATEGORY BUTTONS                */
   /* ------------------------------------- */
 
-.quick-categories {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-}
 
+  .quick-categories {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    flex: 1;
+    /* Take remaining space */
+    min-width: 0;
+    /* Allow shrinking */
+  }
 
 .quick-categories::-webkit-scrollbar {
   display: none;
@@ -519,69 +541,171 @@
   .quick-categories {
     gap: 6px;
   }
-}
 
-@media (max-width: 480px) {
-  .category-quick-btn {
-    min-width: 50px;
-    max-width: 80px;
-    padding: 4px 6px;
-    font-size: 11px;
+  .quick-categories::-webkit-scrollbar {
+    display: none;
   }
-  
-  .quick-categories {
-    gap: 4px;
-  }
-}
 
-/* Dark mode support for quick categories */
-.subheader.dark-mode {
   .category-quick-btn {
-    background: #424242;
-    border-color: #666;
-    color: #ccc;
+    flex: 1;
+    /* Distribute available space equally */
+    min-width: 80px;
+    /* Minimum width to prevent too narrow buttons */
+    max-width: 120px;
+    /* Maximum width to prevent too wide buttons */
+    padding: 6px 12px;
+    height: 32px;
+    border-radius: 16px;
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    border: 1px solid #e0e0e0;
+    background: white;
+    color: #666;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .category-quick-btn:hover {
-    background-color: #303f9f;
-    border-color: #3f51b5;
-    color: white;
+    background-color: #f5f8ff;
+    border-color: #1976d2;
+    color: #1976d2;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(25, 118, 210, 0.15);
   }
 
   .category-quick-btn.active {
-    background-color: #3f51b5;
-    border-color: #3f51b5;
+    background-color: #1976d2;
+    border-color: #1976d2;
     color: white;
+    box-shadow: 0 2px 8px rgba(25, 118, 210, 0.25);
+  }
+
+  .category-quick-btn.active:hover {
+    background-color: #1565c0;
+    border-color: #1565c0;
   }
 
   .more-categories-btn {
-    border-color: #666;
-    color: #ccc;
+    flex-shrink: 0;
+    /* Don't shrink the more button */
+    min-width: auto;
+    padding: 6px 12px;
+    height: 32px;
+    border-radius: 16px;
+    font-size: 13px;
+    font-weight: 500;
+    border: 1px dashed #ccc;
+    background: transparent;
+    color: #666;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .more-categories-btn:hover {
-    background-color: #515151;
-    border-color: #888;
-    color: #fff;
+    background-color: #f0f0f0;
+    border-color: #999;
+    color: #333;
   }
-}
 
-/* Enhanced layout option with grid-like distribution */
-.quick-categories.grid-layout {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-  gap: 8px;
-  overflow-x: visible;
-}
+  /* Alternative layout for better space utilization */
+  .quick-categories-container {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+    gap: 8px;
+  }
 
-.quick-categories.grid-layout .category-quick-btn {
-  flex: none;
-  width: 100%;
-}
+  .quick-categories-wrapper {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+  }
 
-.quick-categories.grid-layout .more-categories-btn {
-  grid-column: -1;
-}
+  /* Responsive behavior */
+  @media (max-width: 768px) {
+    .category-quick-btn {
+      min-width: 60px;
+      max-width: 100px;
+      padding: 6px 8px;
+      font-size: 12px;
+    }
+
+    .quick-categories {
+      gap: 6px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .category-quick-btn {
+      min-width: 50px;
+      max-width: 80px;
+      padding: 4px 6px;
+      font-size: 11px;
+    }
+
+    .quick-categories {
+      gap: 4px;
+    }
+  }
+
+  /* Dark mode support for quick categories */
+  .subheader.dark-mode {
+    .category-quick-btn {
+      background: #424242;
+      border-color: #666;
+      color: #ccc;
+    }
+
+    .category-quick-btn:hover {
+      background-color: #303f9f;
+      border-color: #3f51b5;
+      color: white;
+    }
+
+    .category-quick-btn.active {
+      background-color: #3f51b5;
+      border-color: #3f51b5;
+      color: white;
+    }
+
+    .more-categories-btn {
+      border-color: #666;
+      color: #ccc;
+    }
+
+    .more-categories-btn:hover {
+      background-color: #515151;
+      border-color: #888;
+      color: #fff;
+    }
+  }
+
+  /* Enhanced layout option with grid-like distribution */
+  .quick-categories.grid-layout {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 8px;
+    overflow-x: visible;
+  }
+
+  .quick-categories.grid-layout .category-quick-btn {
+    flex: none;
+    width: 100%;
+  }
+
+  .quick-categories.grid-layout .more-categories-btn {
+    grid-column: -1;
+  }
 
   /* ------------------------------------- */
   /* SEARCH BAR ENHANCEMENTS               */

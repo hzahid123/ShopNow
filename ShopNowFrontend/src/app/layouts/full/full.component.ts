@@ -76,7 +76,10 @@ export class FullComponent implements OnInit {
   private isContentWidthFixed = true;
   private isCollapsedWidthFixed = false;
   private htmlElement!: HTMLHtmlElement;
-  
+
+  username: string = '';
+  email: string = '';
+
   // Add property to control sidebar visibility
   showSidebar = true;
 
@@ -215,6 +218,8 @@ export class FullComponent implements OnInit {
     // Initialize project theme with options
     this.receiveOptions(this.options);
 
+
+
     // This is for scroll to top and check route for sidebar visibility
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
@@ -222,11 +227,15 @@ export class FullComponent implements OnInit {
         this.content.scrollTo({ top: 0 });
         this.checkRouteForSidebar();
       });
+
+
   }
 
   ngOnInit(): void {
     // Check initial route
     this.checkRouteForSidebar();
+    this.username = sessionStorage.getItem('user.fullName') || ''; // but note, u stored fullName here
+    this.email = sessionStorage.getItem('user.emailAddress') || '';
   }
 
   ngOnDestroy() {
@@ -235,8 +244,8 @@ export class FullComponent implements OnInit {
 
   // Method to check if sidebar should be shown based on current route
   private checkRouteForSidebar(): void {
-   const hideSidebarPaths = ['/apps/home', '/apps/product-detail','/apps/cart'];
-   this.showSidebar = !hideSidebarPaths.some(path => this.router.url.startsWith(path));
+    const hideSidebarPaths = ['/apps/home', '/apps/product-detail', '/apps/cart'];
+    this.showSidebar = !hideSidebarPaths.some(path => this.router.url.startsWith(path));
     // this.showSidebar = this.router.url !== '/apps/product-detail?id=';
   }
 
@@ -274,4 +283,12 @@ export class FullComponent implements OnInit {
       this.htmlElement.classList.add('light-theme');
     }
   }
+  getInitials(fullName: string): string {
+    if (!fullName) return '';
+    const nameParts = fullName.trim().split(' ');
+    const first = nameParts[0]?.charAt(0).toUpperCase() || '';
+    const last = nameParts.length > 1 ? nameParts[nameParts.length - 1].charAt(0).toUpperCase() : '';
+    return first + last;
+  }
+
 }
